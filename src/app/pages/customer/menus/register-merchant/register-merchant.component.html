@@ -70,7 +70,7 @@
                       class="block w-full rounded-md border-gray-300 pl-16 focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
                       id="phone_number"
                       name="phone_number"
-                      placeholder="+1 (555) 987-6543"
+                      placeholder=" +1 (555) 987-6543"
                       type="text"
                       ngModel
                       required
@@ -153,6 +153,26 @@
         </form>
 
 
+        <div *ngIf="merchantForm.form.invalid && !submitted" class="mx-auto max-w-4xl py-6">
+          <div class="border-l-4 border-yellow-400 bg-yellow-50 p-4">
+            <div class="flex">
+              <div class="flex-shrink-0">
+                <svg class="h-5 w-5 text-yellow-400" x-description="Heroicon name: mini/exclamation-triangle" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+                  <path fill-rule="evenodd" d="M8.485 2.495c.673-1.167 2.357-1.167 3.03 0l6.28 10.875c.673 1.167-.17 2.625-1.516 2.625H3.72c-1.347 0-2.189-1.458-1.515-2.625L8.485 2.495zM10 5a.75.75 0 01.75.75v3.5a.75.75 0 01-1.5 0v-3.5A.75.75 0 0110 5zm0 9a1 1 0 100-2 1 1 0 000 2z" clip-rule="evenodd"></path>
+                </svg>
+              </div>
+              <div class="ml-3">
+                <p class="text-sm text-yellow-700">
+                  Please complete the company information form before proceeding.
+                </p>
+              </div>
+            </div>
+          </div>
+
+        </div>
+
+
+
       </div>
     </div>
 
@@ -194,7 +214,7 @@
                     class="block text-sm font-medium text-gray-700"
                     for="file">Representative documents</label>
                   <input
-                    class="mt-1 block w-full rounded-md border border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+                    class="mt-1 block w-full rounded-md border border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm  disabled:cursor-not-allowed disabled:border-gray-200 disabled:bg-gray-50 disabled:text-gray-500"
                     id="file"
                     multiple
                     type="file"
@@ -204,7 +224,7 @@
                     ngModel
                     required
                     #file="ngModel"
-
+                    [disabled]="!merchantForm.form.valid"
                   >
                   <div *ngIf="file.invalid && (file.dirty || file.touched)"
                        class="mt-2 text-sm text-red-600">
@@ -218,12 +238,13 @@
                          class="block text-sm font-medium text-gray-700">Description</label>
                   <div class="mt-1">
                     <textarea id="file_description" rows="3"
-                              class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+                              class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm  disabled:cursor-not-allowed disabled:border-gray-200 disabled:bg-gray-50 disabled:text-gray-500"
                               placeholder=""
                               name="file_description"
                               ngModel
                               required
                               #file_description="ngModel"
+                              [disabled]="!merchantForm.form.valid"
                     ></textarea>
                   </div>
                   <p class="mt-2 text-sm text-gray-500">Brief description
@@ -239,7 +260,8 @@
               </div>
               <div class="bg-gray-50 px-4 py-3 text-right sm:px-6">
                 <button type="submit"
-                        class="inline-flex justify-center rounded-md border border-transparent bg-indigo-600 py-2 px-4 text-sm font-medium text-white shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2">
+                        class="inline-flex justify-center rounded-md border border-transparent bg-indigo-600 py-2 px-4 text-sm font-medium text-white shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 disabled:cursor-not-allowed disabled:border-gray-200 disabled:bg-gray-50 disabled:text-gray-500"
+                        [disabled]="!merchantForm.form.valid">
                   Save
                 </button>
               </div>

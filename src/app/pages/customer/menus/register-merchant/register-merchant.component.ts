@@ -13,7 +13,7 @@ import Swal from "sweetalert2";
 export class RegisterMerchantComponent {
 
 
-
+  public submitted = false;
   constructor(public merchantService: MerchantsService) {
   }
 
@@ -36,7 +36,9 @@ export class RegisterMerchantComponent {
       form.value.name,
       form.value.phone_number,
       form.value.email,
-      form.value.company_description);
+      form.value.company_description
+    );
+    this.submitted = true;
 
     Swal.fire({
       position: 'top-end',
@@ -64,5 +66,11 @@ export class RegisterMerchantComponent {
       this.file,
       form.value.file_description
     );
+    Swal.fire({
+      icon: 'success',
+      title: 'Register successful!',
+      text:'The form has been successfully submitted. Please wait for approval from the officer.',
+      showConfirmButton: true,
+    })
   }
 }
