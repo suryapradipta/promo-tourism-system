@@ -10,25 +10,24 @@ export class AuthService {
     { username: 'merchant@gmail.com', password: 'merchant@gmail.com', role: 'merchant' },
   ];
 
-  private currentUser: any = null;
-
   login(username: string, password: string) {
     const user = this.users.find((u) => u.username === username && u.password === password);
 
 
     if (user) {
-      this.currentUser = user;
+      localStorage.setItem('currentUser', JSON.stringify(user));
+      return user;
     }
-    console.log("USER",user)
-    return user;
+    return false;
   }
 
-  logout() {
-    this.currentUser = null;
+  logout(): void {
+    localStorage.removeItem('currentUser');
   }
 
-  getCurrentUser() {
-    return this.currentUser;
+  getCurrentUser(): any {
+    const user = localStorage.getItem('currentUser');
+    return user ? JSON.parse(user) : null;
   }
 
   constructor() { }
