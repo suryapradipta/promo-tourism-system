@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import {AuthService} from "../../menus/auth/sign-in/shared/auth.service";
+import {AuthService} from "../../../../shared/services/auth.service";
 import {Router} from "@angular/router";
 import Swal from "sweetalert2";
 
@@ -16,6 +16,11 @@ export class HeaderComponent {
   ]
 
   constructor(private authService: AuthService, private router: Router) {}
+
+
+  setupDefaultAdminUser() : void {
+    this.authService.setupDefaultAdminUser();
+  }
 
   isLogged() {
     const user = this.authService.getCurrentUser();

@@ -7,11 +7,16 @@ import { RegisterMerchantComponent } from './pages/customer/menus/register-merch
 import { ManageAccountComponent } from './pages/ministry/ministry-dashboard/menus/manage-account/manage-account.component';
 import {
   AdminGuard
-} from "./pages/customer/menus/auth/sign-in/shared/admin.guard";
+} from "./shared/guards/admin.guard";
+import {
+  SignUpComponent
+} from "./pages/customer/menus/auth/sign-up/sign-up.component";
 
 const routes: Routes = [
   { path: '', component: DashboardComponent },
   { path: 'sign-in', component: SignInComponent },
+  { path: 'sign-up', component: SignUpComponent },
+
   {
     path: 'ministry-dashboard',
     component: MinistryDashboardComponent,

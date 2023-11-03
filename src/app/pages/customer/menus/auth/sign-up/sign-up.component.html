@@ -6,10 +6,9 @@
          alt="Your Company">
     <h2
       class="mt-10 text-center text-2xl font-bold leading-9 tracking-tight text-gray-900">
-      Sign in to your account</h2>
+      Sign up for an account</h2>
   </div>
 
-  <!--  Login Form-->
   <div class="mt-10 sm:mx-auto sm:w-full sm:max-w-sm">
     <form class="space-y-6" [formGroup]="registerForm" (ngSubmit)="onRegister()">
 
@@ -33,11 +32,11 @@
             formControlName="email"
           >
         </div>
-        <div *ngIf="formControl.email.errors && formControl.email.dirty
-        || formControl.email.touched" class="mt-2 text-sm text-red-600" id="email-error">
-          <div *ngIf="formControl.email.errors.email">Please enter a valid email address.</div>
-          <div *ngIf="formControl.email.errors.required">Email is required.</div>
-        </div>
+<!--        <div *ngIf="formControl.email.errors && formControl.email.dirty-->
+<!--        || formControl.email.touched" class="mt-2 text-sm text-red-600" id="email-error">-->
+<!--          <div *ngIf="formControl.email.errors.email">Please enter a valid email address.</div>-->
+<!--          <div *ngIf="formControl.email.errors.required">Email is required.</div>-->
+<!--        </div>-->
 
       </div>
 
@@ -45,13 +44,6 @@
         <div class="flex items-center justify-between">
           <label for="password"
                  class="block text-sm font-medium leading-6 text-gray-900">Password</label>
-
-
-          <div class="text-sm">
-            <a href="#"
-               class="font-semibold text-indigo-600 hover:text-indigo-500">Forgot
-              password?</a>
-          </div>
         </div>
 
         <div class="mt-2">
@@ -68,24 +60,24 @@
           >
         </div>
 
-        <div *ngIf="formControl.password.errors && formControl.password.dirty
-        || formControl.password.touched" class="mt-2 text-sm text-red-600" id="password-error">
-          <div *ngIf="formControl.password.errors.required">Password is required.</div>
-          <div *ngIf="formControl.password.errors.pattern">
-            <ul>
-              <li>Password should be alphanumeric</li>
-              <li>A letter of the password should be capital</li>
-              <li>Password must contain a special character (@, $, !, &, etc)</li>
-              <li>Password length must be greater than 7 characters</li>
-            </ul>
-          </div>
-        </div>
+<!--        <div *ngIf="formControl.password.errors && formControl.password.dirty-->
+<!--        || formControl.password.touched" class="mt-2 text-sm text-red-600" id="password-error">-->
+<!--          <div *ngIf="formControl.password.errors.required">Password is required.</div>-->
+<!--          <div *ngIf="formControl.password.errors.pattern">-->
+<!--            <ul>-->
+<!--              <li>Password should be alphanumeric</li>-->
+<!--              <li>A letter of the password should be capital</li>-->
+<!--              <li>Password must contain a special character (@, $, !, &, etc)</li>-->
+<!--              <li>Password length must be greater than 7 characters</li>-->
+<!--            </ul>-->
+<!--          </div>-->
+<!--        </div>-->
       </div>
 
       <div>
         <button type="submit"
                 class="flex w-full justify-center rounded-md bg-indigo-600 px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">
-          Sign in
+          Sign up
         </button>
       </div>
 
@@ -93,9 +85,9 @@
     </form>
 
     <p class="mt-10 text-center text-sm text-gray-500">
-      Not a member?
-      <a href="#"
-         class="font-semibold leading-6 text-indigo-600 hover:text-indigo-500">Sign up</a>
+      Already have an account?
+      <a routerLink="/sign-in"
+         class="font-semibold leading-6 text-indigo-600 hover:text-indigo-500">Sign in</a>
     </p>
   </div>
 </div>

@@ -2,6 +2,7 @@ import { Component } from '@angular/core';
 import {FormBuilder, FormGroup, Validators} from "@angular/forms";
 import {Router} from "@angular/router";
 import Swal from "sweetalert2";
+import {SignUpService} from "../../../../../shared/services/sign-up.service";
 
 @Component({
   selector: 'app-sign-up',
@@ -12,19 +13,18 @@ export class SignUpComponent {
   registerForm: FormGroup;
   submitted = false;
 
-  constructor(private formBuilder: FormBuilder, private router: Router) {
+  constructor(private formBuilder: FormBuilder, private router: Router,
+              private registrationService: SignUpService,) {
   }
 
   ngOnInit(): void {
     this.registerForm = this.formBuilder.group({
-      email: ["", [Validators.email, Validators.required]],
+      email: ["", [ Validators.required]],
       password: [
         "",
         [
           Validators.required,
-          Validators.pattern(
-            "(?=.*[A-Za-z])(?=.*[0-9])(?=.*[$@$!#^~%*?&,.<>\"'\\;:{\\}\\[\\]\\|\\+\\-\\=\\_\\)\\(\\)\\`\\/\\\\\\]])[A-Za-z0-9d$@].{7,}"
-          )
+
         ]
       ]
 
@@ -39,13 +39,20 @@ export class SignUpComponent {
   onRegister(): void {
     this.submitted = true;
     if (this.registerForm.valid) {
-      console.log(this.registerForm.value);
-      this.router.navigate(["/"]);
+      console.log("REGISTERD EMAIL", this.registerForm.value.email)
+      console.log("REGISTERD PASS", this.registerForm.value.password)
+
+      if (this.registrationService.register(this.registerForm.value.email, this.registerForm.value.password)) {
+        this.router.navigate(['/login']); // Redirect to the login page
+      } else {
+        // Handle registration error (username already taken, etc.)
+      }
+      this.router.navigate(["/sign-in"]);
 
       Swal.fire({
         position: 'top-end',
         icon: 'success',
-        title: 'Login successful!',
+        title: 'Register successful!',
         showConfirmButton: false,
         timer: 1500
       })
@@ -53,7 +60,7 @@ export class SignUpComponent {
       Swal.fire({
         icon: 'error',
         title: 'Oops...',
-        text: 'Login failed. Please check your credentials.',
+        text: 'Register failed. Please check your credentials.',
       })
     }
   }

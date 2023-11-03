@@ -1,7 +1,7 @@
 import {Component} from '@angular/core';
 import {NgForm} from "@angular/forms";
 import Swal from "sweetalert2";
-import {MerchantService} from "./shared/merchant.service";
+import {RegisterMerchantService} from "../../../../shared/services/register-merchant.service";
 
 @Component({
   selector: 'app-register-merchant',
@@ -12,7 +12,7 @@ export class RegisterMerchantComponent {
 
 
   public submitted = false;
-  constructor(public merchantService: MerchantService) {
+  constructor(public merchantService: RegisterMerchantService) {
   }
 
   onRegisterMerchant(form: NgForm) {
