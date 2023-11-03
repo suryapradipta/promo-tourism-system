@@ -1,8 +1,5 @@
-import { NgModule } from '@angular/core';
-import { RouterModule, Routes } from '@angular/router';
-import {
-  HeaderComponent
-} from "./pages/customer/dashboard/header/header.component";
+import {NgModule} from '@angular/core';
+import {RouterModule, Routes} from '@angular/router';
 import {
   SignInComponent
 } from "./pages/customer/menus/auth/sign-in/sign-in.component";
@@ -15,13 +12,21 @@ import {
 import {
   RegisterMerchantComponent
 } from "./pages/customer/menus/register-merchant/register-merchant.component";
+import {
+  ManageAccountComponent
+} from "./pages/ministry/ministry-dashboard/menus/manage-account/manage-account.component";
 
 const routes: Routes = [
   {path: '', component: DashboardComponent},
   {path: 'sign-in', component: SignInComponent},
-  {path: 'ministry-dashboard', component: MinistryDashboardComponent},
+  {
+    path: 'ministry-dashboard', component: MinistryDashboardComponent,
+    children: [
+      {path: 'dashboard', component: DashboardComponent},
+      {path: 'manage-account', component: ManageAccountComponent},
+    ],
+  },
   {path: 'register-merchant', component: RegisterMerchantComponent},
-
 
 
 ];
@@ -30,4 +35,5 @@ const routes: Routes = [
   imports: [RouterModule.forRoot(routes)],
   exports: [RouterModule]
 })
-export class AppRoutingModule { }
+export class AppRoutingModule {
+}

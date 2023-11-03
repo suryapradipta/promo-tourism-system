@@ -13,6 +13,9 @@ import { SignUpComponent } from './pages/customer/menus/auth/sign-up/sign-up.com
 import {FormsModule, ReactiveFormsModule} from "@angular/forms";
 import { MinistryDashboardComponent } from './pages/ministry/ministry-dashboard/ministry-dashboard.component';
 import { RegisterMerchantComponent } from './pages/customer/menus/register-merchant/register-merchant.component';
+import { MobileSidebarComponent } from './pages/ministry/ministry-dashboard/mobile-sidebar/mobile-sidebar.component';
+import { DesktopSidebarComponent } from './pages/ministry/ministry-dashboard/desktop-sidebar/desktop-sidebar.component';
+import { ManageAccountComponent } from './pages/ministry/ministry-dashboard/menus/manage-account/manage-account.component';
 
 @NgModule({
   declarations: [
@@ -25,7 +28,10 @@ import { RegisterMerchantComponent } from './pages/customer/menus/register-merch
     CarouselComponent,
     SignUpComponent,
     MinistryDashboardComponent,
-    RegisterMerchantComponent
+    RegisterMerchantComponent,
+    MobileSidebarComponent,
+    DesktopSidebarComponent,
+    ManageAccountComponent,
   ],
   imports: [
     BrowserModule,
