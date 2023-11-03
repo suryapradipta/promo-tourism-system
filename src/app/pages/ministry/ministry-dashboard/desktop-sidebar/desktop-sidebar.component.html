@@ -47,6 +47,7 @@
         </div>
 
         <div
+          *ngIf="isMinistry()"
           [ngClass]="{
             'bg-gray-100 text-gray-900 group flex items-center px-2 py-2 text-sm font-medium rounded-md':
               activeLink === 'manage-account',
@@ -79,6 +80,7 @@
         </div>
 
         <div
+          *ngIf="isMinistry() && isMerchant()"
           [ngClass]="{
             'bg-gray-100 text-gray-900 group flex items-center px-2 py-2 text-sm font-medium rounded-md':
               activeLink === 'analytic-repots',
@@ -116,6 +118,7 @@
     <div class="flex flex-shrink-0 border-t border-gray-200 p-4">
       <div class="group block w-full flex-shrink-0">
         <a
+          (click)="logout()"
           routerLink="#"
           class="text-gray-600 hover:bg-gray-50 hover:text-gray-900 group flex items-center px-2 py-2 text-sm font-medium rounded-md"
         >
