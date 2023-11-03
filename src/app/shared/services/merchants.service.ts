@@ -7,18 +7,16 @@ import {MerchantModel} from "../models/merchant.model";
   providedIn: 'root'
 })
 
-export class RegisterMerchantService {
+export class MerchantsService {
   private merchants: MerchantModel [] = [];
-  private lastID: any;
+
+  constructor() {
+    this.merchants = JSON.parse(localStorage.getItem('merchants')) || [];
+  }
 
   getMerchants() {
     return this.merchants;
   }
-
-  getLastID() {
-    return this.lastID;
-  }
-
 
   addProfileMerchants(name: string, contact_number: number,
                       email: string,
@@ -38,12 +36,7 @@ export class RegisterMerchantService {
     };
     this.merchants.push(merchant);
 
-    // localStorage.setItem("merchant-data", JSON.stringify(merchant));
-
-    this.lastID = this.merchants[this.merchants.length - 1];
-    for (let data of this.getMerchants()) {
-      console.log(data);
-    }
+    localStorage.setItem('merchants', JSON.stringify(this.merchants));
   }
 
   getMerchantById(id: string) {
@@ -51,23 +44,18 @@ export class RegisterMerchantService {
   }
 
   addDocumentsAndDescription(documents: any, document_description: string) {
-    // const merchant =  this.getMerchantById(this.lastID);
-    this.lastID.documents = documents;
-    this.lastID.document_description = document_description;
+    const lastID = this.merchants[this.merchants.length - 1];
+    lastID.documents = documents;
+    lastID.document_description = document_description;
+    localStorage.setItem('merchants', JSON.stringify(this.merchants));
+
     for (let data of this.getMerchants()) {
       console.log("UPLOADED FILE", data);
     }
-
-
-    for (let data of this.getMerchants()) {
-      console.log("ALL",data);
-    }
-
   }
 
 
-  constructor() {
-  }
+
 
 }
 
