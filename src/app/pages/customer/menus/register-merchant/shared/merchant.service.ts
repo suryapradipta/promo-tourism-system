@@ -1,11 +1,13 @@
+
 import {Injectable} from '@angular/core';
-import {MerchantModel} from "../../models/merchant.model";
 import {v4 as uuidv4} from 'uuid';
+import {MerchantModel} from "./merchant.model";
 
 @Injectable({
   providedIn: 'root'
 })
-export class MerchantsService {
+
+export class MerchantService {
   private merchants: MerchantModel [] = [];
   private lastID: any;
 
@@ -68,4 +70,5 @@ export class MerchantsService {
   }
 
 }
+
 
