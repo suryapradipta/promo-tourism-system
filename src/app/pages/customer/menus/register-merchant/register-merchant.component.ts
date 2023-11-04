@@ -49,9 +49,13 @@ export class RegisterMerchantComponent {
 
 
   file: any;
+  fileNames = [];
 
   getFile(event: any) {
     this.file = event.target.files;
+    for (const item of this.file) {
+      this.fileNames.push(item.name)
+    }
     // console.log("filename:", this.file[0].name)
   }
 
@@ -61,7 +65,7 @@ export class RegisterMerchantComponent {
     }
 
     this.merchantService.addDocumentsAndDescription(
-      this.file,
+      this.fileNames,
       form.value.file_description
     );
 
