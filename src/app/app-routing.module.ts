@@ -11,6 +11,9 @@ import {
 import {
   SignUpComponent
 } from "./pages/customer/menus/auth/sign-up/sign-up.component";
+import {
+  DetailAccountComponent
+} from "./pages/ministry/ministry-dashboard/menus/manage-account/detail-account/detail-account.component";
 
 const routes: Routes = [
   { path: '', component: DashboardComponent },
@@ -23,7 +26,8 @@ const routes: Routes = [
     canActivate: [AdminGuard],
     children: [
       { path: 'dashboard', component: DashboardComponent },
-      { path: 'manage-account', component: ManageAccountComponent },
+      { path: 'manage-account', component: ManageAccountComponent},
+      {path: 'merchant/:id', component: DetailAccountComponent,}
     ],
   },
 

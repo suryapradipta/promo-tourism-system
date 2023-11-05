@@ -18,10 +18,6 @@ export class HeaderComponent {
   constructor(private authService: AuthService, private router: Router) {}
 
 
-  setupDefaultAdminUser() : void {
-    this.authService.setupDefaultAdminUser();
-  }
-
   isLogged() {
     const user = this.authService.getCurrentUser();
     return user && user.role === 'customer';

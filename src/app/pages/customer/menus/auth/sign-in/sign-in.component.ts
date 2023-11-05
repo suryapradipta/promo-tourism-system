@@ -33,38 +33,32 @@ export class SignInComponent implements OnInit {
     if (this.loginForm.valid) {
       console.log(this.loginForm.value);
 
-      // localStorage.setItem("user-Data", JSON.stringify(this.loginForm.value));
-      /*if(this.loginForm.value.email=="admin@prs.com" && this.loginForm.value.password=="Admin123*") {
-        this.isAuth = true;
-        this.router.navigate(['/ministry-dashboard'])
-      } else {
-        this.isAuth = true;
-        this.router.navigate(["/"]);
-      }*/
-      // this.loginForm.reset();
+      const user = this.authService.login(this.loginForm.value.email, this.loginForm.value.password);
 
-      this.authService.login(this.loginForm.value.email, this.loginForm.value.password);
-      if(this.authService.getCurrentUser().role === 'ministry' || this.authService.getCurrentUser().role === 'merchant')
-        this.router.navigate(['/ministry-dashboard'])
-      else
-        this.router.navigate(["/"]);
+      if(user) {
+        if(user.role === 'ministry' ||user.role === 'merchant')
+          this.router.navigate(['/ministry-dashboard'])
+        else if(user.role==='customer')
+          this.router.navigate(["/"]);
+        Swal.fire({
+          position: 'top-end',
+          icon: 'success',
+          title: 'Login successful!',
+          showConfirmButton: false,
+          timer: 1500
+        })
+      }
+      else {
+        Swal.fire({
+          icon: 'error',
+          title: 'Oops...',
+          text: 'Login failed. Please check your credentials.',
+        })
+      }
 
 
-      Swal.fire({
-        position: 'top-end',
-        icon: 'success',
-        title: 'Login successful!',
-        showConfirmButton: false,
-        timer: 1500
-      })
-    }
 
-    else {
-      Swal.fire({
-        icon: 'error',
-        title: 'Oops...',
-        text: 'Login failed. Please check your credentials.',
-      })
+
     }
   }
 

@@ -19,6 +19,7 @@ export class RegisterMerchantComponent {
     if (form.invalid) {
       return;
     }
+
     for (let merchant of this.merchantService.getMerchants()) {
       if (merchant.email === form.value.email) {
         Swal.fire({

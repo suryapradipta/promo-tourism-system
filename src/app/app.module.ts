@@ -16,6 +16,7 @@ import { RegisterMerchantComponent } from './pages/customer/menus/register-merch
 import { MobileSidebarComponent } from './pages/ministry/ministry-dashboard/mobile-sidebar/mobile-sidebar.component';
 import { DesktopSidebarComponent } from './pages/ministry/ministry-dashboard/desktop-sidebar/desktop-sidebar.component';
 import { ManageAccountComponent } from './pages/ministry/ministry-dashboard/menus/manage-account/manage-account.component';
+import { DetailAccountComponent } from './pages/ministry/ministry-dashboard/menus/manage-account/detail-account/detail-account.component';
 
 @NgModule({
   declarations: [
@@ -32,6 +33,7 @@ import { ManageAccountComponent } from './pages/ministry/ministry-dashboard/menu
     MobileSidebarComponent,
     DesktopSidebarComponent,
     ManageAccountComponent,
+    DetailAccountComponent,
   ],
   imports: [
     BrowserModule,

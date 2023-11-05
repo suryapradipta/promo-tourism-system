@@ -13,10 +13,14 @@ export class SignUpService {
     this.users = JSON.parse(localStorage.getItem('users')) || [];
   }
 
-  register(email: string, password: string): boolean {
+  register(email: string, password: string, role:string): boolean {
     const uniqueID = uuidv4();
 
-    const user: AuthModel = {email: email, id: uniqueID, password: password, role: 'customer'} ;
+    const user: AuthModel = {email: email, id: uniqueID, password: password, role:
+        (role === 'merchant') ? 'merchant' :
+        (role === 'customer') ? 'customer' :
+          (role === 'ministry') ? 'ministry' :
+            ''} ;
 
     const existingUser = this.users.find((u) => u.email === email);
 

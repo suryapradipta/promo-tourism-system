@@ -42,7 +42,7 @@ export class SignUpComponent {
       console.log("REGISTERD EMAIL", this.registerForm.value.email)
       console.log("REGISTERD PASS", this.registerForm.value.password)
 
-      if (this.registrationService.register(this.registerForm.value.email, this.registerForm.value.password)) {
+      if (this.registrationService.register(this.registerForm.value.email, this.registerForm.value.password, 'customer')) {
         this.router.navigate(['/login']); // Redirect to the login page
       } else {
         // Handle registration error (username already taken, etc.)
