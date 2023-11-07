@@ -2,7 +2,9 @@ import {Component, OnInit} from '@angular/core';
 import {FormBuilder, FormGroup, Validators} from "@angular/forms";
 import {Router} from "@angular/router";
 import Swal from 'sweetalert2'
+
 import {AuthService} from "../../../../../shared/services/auth.service";
+import {AuthModel} from "../../../../../shared/models/auth.model";
 
 
 @Component({
@@ -12,14 +14,19 @@ import {AuthService} from "../../../../../shared/services/auth.service";
 })
 export class SignInComponent implements OnInit {
   loginForm: FormGroup;
-  isAuth: boolean = false;
+  users: AuthModel[] = [];
 
-  constructor(private formBuilder: FormBuilder, private router: Router, private authService:AuthService) {
+
+  constructor(private formBuilder: FormBuilder,
+              private router: Router,
+              private authService: AuthService) {
   }
 
   ngOnInit(): void {
+    this.users = this.authService.getUsersData();
+
     this.loginForm = this.formBuilder.group({
-      email: ["", [ Validators.required]],
+      email: ["", [Validators.required]],
       password: ["", [Validators.required,]]
     });
   }
@@ -31,37 +38,44 @@ export class SignInComponent implements OnInit {
 
   onLogin(): void {
     if (this.loginForm.valid) {
-      console.log(this.loginForm.value);
 
-      const user = this.authService.login(this.loginForm.value.email, this.loginForm.value.password);
+      const user = this.authService.login(
+        this.loginForm.value.email,
+        this.loginForm.value.password);
 
-      if(user) {
-        if(user.role === 'ministry' ||user.role === 'merchant')
-          this.router.navigate(['/ministry-dashboard'])
-        else if(user.role==='customer')
-          this.router.navigate(["/"]);
-        Swal.fire({
-          position: 'top-end',
-          icon: 'success',
-          title: 'Login successful!',
-          showConfirmButton: false,
-          timer: 1500
-        })
+      if (user !== null) {
+        switch (user.role) {
+          case 'ministry':
+          case 'merchant':
+            this.router.navigate(['/ministry-dashboard'])
+            break;
+          case 'customer':
+            this.router.navigate(["/"]);
+            break;
+        }
+        this.handleLoginSuccess();
+      } else {
+        this.handLoginFailed();
       }
-      else {
-        Swal.fire({
-          icon: 'error',
-          title: 'Oops...',
-          text: 'Login failed. Please check your credentials.',
-        })
-      }
-
-
-
-
     }
   }
 
+  private handLoginFailed = (): void => {
+    Swal.fire({
+      icon: 'error',
+      title: 'Oops...',
+      text: 'Login failed. Please check your credentials.',
+    })
+  };
+  private handleLoginSuccess = (): void => {
+    Swal.fire({
+      position: 'top-end',
+      icon: 'success',
+      title: 'Login successful!',
+      showConfirmButton: false,
+      timer: 1500
+    })
+  };
 
 
 }

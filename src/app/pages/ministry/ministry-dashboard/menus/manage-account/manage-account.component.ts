@@ -1,41 +1,28 @@
-import { Component } from '@angular/core';
+import {Component, OnInit} from '@angular/core';
 import {
   MerchantsService
 } from "../../../../../shared/services/merchants.service";
 import {MerchantModel} from "../../../../../shared/models/merchant.model";
 import {Router} from "@angular/router";
+import {
+  ManageAccountService
+} from "../../../../../shared/services/manage-account.service";
 
 @Component({
   selector: 'app-manage-account',
   templateUrl: './manage-account.component.html',
   styleUrls: ['./manage-account.component.css']
 })
-export class ManageAccountComponent {
+export class ManageAccountComponent implements OnInit{
+
   pendingApplications: MerchantModel[] = [];
-  // selectedMerchant: MerchantModel | null = null;
 
+  constructor(
+    private manageAccountService: ManageAccountService,
+    private router: Router) {}
 
-  constructor(private merchantService: MerchantsService, private router: Router) {
-    this.pendingApplications = this.merchantService.getPendingApplications();
-    // console.log("SELECTED",this.selectedMerchant);
-  }
-
-  // selectMerchant(merchant: MerchantModel) {
-  //   // this.selectedMerchant = merchant;
-  //   console.log("SELECTEDSELECTEDSELECTED",this.selectedMerchant);
-  //
-  // }
-
-  approveMerchant(merchant: MerchantModel) {
-    this.merchantService.approveMerchant(merchant);
-    // this.selectedMerchant = null;
-    this.merchantService.getPendingApplications();
-  }
-
-  rejectMerchant(merchant: MerchantModel) {
-    this.merchantService.rejectMerchant(merchant);
-    // this.selectedMerchant = null;
-    this.merchantService.getPendingApplications();
+  ngOnInit(): void {
+    this.pendingApplications = this.manageAccountService.getPendingApplications();
   }
 
   previewMerchant(merchant: MerchantModel) {

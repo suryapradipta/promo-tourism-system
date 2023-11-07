@@ -1,4 +1,4 @@
-import {Component, Input} from '@angular/core';
+import {Component, Input, OnInit} from '@angular/core';
 import {
   MerchantModel
 } from "../../../../../../shared/models/merchant.model";
@@ -6,33 +6,38 @@ import {
   MerchantsService
 } from "../../../../../../shared/services/merchants.service";
 import {ActivatedRoute, Router} from "@angular/router";
+import {
+  ManageAccountService
+} from "../../../../../../shared/services/manage-account.service";
 
 @Component({
   selector: 'app-detail-account',
   templateUrl: './detail-account.component.html',
   styleUrls: ['./detail-account.component.css']
 })
-export class DetailAccountComponent {
+export class DetailAccountComponent implements OnInit{
   merchant: MerchantModel | null = null;
 
   constructor(
     private route: ActivatedRoute,
     private router: Router,
-    private merchantService: MerchantsService
-  ) {
+    private manageAccountService: ManageAccountService
+  ) {}
+
+  ngOnInit(): void {
     const merchantId = this.route.snapshot.paramMap.get('id');
     if (merchantId) {
-      this.merchant = this.merchantService.getMerchantById(merchantId);
+      this.merchant = this.manageAccountService.getMerchantById(merchantId);
     }
   }
 
-  approveMerchant() {
-    this.merchantService.approveMerchant(this.merchant);
+  onApproveMerchant() {
+    this.manageAccountService.approveMerchant(this.merchant);
     this.router.navigate(['/ministry-dashboard/manage-account']);
   }
 
-  rejectMerchant() {
-    this.merchantService.rejectMerchant(this.merchant);
+  onRejectMerchant() {
+    this.manageAccountService.rejectMerchant(this.merchant);
     this.router.navigate(['/ministry-dashboard/manage-account']);
   }
 }

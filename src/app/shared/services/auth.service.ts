@@ -1,31 +1,39 @@
-import {Injectable} from '@angular/core';
-import {AuthModel} from "../models/auth.model";
-import {v4 as uuidv4} from 'uuid';
-import {SignUpService} from "./sign-up.service";
+import { Injectable } from '@angular/core';
+import { AuthModel } from '../models/auth.model';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class AuthService {
+  private users: AuthModel[] = [];
 
-  // TESTING PURPOSE
-  constructor(private signUpService:SignUpService) {
-    signUpService.register('ministry','ministry','ministry')
-    signUpService.register('merchant','merchant','merchant')
+  constructor() {
+    this.loadUsersData();
   }
 
-  login(username: string, password: string) {
-    const users = JSON.parse(localStorage.getItem('users')) || [];
-    const user = users.find((u: any) => u.email === username && u.password === password);
-    console.log("USERSSSSS", users);
+  private loadUsersData() {
+    this.users = JSON.parse(localStorage.getItem('users')) || [];
+    console.log('[S-IN SERVICE] LOAD USER', this.users);
+  }
 
-    console.log("USER", user);
+  getUsersData() {
+    return this.users;
+  }
 
+  login(email: string, password: string) {
+    // after merchant acc created, need to load local storage again
+    this.loadUsersData();
+    const user = this.users.find(
+      (founded: AuthModel) =>
+        founded.email === email && founded.password === password
+    );
+
+    console.log("LOGIN USER", user);
     if (user) {
       localStorage.setItem('currentUser', JSON.stringify(user));
       return user;
     }
-    return false;
+    return null;
   }
 
   logout(): void {
