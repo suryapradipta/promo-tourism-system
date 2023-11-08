@@ -1,7 +1,7 @@
 import {Component, OnInit} from '@angular/core';
 import {
-  MerchantsService
-} from "../../../../../shared/services/merchants.service";
+  RegisterMerchantsService
+} from "../../../../../shared/services/register-merchants.service";
 import {MerchantModel} from "../../../../../shared/models/merchant.model";
 import {Router} from "@angular/router";
 import {
@@ -23,6 +23,7 @@ export class ManageAccountComponent implements OnInit{
 
   ngOnInit(): void {
     this.pendingApplications = this.manageAccountService.getPendingApplications();
+    console.log("PENDING APP", this.pendingApplications)
   }
 
   previewMerchant(merchant: MerchantModel) {

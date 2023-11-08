@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import { AuthModel } from '../models/auth.model';
+import {SignUpService} from "./sign-up.service";
 
 @Injectable({
   providedIn: 'root',
@@ -7,8 +8,12 @@ import { AuthModel } from '../models/auth.model';
 export class AuthService {
   private users: AuthModel[] = [];
 
-  constructor() {
+  constructor(private signUpService:SignUpService) {
     this.loadUsersData();
+
+    // USER ACCOUNT TESTING PURPOSE
+    this.signUpService.register('ministry','ministry','ministry')
+    this.signUpService.register('merchant','merchant','merchant')
   }
 
   private loadUsersData() {
@@ -17,6 +22,7 @@ export class AuthService {
   }
 
   getUsersData() {
+    this.loadUsersData();
     return this.users;
   }
 

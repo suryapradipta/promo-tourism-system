@@ -5,7 +5,7 @@ import { MerchantModel } from '../models/merchant.model';
 @Injectable({
   providedIn: 'root',
 })
-export class MerchantsService {
+export class RegisterMerchantsService {
   private merchants: MerchantModel[] = [];
 
   constructor() {
@@ -14,17 +14,15 @@ export class MerchantsService {
 
   private loadMerchantsData() {
     this.merchants = JSON.parse(localStorage.getItem('merchants')) || [];
-    console.log('[REGISTER MERC SERVICE]LOAD-MERCH-DATA', this.merchants);
   }
 
   private saveMerchantsData(newMerchant: MerchantModel) {
     this.merchants.push(newMerchant);
     localStorage.setItem('merchants', JSON.stringify(this.merchants));
-
-    console.log('[REG-MERC-SERVICE] SAVE-MERCH DATA', this.merchants);
   }
 
   getMerchantsData() {
+    this.loadMerchantsData();
     return this.merchants;
   }
 

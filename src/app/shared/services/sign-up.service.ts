@@ -11,10 +11,6 @@ export class SignUpService {
 
   // Fetch data from local storage during service initialization
   constructor() {
-    // USER ACCOUNT TESTING PURPOSE
-    this.register('ministry','ministry','ministry')
-    this.register('merchant','merchant','merchant')
-
     this.loadUsersData();
   }
 
@@ -32,6 +28,7 @@ export class SignUpService {
   }
 
   getUsersData() {
+    this.loadUsersData();
     return this.users;
   }
 

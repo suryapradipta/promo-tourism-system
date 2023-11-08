@@ -3,8 +3,8 @@ import {
   MerchantModel
 } from "../../../../../../shared/models/merchant.model";
 import {
-  MerchantsService
-} from "../../../../../../shared/services/merchants.service";
+  RegisterMerchantsService
+} from "../../../../../../shared/services/register-merchants.service";
 import {ActivatedRoute, Router} from "@angular/router";
 import {
   ManageAccountService

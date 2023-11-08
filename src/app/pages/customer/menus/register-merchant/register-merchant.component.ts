@@ -1,7 +1,7 @@
 import {Component, OnInit} from '@angular/core';
 import {NgForm} from "@angular/forms";
 import Swal from "sweetalert2";
-import {MerchantsService} from "../../../../shared/services/merchants.service";
+import {RegisterMerchantsService} from "../../../../shared/services/register-merchants.service";
 import {MerchantModel} from "../../../../shared/models/merchant.model";
 
 @Component({
@@ -14,7 +14,7 @@ export class RegisterMerchantComponent implements OnInit{
   public submitted = false;
   merchants: MerchantModel[]=[];
 
-  constructor(private merchantService: MerchantsService) {}
+  constructor(private merchantService: RegisterMerchantsService) {}
 
   ngOnInit(): void {
     this.merchants = this.merchantService.getMerchantsData();
