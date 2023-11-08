@@ -17,6 +17,8 @@ import { MobileSidebarComponent } from './pages/ministry/ministry-dashboard/mobi
 import { DesktopSidebarComponent } from './pages/ministry/ministry-dashboard/desktop-sidebar/desktop-sidebar.component';
 import { ManageAccountComponent } from './pages/ministry/ministry-dashboard/menus/manage-account/manage-account.component';
 import { DetailAccountComponent } from './pages/ministry/ministry-dashboard/menus/manage-account/detail-account/detail-account.component';
+import { ProductListComponent } from './pages/customer/dashboard/product-list/product-list.component';
+import { AdminDashboardComponent } from './pages/ministry/ministry-dashboard/menus/admin-dashboard/admin-dashboard.component';
 
 @NgModule({
   declarations: [
@@ -34,6 +36,8 @@ import { DetailAccountComponent } from './pages/ministry/ministry-dashboard/menu
     DesktopSidebarComponent,
     ManageAccountComponent,
     DetailAccountComponent,
+    ProductListComponent,
+    AdminDashboardComponent,
   ],
   imports: [
     BrowserModule,

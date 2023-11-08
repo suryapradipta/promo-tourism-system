@@ -14,6 +14,9 @@ import {
 import {
   DetailAccountComponent
 } from "./pages/ministry/ministry-dashboard/menus/manage-account/detail-account/detail-account.component";
+import {
+  AdminDashboardComponent
+} from "./pages/ministry/ministry-dashboard/menus/admin-dashboard/admin-dashboard.component";
 
 const routes: Routes = [
   { path: '', component: DashboardComponent },
@@ -25,7 +28,7 @@ const routes: Routes = [
     component: MinistryDashboardComponent,
     canActivate: [AdminGuard],
     children: [
-      { path: 'dashboard', component: DashboardComponent },
+      { path: 'admin-dashboard', component: AdminDashboardComponent },
       { path: 'manage-account', component: ManageAccountComponent},
       {path: 'merchant/:id', component: DetailAccountComponent,}
     ],
