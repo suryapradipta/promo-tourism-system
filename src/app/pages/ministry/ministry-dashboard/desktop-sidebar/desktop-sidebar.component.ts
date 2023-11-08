@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import {
   AuthService
-} from "../../../../shared/services/auth.service";
+} from "../../../../shared/services";
 import {Router} from "@angular/router";
 import Swal from "sweetalert2";
 

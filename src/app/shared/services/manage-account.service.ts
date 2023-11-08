@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import {MerchantModel} from "../models/merchant.model";
 import {SignUpService} from "./sign-up.service";
 import emailjs from '@emailjs/browser';
-import Swal from "sweetalert2";
+import {NotificationService} from "./notification.service";
 
 @Injectable({
   providedIn: 'root'
@@ -10,7 +10,7 @@ import Swal from "sweetalert2";
 export class ManageAccountService {
   private merchants: MerchantModel[] = [];
 
-  constructor(private signUpService:SignUpService) {
+  constructor(private signUpService:SignUpService, private notificationService:NotificationService) {
     this.loadMerchantsData();
   }
 
@@ -42,7 +42,7 @@ export class ManageAccountService {
   rejectMerchant(merchant: MerchantModel) {
     merchant.status = 'REJECT';
     localStorage.setItem('merchants', JSON.stringify(this.merchants));
-    this.handleAccountRejected();
+    this.notificationService.showAccountRejectedMessage();
   }
 
   createMerchantAccount(merchant: MerchantModel) {
@@ -64,33 +64,9 @@ export class ManageAccountService {
       'template_eucbozs',
       templateParams, 'kLTeAvPa5TrTQmg_U')
       .then((response) => {
-        this.handleCreatedAccSuccess();
+        this.notificationService.showAccountCreatedMessage();
       }, (err) => {
-        this.handleCreatedAccFailed(err);
+        this.notificationService.showAccountFailedMessage(err);
       });
   }
-
-  private handleCreatedAccSuccess = (): void => {
-    Swal.fire({
-      icon: 'success',
-      title: 'Account created!',
-      text: 'Merchant account has been successfully created'
-    });
-  };
-
-  private handleCreatedAccFailed = (message: string): void => {
-    Swal.fire({
-      icon: "error",
-      title: "Oops...",
-      text: message,
-    });
-  };
-
-  private handleAccountRejected = (): void => {
-    Swal.fire({
-      icon: 'success',
-      title: 'Account rejected!',
-      text: 'Merchant account has been successfully rejected'
-    });
-  };
 }

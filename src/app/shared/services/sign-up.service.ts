@@ -16,7 +16,6 @@ export class SignUpService {
 
   private loadUsersData() {
     this.users = JSON.parse(localStorage.getItem('users')) || [];
-    console.log("[S-UP SERVICE]LOAD-USER-DATA", this.users)
   }
 
   // Method to add data to the array and save it in local storage
@@ -24,7 +23,6 @@ export class SignUpService {
     this.users.push(newUser);
     localStorage.setItem('users', JSON.stringify(this.users));
 
-    console.log("[S-UP SERVICE]SAVE-USER DATA", this.users);
   }
 
   getUsersData() {

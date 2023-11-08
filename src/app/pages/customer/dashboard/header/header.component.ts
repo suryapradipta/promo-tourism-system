@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import {AuthService} from "../../../../shared/services/auth.service";
+import {AuthService} from "../../../../shared/services";
 import {Router} from "@angular/router";
 import Swal from "sweetalert2";
 
@@ -12,11 +12,10 @@ export class HeaderComponent {
   pages = [
     { name: 'Products', href: '#' },
     { name: 'Company', href: '#' },
-    { name: 'Stores', href: '#' },
+    { name: 'Services', href: '#' },
   ]
 
   constructor(private authService: AuthService, private router: Router) {}
-
 
   isLogged() {
     const user = this.authService.getCurrentUser();

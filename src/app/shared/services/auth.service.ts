@@ -12,13 +12,12 @@ export class AuthService {
     this.loadUsersData();
 
     // USER ACCOUNT TESTING PURPOSE
-    this.signUpService.register('ministry','ministry','ministry')
-    this.signUpService.register('merchant','merchant','merchant')
+    this.signUpService.register('ministry@gmail.com','ministry','ministry')
+    this.signUpService.register('merchant@gmail.com','merchant','merchant')
   }
 
   private loadUsersData() {
     this.users = JSON.parse(localStorage.getItem('users')) || [];
-    console.log('[S-IN SERVICE] LOAD USER', this.users);
   }
 
   getUsersData() {
@@ -27,14 +26,12 @@ export class AuthService {
   }
 
   login(email: string, password: string) {
-    // after merchant acc created, need to load local storage again
     this.loadUsersData();
     const user = this.users.find(
       (founded: AuthModel) =>
         founded.email === email && founded.password === password
     );
 
-    console.log("LOGIN USER", user);
     if (user) {
       localStorage.setItem('currentUser', JSON.stringify(user));
       return user;

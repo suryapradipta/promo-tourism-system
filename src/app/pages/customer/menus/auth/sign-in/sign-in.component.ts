@@ -1,10 +1,10 @@
 import {Component, OnInit} from '@angular/core';
 import {FormBuilder, FormGroup, Validators} from "@angular/forms";
 import {Router} from "@angular/router";
-import Swal from 'sweetalert2'
 
-import {AuthService} from "../../../../../shared/services/auth.service";
-import {AuthModel} from "../../../../../shared/models/auth.model";
+import {AuthService} from "../../../../../shared/services";
+import {AuthModel} from "../../../../../shared/models";
+import {NotificationService} from "../../../../../shared/services";
 
 
 @Component({
@@ -19,14 +19,15 @@ export class SignInComponent implements OnInit {
 
   constructor(private formBuilder: FormBuilder,
               private router: Router,
-              private authService: AuthService) {
+              private authService: AuthService,
+              private notificationService:NotificationService) {
   }
 
   ngOnInit(): void {
     this.users = this.authService.getUsersData();
 
     this.loginForm = this.formBuilder.group({
-      email: ["", [Validators.required]],
+      email: ["", [Validators.required, Validators.email]],
       password: ["", [Validators.required,]]
     });
   }
@@ -53,29 +54,11 @@ export class SignInComponent implements OnInit {
             this.router.navigate(["/"]);
             break;
         }
-        this.handleLoginSuccess();
+        this.notificationService.showSuccessMessage('Login successful!');
       } else {
-        this.handLoginFailed();
+        this.notificationService.showErrorMessage('Login failed. Please check your credentials.');
       }
     }
   }
-
-  private handLoginFailed = (): void => {
-    Swal.fire({
-      icon: 'error',
-      title: 'Oops...',
-      text: 'Login failed. Please check your credentials.',
-    })
-  };
-  private handleLoginSuccess = (): void => {
-    Swal.fire({
-      position: 'top-end',
-      icon: 'success',
-      title: 'Login successful!',
-      showConfirmButton: false,
-      timer: 1500
-    })
-  };
-
 
 }

@@ -1,12 +1,9 @@
 import {Component, OnInit} from '@angular/core';
-import {
-  RegisterMerchantsService
-} from "../../../../../shared/services/register-merchants.service";
-import {MerchantModel} from "../../../../../shared/models/merchant.model";
+import {MerchantModel} from "../../../../../shared/models";
 import {Router} from "@angular/router";
 import {
   ManageAccountService
-} from "../../../../../shared/services/manage-account.service";
+} from "../../../../../shared/services";
 
 @Component({
   selector: 'app-manage-account',

@@ -1,8 +1,8 @@
 import {Component, OnInit} from '@angular/core';
 import {NgForm} from "@angular/forms";
 import Swal from "sweetalert2";
-import {RegisterMerchantsService} from "../../../../shared/services/register-merchants.service";
-import {MerchantModel} from "../../../../shared/models/merchant.model";
+import {RegisterMerchantsService} from "../../../../shared/services";
+import {MerchantModel} from "../../../../shared/models";
 
 @Component({
   selector: 'app-register-merchant',

@@ -1,11 +1,17 @@
 import {Component, OnInit} from '@angular/core';
-import {FormBuilder, FormGroup, Validators} from "@angular/forms";
+import {
+  AbstractControl,
+  FormBuilder,
+  FormGroup,
+  ValidatorFn,
+  Validators
+} from "@angular/forms";
 import {Router} from "@angular/router";
 import Swal from "sweetalert2";
 import {
   SignUpService
-} from "../../../../../shared/services/sign-up.service";
-import {AuthModel} from "../../../../../shared/models/auth.model";
+} from "../../../../../shared/services";
+import {AuthModel} from "../../../../../shared/models";
 
 @Component({
   selector: 'app-sign-up',
@@ -26,13 +32,27 @@ export class SignUpComponent implements OnInit {
   ngOnInit(): void {
     this.users = this.usersService.getUsersData();
 
+    function passwordValidator(): ValidatorFn {
+      return (control: AbstractControl): { [key: string]: boolean } | null => {
+        const password = control.value;
+
+        const hasUppercase = /[A-Z]/.test(password);
+        const hasLowercase = /[a-z]/.test(password);
+        const hasNumber = /[0-9]/.test(password);
+        const hasSpecialChar = /[!@#$%^&*]/.test(password);
+
+        const isValid = hasUppercase && hasLowercase && hasNumber && hasSpecialChar;
+
+        return isValid ? null : { invalidPassword: true };
+      };
+    }
+
     this.registerForm = this.formBuilder.group({
-      email: ["", [Validators.required]],
-      password: ["", [Validators.required]]
+      email: ["", [Validators.required, Validators.email]],
+      password: ["", [Validators.required, Validators.minLength(8), passwordValidator()]],
     });
   }
 
-  // Form validation control
   get formControl() {
     return this.registerForm.controls;
   }
