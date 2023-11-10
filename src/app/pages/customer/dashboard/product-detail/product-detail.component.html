@@ -18,6 +18,7 @@
       </div>
     </div>
 
+
     <!-- Product details -->
     <div
       class="mx-auto mt-14 max-w-2xl sm:mt-16 lg:col-span-3 lg:row-span-2 lg:row-end-2 lg:mt-0 lg:max-w-none"
@@ -126,14 +127,15 @@
 
       <div class="mt-8 lg:col-span-5">
         <form [formGroup]="productForm" (ngSubmit)="onBooking()">
-          <section>
+
+          <div class="flex justify-between">
+            <h1 class="text-sm font-medium text-gray-900">Quantity</h1>
             <div
-              x-data="{ productQuantity: 1 }"
               class="flex items-center space-x-3"
             >
               <button
-                x-on:click="productQuantity--"
-                class="inline-flex items-center justify-center p-1 text-sm font-medium h-6 w-6 text-gray-500 bg-white border border-gray-300 rounded-full focus:outline-none hover:bg-gray-100 focus:ring-4 focus:ring-gray-200 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:bg-gray-700 dark:hover:border-gray-600 dark:focus:ring-gray-700"
+                (click)="decrementQuantity()"
+                class="w-full justify-center border border-transparent bg-indigo-600 text-base font-medium text-white hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 inline-flex items-center h-6 w-6 p-1 rounded-full"
                 type="button"
               >
                 <span class="sr-only">Quantity button</span>
@@ -154,20 +156,18 @@
                 </svg>
               </button>
 
-              <div>
-                <input
-                  type="number"
-                  id="first_product"
-                  class="bg-gray-50 w-14 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block px-2.5 py-1 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                  placeholder="1"
-                  required
-                  x-model="productQuantity"
-                />
-              </div>
+              <input
+                type="number"
+                id="quantity"
+                class="justify-center inline-flex items-center bg-gray-50 w-14 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block px-2.5 py-1 "
+                placeholder="1"
+                required
+                formControlName="quantity"
+              />
 
               <button
-                x-on:click="productQuantity++"
-                class="inline-flex items-center justify-center h-6 w-6 p-1 text-sm font-medium text-gray-500 bg-white border border-gray-300 rounded-full focus:outline-none hover:bg-gray-100 focus:ring-4 focus:ring-gray-200 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:bg-gray-700 dark:hover:border-gray-600 dark:focus:ring-gray-700"
+                (click)="incrementQuantity()"
+                class="w-full justify-center border border-transparent bg-indigo-600 text-base font-medium text-white hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 inline-flex items-center h-6 w-6 p-1 rounded-full"
                 type="button"
               >
                 <span class="sr-only">Quantity button</span>
@@ -188,16 +188,20 @@
                 </svg>
               </button>
             </div>
-          </section>
+
+          </div>
+
 
           <button
-            (click)="onProceedToPayment(product)"
+
             type="submit"
             class="mt-8 flex w-full items-center justify-center rounded-md border border-transparent bg-indigo-600 py-3 px-8 text-base font-medium text-white hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
           >
             Book now
           </button>
         </form>
+
+
       </div>
 
       <div class="mt-10 border-t border-gray-200 pt-10">

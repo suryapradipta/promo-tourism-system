@@ -21,13 +21,14 @@ declare var paypal;
 export class PaymentComponent implements OnInit{
   product: ProductModel | undefined;
 
-  constructor(private route: ActivatedRoute, private productListService:ProductListService, private router:Router) {}
+  constructor(private route: ActivatedRoute,
+              private productListService:ProductListService, private router:Router) {}
 
 
   paidFor = false;
   public payPalConfig ? : IPayPalConfig;
 
-  quantity:number = 2;
+  quantity:number = 1;
 
 
 
@@ -35,6 +36,11 @@ export class PaymentComponent implements OnInit{
   ngOnInit(): void {
     const productId = this.route.snapshot.paramMap.get('id');
     this.product = this.productListService.getProductById(productId);
+
+    this.route.params.subscribe(params => {
+      this.quantity = params['quantity'];
+      console.log('Quantity from route:', this.quantity);
+    });
 
     this.initConfig();
   }

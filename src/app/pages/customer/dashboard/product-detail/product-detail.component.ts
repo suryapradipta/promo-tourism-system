@@ -1,7 +1,10 @@
 import { Component } from '@angular/core';
 import {ProductModel} from "../../../../shared/models";
 import {ActivatedRoute, Router} from "@angular/router";
-import {ProductListService} from "../../../../shared/services";
+import {
+  OrderService,
+  ProductListService
+} from "../../../../shared/services";
 import {FormBuilder, FormGroup, Validators} from "@angular/forms";
 
 @Component({
@@ -16,7 +19,8 @@ export class ProductDetailComponent {
   constructor(private route: ActivatedRoute,
               private productListService:ProductListService,
               private router:Router,
-              private formBuilder: FormBuilder) {}
+              private formBuilder: FormBuilder,
+              private orderService: OrderService) {}
 
   ngOnInit(): void {
     const productId = this.route.snapshot.paramMap.get('id');
@@ -27,20 +31,31 @@ export class ProductDetailComponent {
     });
   }
 
-  onProceedToPayment(product: ProductModel) {
-    this.router.navigate(['/product', product.id, 'purchase']);
+  onProceedToPayment(product: ProductModel, quantity: number) {
+    this.router.navigate(['/product', product.id, 'purchase', { quantity }]);
   }
 
-  onPurchase(): void {
+  incrementQuantity(): void {
+    this.productForm.get('quantity').setValue(this.productForm.get('quantity').value + 1);
+  }
+
+  decrementQuantity(): void {
+    const currentQuantity = this.productForm.get('quantity').value;
+    if (currentQuantity > 1) {
+      this.productForm.get('quantity').setValue(currentQuantity - 1);
+    }
+  }
+
+  onBooking(): void {
     if (this.productForm.valid) {
       const productId = this.product.id;
       const quantity = this.productForm.value.quantity;
 
-      // Call a service to create the order
       this.orderService.createOrder(productId, quantity);
 
-      // Reset the form or perform any other actions
       this.productForm.reset();
+
+      this.onProceedToPayment(this.product, quantity);
     }
   }
 }

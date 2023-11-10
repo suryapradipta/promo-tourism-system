@@ -35,5 +35,7 @@ export class OrderService {
     };
 
     this.saveOrdersData(order);
+
+    console.log("ORDER SERVICE", this.getOrdersData())
   }
 }
