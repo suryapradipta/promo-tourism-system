@@ -1,0 +1,13 @@
+<div *ngIf="!paidFor">
+  <h1>BUY -- </h1>
+
+</div>
+
+<div *ngIf="paidFor">
+
+  <h1>Yay you bough a product </h1>
+</div>
+
+
+
+<ngx-paypal [config]="payPalConfig"></ngx-paypal>

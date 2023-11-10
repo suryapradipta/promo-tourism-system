@@ -1,81 +1,99 @@
-<div class="bg-white">
+<div class="bg-white" id="products">
   <div
-    class="mx-auto max-w-2xl py-16 px-4 sm:py-24 sm:px-6 lg:max-w-7xl lg:px-8">
-    <h2 class="text-xl font-bold text-gray-900">Our products</h2>
+    class="mx-auto max-w-2xl py-16 px-4 sm:py-24 sm:px-6 lg:max-w-7xl lg:px-8"
+  >
+    <h2 class="text-2xl font-bold tracking-tight text-gray-900">
+      Our products
+    </h2>
 
     <div
-      class="mt-8 grid grid-cols-1 gap-y-12 sm:grid-cols-2 sm:gap-x-6 lg:grid-cols-4 xl:gap-x-8">
-      <div *ngFor="let product of products"
-           class="transform duration-500 hover:-translate-y-2 cursor-pointer">
-        <div class="relative ">
-
-          <div class="relative h-72 w-full overflow-hidden rounded-lg ">
-            <img src="{{product.image}}"
-                 alt="Front of zip tote bag with white canvas, black canvas straps and handle, and black zipper pulls."
-                 class="h-full w-full object-cover object-center">
+      class="mt-8 grid grid-cols-1 gap-y-12 sm:grid-cols-2 sm:gap-x-6 lg:grid-cols-4 xl:gap-x-8"
+    >
+      <div
+        *ngFor="let product of products"
+        class="transform duration-500 hover:-translate-y-2 cursor-pointer"
+      >
+        <div class="relative">
+          <div class="relative h-72 w-full overflow-hidden rounded-lg">
+            <img
+              src="assets/images/{{ product.image }}"
+              alt="{{product.name}}"
+              class="h-full w-full object-cover object-center"
+            />
           </div>
 
           <div
-            class="mt-4 flex items-center justify-between space-x-8 text-sm font-medium text-gray-900">
+            class="mt-4 flex items-center justify-between space-x-8 text-sm font-medium text-gray-900"
+          >
             <h3>
               <a href="#">
                 <span aria-hidden="true" class="absolute inset-0"></span>
-                Fusion
+                {{ product.name }}
               </a>
             </h3>
 
             <div class="flex flex-col">
               <div class="flex items-center">
                 <!-- Heroicon name: mini/star -->
-                <svg class="text-yellow-400 flex-shrink-0 h-5 w-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
-                  <path fill-rule="evenodd" d="M10.868 2.884c-.321-.772-1.415-.772-1.736 0l-1.83 4.401-4.753.381c-.833.067-1.171 1.107-.536 1.651l3.62 3.102-1.106 4.637c-.194.813.691 1.456 1.405 1.02L10 15.591l4.069 2.485c.713.436 1.598-.207 1.404-1.02l-1.106-4.637 3.62-3.102c.635-.544.297-1.584-.536-1.65l-4.752-.382-1.831-4.401z" clip-rule="evenodd" />
+                <svg
+                  class="text-yellow-400 flex-shrink-0 h-5 w-5"
+                  xmlns="http://www.w3.org/2000/svg"
+                  viewBox="0 0 20 20"
+                  fill="currentColor"
+                  aria-hidden="true"
+                >
+                  <path
+                    fill-rule="evenodd"
+                    d="M10.868 2.884c-.321-.772-1.415-.772-1.736 0l-1.83 4.401-4.753.381c-.833.067-1.171 1.107-.536 1.651l3.62 3.102-1.106 4.637c-.194.813.691 1.456 1.405 1.02L10 15.591l4.069 2.485c.713.436 1.598-.207 1.404-1.02l-1.106-4.637 3.62-3.102c.635-.544.297-1.584-.536-1.65l-4.752-.382-1.831-4.401z"
+                    clip-rule="evenodd"
+                  />
                 </svg>
-                <p class="mt-1 text-sm text-gray-500">4.6 (21)</p>
-
+                <p class="mt-1 text-sm text-gray-500"> ({{product.ratings }})</p>
               </div>
             </div>
-
-
-
           </div>
-          <p class="mt-1 text-sm text-gray-500">White and black</p>
+          <p class="mt-1 text-sm text-gray-500 truncate max-w-xs">{{ product.description }}</p>
+
+
 
 
 
           <div
-            class="absolute inset-x-0 top-0 flex h-72 items-end justify-between overflow-hidden rounded-lg p-4">
-            <div aria-hidden="true"
-                 class="absolute inset-x-0 bottom-0 h-36 bg-gradient-to-t from-black opacity-75"></div>
-            <p class="relative text-lg font-semibold text-white">$140</p>
+            class="absolute inset-x-0 top-0 flex h-72 items-end justify-between overflow-hidden rounded-lg p-4"
+          >
+            <div
+              aria-hidden="true"
+              class="absolute inset-x-0 bottom-0 h-36 bg-gradient-to-t from-black opacity-75"
+            ></div>
+            <p class="relative text-lg font-semibold text-white">
+              ${{ product.price }}
+            </p>
 
             <svg
               class="w-6 h-6 ml-2 place-items-end relative text-lg font-semibold text-white"
-              xmlns="http://www.w3.org/2000/svg" fill="none"
-              viewBox="0 0 24 24" stroke="currentColor">
-              <path stroke-linecap="round" stroke-linejoin="round"
-                    stroke-width="2"
-                    d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"/>
+              xmlns="http://www.w3.org/2000/svg"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"
+              />
             </svg>
-
           </div>
         </div>
 
         <div class="mt-6">
-          <a href="#"
-             class="relative flex items-center justify-center rounded-md border border-transparent bg-gray-100 py-2 px-8 text-sm font-medium text-gray-900 hover:bg-gray-200">Checkout<span
-            class="sr-only">, Zip Tote Basket</span></a>
-
+          <a
+            (click)="viewProductDetails(product)"
+            class="relative flex items-center justify-center rounded-md border border-transparent bg-gray-100 py-2 px-8 text-sm font-medium text-gray-900 hover:bg-gray-200"
+            >Checkout<span class="sr-only">, {{ product.name }}</span></a
+          >
         </div>
       </div>
-
-
-
-
-
-
-
-
-      <!-- More products... -->
     </div>
   </div>
 </div>

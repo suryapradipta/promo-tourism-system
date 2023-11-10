@@ -17,11 +17,23 @@ import {
 import {
   AdminDashboardComponent
 } from "./pages/ministry/ministry-dashboard/menus/admin-dashboard/admin-dashboard.component";
+import {
+  ProductListComponent
+} from "./pages/customer/dashboard/product-list/product-list.component";
+import {
+  ProductDetailComponent
+} from "./pages/customer/dashboard/product-detail/product-detail.component";
+import {
+  PaymentComponent
+} from "./pages/customer/menus/payment/payment.component";
 
 const routes: Routes = [
   { path: '', component: DashboardComponent },
   { path: 'sign-in', component: SignInComponent },
   { path: 'sign-up', component: SignUpComponent },
+  { path: 'product-list', component: ProductListComponent },
+  {path: 'product/:id', component: ProductDetailComponent},
+  {path: 'product/:id/purchase', component: PaymentComponent},
 
   {
     path: 'ministry-dashboard',

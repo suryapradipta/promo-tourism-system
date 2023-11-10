@@ -19,6 +19,10 @@ import { ManageAccountComponent } from './pages/ministry/ministry-dashboard/menu
 import { DetailAccountComponent } from './pages/ministry/ministry-dashboard/menus/manage-account/detail-account/detail-account.component';
 import { ProductListComponent } from './pages/customer/dashboard/product-list/product-list.component';
 import { AdminDashboardComponent } from './pages/ministry/ministry-dashboard/menus/admin-dashboard/admin-dashboard.component';
+import { ProductDetailComponent } from './pages/customer/dashboard/product-detail/product-detail.component';
+import { ReviewsComponent } from './pages/customer/dashboard/product-detail/reviews/reviews.component';
+import { PaymentComponent } from './pages/customer/menus/payment/payment.component';
+import {NgxPayPalModule} from "ngx-paypal";
 
 @NgModule({
   declarations: [
@@ -38,12 +42,16 @@ import { AdminDashboardComponent } from './pages/ministry/ministry-dashboard/men
     DetailAccountComponent,
     ProductListComponent,
     AdminDashboardComponent,
+    ProductDetailComponent,
+    ReviewsComponent,
+    PaymentComponent,
   ],
   imports: [
     BrowserModule,
     AppRoutingModule,
     FormsModule,
     ReactiveFormsModule,
+    NgxPayPalModule,
   ],
   providers: [],
   bootstrap: [AppComponent]
