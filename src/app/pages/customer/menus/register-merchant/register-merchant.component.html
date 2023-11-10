@@ -1,43 +1,50 @@
-<app-header/>
+<app-header />
 
-<div class="bg-gray-100 ">
+<div class="bg-gray-100">
   <div class="mx-auto max-w-7xl py-6 sm:px-6 lg:px-8">
     <div class="md:grid md:grid-cols-3 md:gap-6">
       <div class="md:col-span-1">
         <div class="px-4 sm:px-0">
           <h3 class="text-lg font-medium leading-6 text-gray-900">
-            Company Information</h3>
-          <p class="mt-1 text-sm text-gray-600">Use a company e-mail
-            where you can receive e-mail for a password.</p>
+            Company Information
+          </h3>
+          <p class="mt-1 text-sm text-gray-600">
+            Use a company e-mail where you can receive e-mail for a password.
+          </p>
         </div>
       </div>
       <div class="mt-5 md:col-span-2 md:mt-0">
-
-        <form (submit)="onRegisterMerchant(merchantForm)"
-              #merchantForm="ngForm">
+        <form
+          (submit)="onRegisterMerchant(merchantForm)"
+          #merchantForm="ngForm"
+        >
           <div class="overflow-hidden shadow sm:rounded-md">
             <div class="bg-white px-4 py-5 sm:p-6">
               <div class="grid grid-cols-6 gap-6">
-
-                <!--                  Full Name-->
+                <!--Company Name-->
                 <div class="col-span-6 sm:col-span-3">
-                  <label for="name"
-                         class="block text-sm font-medium text-gray-700">
-                    Full Name</label>
-                  <input autocomplete="name"
-                         class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
-                         id="name"
-                         name="name"
-                         type="text"
-                         ngModel
-                         required
-                         #name="ngModel"
-                         minlength="4"
+                  <label
+                    for="name"
+                    class="block text-sm font-medium text-gray-700"
                   >
+                    Company Name</label
+                  >
+                  <input
+                    autocomplete="name"
+                    class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+                    id="name"
+                    name="name"
+                    type="text"
+                    ngModel
+                    required
+                    #name="ngModel"
+                    minlength="4"
+                  />
 
-                  <div *ngIf="name.invalid && (name.dirty || name.touched)"
-                       class="mt-2 text-sm text-red-600">
-
+                  <div
+                    *ngIf="name.invalid && (name.dirty || name.touched)"
+                    class="mt-2 text-sm text-red-600"
+                  >
                     <div *ngIf="name.errors?.['required']">
                       Name is required.
                     </div>
@@ -45,66 +52,61 @@
                       Name must be at least 4 characters long.
                     </div>
                   </div>
-
                 </div>
-
 
                 <!-- Phone Number-->
                 <div class="col-span-6 sm:col-span-3">
-                  <label for="phone_number"
-                         class="block text-sm font-medium text-gray-700">Phone
-                    Number</label>
+                  <label
+                    for="phone_number"
+                    class="block text-sm font-medium text-gray-700"
+                    >Phone Number</label
+                  >
                   <div class="relative mt-1 rounded-md shadow-sm">
-                    <div
-                      class="absolute inset-y-0 left-0 flex items-center">
-                      <label for="country" class="sr-only">Country</label>
-                      <select autocomplete="country"
-                              class="h-full rounded-md border-transparent bg-transparent py-0 pl-3 pr-7 text-gray-500 focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
-                              id="country"
-                              name="country">
-                        <option>ID</option>
-                        <option>MY</option>
-                      </select>
-                    </div>
                     <input
-                      class="block w-full rounded-md border-gray-300 pl-16 focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+                      class="block w-full rounded-md border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
                       id="phone_number"
                       name="phone_number"
-                      placeholder=" +1 (555) 987-6543"
                       type="text"
                       ngModel
                       required
                       #phone_number="ngModel"
-                    >
-
+                    />
                   </div>
-                  <div *ngIf="phone_number.invalid && (phone_number.dirty || phone_number.touched)"
-                       class="mt-2 text-sm text-red-600">
+                  <div
+                    *ngIf="
+                      phone_number.invalid &&
+                      (phone_number.dirty || phone_number.touched)
+                    "
+                    class="mt-2 text-sm text-red-600"
+                  >
                     <div *ngIf="phone_number.errors?.['required']">
                       Phone number is required.
                     </div>
                   </div>
-
-
                 </div>
 
                 <!-- Email-->
                 <div class="col-span-6 sm:col-span-3">
-                  <label for="email"
-                         class="block text-sm font-medium text-gray-700">Email
-                    address</label>
-                  <input autocomplete="email"
-                         class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
-                         id="email" name="email"
-                         type="text"
-                         ngModel
-                         required
-                         #email="ngModel"
-                         [email]="true"
+                  <label
+                    for="email"
+                    class="block text-sm font-medium text-gray-700"
+                    >Email address</label
                   >
+                  <input
+                    autocomplete="email"
+                    class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+                    id="email"
+                    name="email"
+                    type="text"
+                    ngModel
+                    required
+                    #email="ngModel"
+                    [email]="true"
+                  />
                   <div
                     *ngIf="email.invalid && (email.dirty || email.touched)"
-                    class="mt-2 text-sm text-red-600">
+                    class="mt-2 text-sm text-red-600"
+                  >
                     <div *ngIf="email.errors?.['required']">
                       Email is required.
                     </div>
@@ -116,9 +118,11 @@
 
                 <!--                Company Description-->
                 <div class="col-span-6">
-                  <label for="company_description"
-                         class="block text-sm font-medium text-gray-700">Company
-                    Description</label>
+                  <label
+                    for="company_description"
+                    class="block text-sm font-medium text-gray-700"
+                    >Company Description</label
+                  >
                   <div class="mt-1">
                     <textarea
                       class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
@@ -131,48 +135,63 @@
                       #company_description="ngModel"
                     ></textarea>
                   </div>
-                  <p class="mt-2 text-sm text-gray-500">Brief description
-                    for your company. URLs are hyperlinked.</p>
+                  <p class="mt-2 text-sm text-gray-500">
+                    Brief description for your company. URLs are hyperlinked.
+                  </p>
                   <div
-                    *ngIf="company_description.invalid && (company_description.dirty || company_description.touched)"
-                    class="mt-2 text-sm text-red-600">
+                    *ngIf="
+                      company_description.invalid &&
+                      (company_description.dirty || company_description.touched)
+                    "
+                    class="mt-2 text-sm text-red-600"
+                  >
                     Please enter a valid description.
                   </div>
                 </div>
-
-
               </div>
             </div>
             <div class="bg-gray-50 px-4 py-3 text-right sm:px-6">
-              <button type="submit"
-                      class="inline-flex justify-center rounded-md border border-transparent bg-indigo-600 py-2 px-4 text-sm font-medium text-white shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2">
+              <button
+                type="submit"
+                class="inline-flex justify-center rounded-md border border-transparent bg-indigo-600 py-2 px-4 text-sm font-medium text-white shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
+              >
                 Save
               </button>
             </div>
           </div>
         </form>
 
-
-        <div *ngIf="merchantForm.form.invalid && !submitted" class="mx-auto max-w-4xl py-6">
+        <div
+          *ngIf="merchantForm.form.invalid && !submitted"
+          class="mx-auto max-w-4xl py-6"
+        >
           <div class="border-l-4 border-yellow-400 bg-yellow-50 p-4">
             <div class="flex">
               <div class="flex-shrink-0">
-                <svg class="h-5 w-5 text-yellow-400" x-description="Heroicon name: mini/exclamation-triangle" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
-                  <path fill-rule="evenodd" d="M8.485 2.495c.673-1.167 2.357-1.167 3.03 0l6.28 10.875c.673 1.167-.17 2.625-1.516 2.625H3.72c-1.347 0-2.189-1.458-1.515-2.625L8.485 2.495zM10 5a.75.75 0 01.75.75v3.5a.75.75 0 01-1.5 0v-3.5A.75.75 0 0110 5zm0 9a1 1 0 100-2 1 1 0 000 2z" clip-rule="evenodd"></path>
+                <svg
+                  class="h-5 w-5 text-yellow-400"
+                  x-description="Heroicon name: mini/exclamation-triangle"
+                  xmlns="http://www.w3.org/2000/svg"
+                  viewBox="0 0 20 20"
+                  fill="currentColor"
+                  aria-hidden="true"
+                >
+                  <path
+                    fill-rule="evenodd"
+                    d="M8.485 2.495c.673-1.167 2.357-1.167 3.03 0l6.28 10.875c.673 1.167-.17 2.625-1.516 2.625H3.72c-1.347 0-2.189-1.458-1.515-2.625L8.485 2.495zM10 5a.75.75 0 01.75.75v3.5a.75.75 0 01-1.5 0v-3.5A.75.75 0 0110 5zm0 9a1 1 0 100-2 1 1 0 000 2z"
+                    clip-rule="evenodd"
+                  ></path>
                 </svg>
               </div>
               <div class="ml-3">
                 <p class="text-sm text-yellow-700">
-                  Please complete the company information form before proceeding.
+                  Please complete the company information form before
+                  proceeding.
                 </p>
               </div>
             </div>
           </div>
-
         </div>
-
-
-
       </div>
     </div>
 
@@ -182,86 +201,93 @@
       </div>
     </div>
 
-
     <div class="mt-10 sm:mt-0">
       <div class="md:grid md:grid-cols-3 md:gap-6">
         <div class="md:col-span-1">
           <div class="px-4 sm:px-0">
             <h3 class="text-lg font-medium leading-6 text-gray-900">
-              Document Upload</h3>
-            <p class="mt-1 text-sm text-gray-600">Securely upload essential
-              documents, such as approved licenses and testimonials, to our
-              system.</p>
-            <br>
-            <p class="mt-1 text-sm text-gray-600">Your submissions are
-              confidential and will be used for verification purposes only.
-              Thank you for your cooperation.</p>
+              Document Upload
+            </h3>
+            <p class="mt-1 text-sm text-gray-600">
+              Securely upload essential documents, such as approved licenses and
+              testimonials, to our system.
+            </p>
+            <br />
+            <p class="mt-1 text-sm text-gray-600">
+              Your submissions are confidential and will be used for
+              verification purposes only. Thank you for your cooperation.
+            </p>
           </div>
         </div>
         <div class="mt-5 md:col-span-2 md:mt-0">
-
-          <form
-            (submit)="onUploadFile(fileForm)"
-            #fileForm="ngForm"
-          >
-
+          <form (submit)="onUploadFile(fileForm)" #fileForm="ngForm">
             <div class="shadow sm:overflow-hidden sm:rounded-md">
               <div class="space-y-6 bg-white px-4 py-5 sm:p-6">
-
-
                 <div>
                   <label
                     class="block text-sm font-medium text-gray-700"
-                    for="file">Representative documents</label>
+                    for="file"
+                    >Representative documents</label
+                  >
                   <input
-                    class="mt-1 block w-full rounded-md border border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm  disabled:cursor-not-allowed disabled:border-gray-200 disabled:bg-gray-50 disabled:text-gray-500"
+                    class="mt-1 block w-full rounded-md border border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm disabled:cursor-not-allowed disabled:border-gray-200 disabled:bg-gray-50 disabled:text-gray-500"
                     id="file"
                     multiple
                     type="file"
-                    (change)="getFile($event)"
-
+                    (change)="onGetFile($event)"
                     name="file"
                     ngModel
                     required
                     #file="ngModel"
                     [disabled]="!merchantForm.form.valid"
+                  />
+                  <div
+                    *ngIf="file.invalid && (file.dirty || file.touched)"
+                    class="mt-2 text-sm text-red-600"
                   >
-                  <div *ngIf="file.invalid && (file.dirty || file.touched)"
-                       class="mt-2 text-sm text-red-600">
                     Please enter a valid file.
                   </div>
                 </div>
-
 
                 <div>
-                  <label for="file_description"
-                         class="block text-sm font-medium text-gray-700">Description</label>
+                  <label
+                    for="file_description"
+                    class="block text-sm font-medium text-gray-700"
+                    >Description</label
+                  >
                   <div class="mt-1">
-                    <textarea id="file_description" rows="3"
-                              class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm  disabled:cursor-not-allowed disabled:border-gray-200 disabled:bg-gray-50 disabled:text-gray-500"
-                              placeholder=""
-                              name="file_description"
-                              ngModel
-                              required
-                              #file_description="ngModel"
-                              [disabled]="!merchantForm.form.valid"
+                    <textarea
+                      id="file_description"
+                      rows="3"
+                      class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm disabled:cursor-not-allowed disabled:border-gray-200 disabled:bg-gray-50 disabled:text-gray-500"
+                      placeholder=""
+                      name="file_description"
+                      ngModel
+                      required
+                      #file_description="ngModel"
+                      [disabled]="!merchantForm.form.valid"
                     ></textarea>
                   </div>
-                  <p class="mt-2 text-sm text-gray-500">Brief description
-                    for your representative upload documents.</p>
+                  <p class="mt-2 text-sm text-gray-500">
+                    Brief description for your representative upload documents.
+                  </p>
                   <div
-                    *ngIf="file_description.invalid && (file_description.dirty || file_description.touched)"
-                    class="mt-2 text-sm text-red-600">
+                    *ngIf="
+                      file_description.invalid &&
+                      (file_description.dirty || file_description.touched)
+                    "
+                    class="mt-2 text-sm text-red-600"
+                  >
                     Please enter a valid file.
                   </div>
                 </div>
-
-
               </div>
               <div class="bg-gray-50 px-4 py-3 text-right sm:px-6">
-                <button type="submit"
-                        class="inline-flex justify-center rounded-md border border-transparent bg-indigo-600 py-2 px-4 text-sm font-medium text-white shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 disabled:cursor-not-allowed disabled:border-gray-200 disabled:bg-gray-50 disabled:text-gray-500"
-                        [disabled]="!merchantForm.form.valid">
+                <button
+                  type="submit"
+                  class="inline-flex justify-center rounded-md border border-transparent bg-indigo-600 py-2 px-4 text-sm font-medium text-white shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 disabled:cursor-not-allowed disabled:border-gray-200 disabled:bg-gray-50 disabled:text-gray-500"
+                  [disabled]="!merchantForm.form.valid"
+                >
                   Save
                 </button>
               </div>
@@ -276,7 +302,5 @@
         <div class="border-t border-gray-200"></div>
       </div>
     </div>
-
-
   </div>
 </div>
