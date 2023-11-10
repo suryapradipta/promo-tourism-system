@@ -1,5 +1,5 @@
 import {Injectable} from '@angular/core';
-import {AuthModel} from "../models/auth.model";
+import {AuthModel} from "../models";
 import {v4 as uuidv4} from 'uuid';
 
 @Injectable({
@@ -22,7 +22,6 @@ export class SignUpService {
   private saveUsersData(newUser: AuthModel) {
     this.users.push(newUser);
     localStorage.setItem('users', JSON.stringify(this.users));
-
   }
 
   getUsersData() {

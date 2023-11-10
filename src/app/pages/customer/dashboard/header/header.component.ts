@@ -10,7 +10,7 @@ import Swal from "sweetalert2";
 })
 export class HeaderComponent {
   pages = [
-    { name: 'Products', href: '#' },
+    { name: 'Products', href: '/product-list#products' },
     { name: 'Company', href: '#' },
     { name: 'Services', href: '#' },
   ]
@@ -41,6 +41,15 @@ export class HeaderComponent {
         this.router.navigate(['/']);
       }
     })
+  }
 
+  scrollToSection(sectionId: string) {
+    const element = document.getElementById(sectionId);
+    if (element) {
+      element.scrollIntoView({ behavior: 'smooth' });
+    }
+    else {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
   }
 }

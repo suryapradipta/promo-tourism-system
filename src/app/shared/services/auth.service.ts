@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { AuthModel } from '../models/auth.model';
+import { AuthModel } from '../models';
 import {SignUpService} from "./sign-up.service";
 
 @Injectable({

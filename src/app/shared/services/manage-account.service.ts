@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import {MerchantModel} from "../models/merchant.model";
+import {MerchantModel} from "../models";
 import {SignUpService} from "./sign-up.service";
 import emailjs from '@emailjs/browser';
 import {NotificationService} from "./notification.service";
