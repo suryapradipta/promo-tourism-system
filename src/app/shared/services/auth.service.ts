@@ -47,4 +47,9 @@ export class AuthService {
     const user = localStorage.getItem('currentUser');
     return user ? JSON.parse(user) : null;
   }
+
+  isLoggedIn(): boolean {
+    const token = localStorage.getItem('currentUser');
+    return !!token;
+  }
 }

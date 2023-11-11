@@ -26,6 +26,9 @@ import {
 import {
   PaymentComponent
 } from "./pages/customer/menus/payment/payment.component";
+import {
+  ReceiptComponent
+} from "./pages/customer/dashboard/receipt/receipt.component";
 
 const routes: Routes = [
   { path: '', component: DashboardComponent },
@@ -34,6 +37,8 @@ const routes: Routes = [
   { path: 'product-list', component: ProductListComponent },
   {path: 'product/:id', component: ProductDetailComponent},
   {path: 'product/:id/purchase', component: PaymentComponent},
+  { path: 'receipt', component: ReceiptComponent },
+
 
   {
     path: 'ministry-dashboard',

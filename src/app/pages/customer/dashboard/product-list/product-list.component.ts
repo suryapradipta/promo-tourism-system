@@ -1,7 +1,11 @@
 import {Component, OnInit} from '@angular/core';
 import {ProductModel} from "../../../../shared/models";
-import {ProductListService} from "../../../../shared/services";
+import {
+  AuthService,
+  ProductListService
+} from "../../../../shared/services";
 import {Router} from "@angular/router";
+import Swal from "sweetalert2";
 
 @Component({
   selector: 'app-product-list',
@@ -12,7 +16,7 @@ export class ProductListComponent implements OnInit{
 
   products: ProductModel[] = [];
 
-  constructor(private productListService: ProductListService, private router: Router) {
+  constructor(private productListService: ProductListService, private router: Router, private authService:AuthService) {
   }
 
   ngOnInit(): void {
@@ -20,11 +24,24 @@ export class ProductListComponent implements OnInit{
   }
 
   viewProductDetails(product: ProductModel) {
-    // Navigate to the product detail page and pass the product ID as a route parameter
-    this.router.navigate(['/product', product.id]);
+    if(this.authService.isLoggedIn()) {
+      this.router.navigate(['/product', product.id]);
 
-    //[[BUG]] navigate() persists the scroll position of the previous page
-    //solution: https://github.com/reach/router/issues/166
-    window.scrollTo({ top: 0});
+      // [[PROBLEM]] after navigate the scroll position stick on previous page
+      // [[BUG]] navigate() persists the scroll position of the previous page
+      //solution: https://github.com/reach/router/issues/166
+      window.scrollTo({ top: 0});
+    }
+    else {
+      Swal.fire({
+        title: "Welcome! To make a purchase, please",
+        showCancelButton: true,
+        confirmButtonText: "Log In",
+      }).then((result) => {
+        if (result.isConfirmed) {
+          this.router.navigate(['/sign-in']);
+        }
+      });
+    }
   }
 }

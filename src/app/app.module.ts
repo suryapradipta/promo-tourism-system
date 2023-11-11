@@ -23,6 +23,7 @@ import { ProductDetailComponent } from './pages/customer/dashboard/product-detai
 import { ReviewsComponent } from './pages/customer/dashboard/product-detail/reviews/reviews.component';
 import { PaymentComponent } from './pages/customer/menus/payment/payment.component';
 import {NgxPayPalModule} from "ngx-paypal";
+import { ReceiptComponent } from './pages/customer/dashboard/receipt/receipt.component';
 
 @NgModule({
   declarations: [
@@ -45,6 +46,7 @@ import {NgxPayPalModule} from "ngx-paypal";
     ProductDetailComponent,
     ReviewsComponent,
     PaymentComponent,
+    ReceiptComponent,
   ],
   imports: [
     BrowserModule,

@@ -125,11 +125,19 @@
         </div>
       </div>
 
+      <div class="mt-4 border-b border-gray-200 pb-10">
+        <h3 class="text-sm font-medium text-gray-900">Description</h3>
+        <div class="prose prose-sm mt-4 text-gray-500">
+          <p>{{ product.description }}</p>
+        </div>
+      </div>
+
+
       <div class="mt-8 lg:col-span-5">
-        <form [formGroup]="productForm" (ngSubmit)="onBooking()">
+        <form [formGroup]="productForm">
 
           <div class="flex justify-between">
-            <h1 class="text-sm font-medium text-gray-900">Quantity</h1>
+            <label for="quantity" class="block text-sm font-medium text-gray-700">Quantity</label>
             <div
               class="flex items-center space-x-3"
             >
@@ -159,7 +167,8 @@
               <input
                 type="number"
                 id="quantity"
-                class="justify-center inline-flex items-center bg-gray-50 w-14 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block px-2.5 py-1 "
+                class="
+                text-center [-moz-appearance:_textfield] sm:text-sm [&::-webkit-outer-spin-button]:m-0 [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:m-0 [&::-webkit-inner-spin-button]:appearance-none inline-flex  w-14 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-indigo-500 focus:border-indigo-500 block px-2.5 py-1 "
                 placeholder="1"
                 required
                 formControlName="quantity"
@@ -191,24 +200,67 @@
 
           </div>
 
+          <div class="mt-6">
+            <label for="email" class="block text-sm font-medium text-gray-700">Email address</label>
+            <div class="mt-1">
+              <input
+                formControlName="email"
+                type="email" id="email" name="email" autocomplete="email"
+                     class="block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm">
+            </div>
+          </div>
+          <div *ngIf="formControl.email.errors && (formControl.email.dirty || formControl.email.touched)"
+               class="mt-2 text-sm text-red-600 alert" id="email-error">
+            <div *ngIf="formControl.email.hasError('email')">
+              Please enter a valid email address.
+            </div>
+            <div *ngIf="formControl.email.hasError('required')">
+              Email is required.
+            </div>
+          </div>
 
-          <button
 
-            type="submit"
-            class="mt-8 flex w-full items-center justify-center rounded-md border border-transparent bg-indigo-600 py-3 px-8 text-base font-medium text-white hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
-          >
-            Book now
-          </button>
+          <div class="mt-6">
+            <label for="phoneNumber" class="block text-sm font-medium text-gray-700">Phone number</label>
+            <div class="mt-1">
+              <input
+                formControlName="phoneNumber"
+                type="text" name="phoneNumber" id="phoneNumber" autocomplete="tel" class="block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm">
+            </div>
+          </div>
+
+          <div *ngIf="formControl.phoneNumber.errors && (formControl.phoneNumber.dirty || formControl.phoneNumber.touched)"
+               class="mt-2 text-sm text-red-600 alert" id="phoneNumber-error">
+            <div *ngIf="formControl.phoneNumber.hasError('required')">
+              Contact number is required.
+            </div>
+
+            <div *ngIf="formControl.phoneNumber.hasError('pattern') ">
+              Please enter a valid 12-digit contact number.
+            </div>
+          </div>
+
+
+
+          <dl class="mt-10 space-y-6 text-sm font-medium text-gray-500 border-t border-gray-200 py-6 ">
+            <div class="flex justify-between">
+              <dt>Subtotal</dt>
+              <dd class="text-gray-900">${{ subtotal }}</dd>
+            </div>
+            <div class="flex justify-between">
+              <dt>Taxes</dt>
+              <dd class="text-gray-900">${{taxTotal}}</dd>
+            </div>
+            <div class="flex justify-between border-t border-gray-200 pt-6 text-gray-900">
+              <dt class="text-base">Total</dt>
+              <dd class="text-base">${{itemTotal}}</dd>
+            </div>
+          </dl>
+
+
+          <ngx-paypal
+            [config]="payPalConfig"></ngx-paypal>
         </form>
-
-
-      </div>
-
-      <div class="mt-10 border-t border-gray-200 pt-10">
-        <h3 class="text-sm font-medium text-gray-900">Description</h3>
-        <div class="prose prose-sm mt-4 text-gray-500">
-          <p>{{ product.description }}</p>
-        </div>
       </div>
 
       <div class="mt-10 border-t border-gray-200 pt-10">

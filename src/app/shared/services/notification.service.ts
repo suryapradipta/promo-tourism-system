@@ -17,6 +17,14 @@ export class NotificationService {
     });
   }
 
+  showWarningMessage(message: string): void {
+    Swal.fire({
+      icon: 'warning',
+      title: 'Oops...',
+      text: message,
+    });
+  }
+
   showSuccessMessage(title:string): void {
     Swal.fire({
       position: 'top-end',
