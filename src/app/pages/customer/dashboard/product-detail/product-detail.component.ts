@@ -19,8 +19,6 @@ export class ProductDetailComponent {
   product: ProductModel | undefined;
   productForm: FormGroup;
 
-  public payPalConfig?: IPayPalConfig;
-
   constructor(
     private route: ActivatedRoute,
     private productListService: ProductListService,
@@ -48,10 +46,6 @@ export class ProductDetailComponent {
     return this.productForm.controls;
   }
 
-  onProceedToPayment(product: ProductModel, quantity: number) {
-    this.router.navigate(['/product', product.id, 'purchase', { quantity }]);
-  }
-
   incrementQuantity(): void {
     this.productForm
       .get('quantity')
@@ -65,12 +59,8 @@ export class ProductDetailComponent {
     }
   }
 
-  get quantity(): number {
-    return this.productForm.value.quantity;
-  }
-
   get subtotal(): number {
-    return this.quantity * this.product.price;
+    return this.productForm.value.quantity * this.product.price;
   }
 
   get taxTotal(): number {
@@ -83,17 +73,18 @@ export class ProductDetailComponent {
 
   onBooking(): void {
     if (this.productForm.valid) {
-      const productId = this.product.id;
-      const quantity = this.productForm.value.quantity;
-      const email = this.productForm.value.email;
-      const phoneNumber = this.productForm.value.phoneNumber;
-
-      this.orderService.createOrder(productId, quantity, email, phoneNumber);
-
+      this.orderService.createOrder(
+        this.product.id,
+        this.productForm.value.quantity,
+        this.productForm.value.email,
+        this.productForm.value.phoneNumber
+      );
       this.productForm.reset();
     }
   }
 
+  // Payment Feature
+  public payPalConfig?: IPayPalConfig;
   private initConfig(): void {
     this.payPalConfig = {
       currency: 'USD',
@@ -179,10 +170,29 @@ export class ProductDetailComponent {
 
         const productID = this.product.id;
         const paymentID = data.id;
-
-        this.router.navigate(['/receipt'], {
-          queryParams: { productID, paymentID, orderID},
-        });
+        const { name, address } = data.purchase_units[0].shipping;
+        const { full_name: shippingName } = name;
+        const {
+          address_line_1: addressLine,
+          admin_area_2,
+          admin_area_1,
+          postal_code,
+        } = address;
+        this.router.navigate(
+          [
+            '/receipt',
+            {
+              shippingName,
+              addressLine,
+              admin_area_2,
+              admin_area_1,
+              postal_code,
+            },
+          ],
+          {
+            queryParams: { productID, paymentID, orderID },
+          }
+        );
       },
       onCancel: (data, actions) => {
         console.log('OnCancel', data, actions);

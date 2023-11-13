@@ -6,4 +6,5 @@ export {SignUpService} from "./sign-up.service";
 export {ProductListService} from "./product-list.service";
 export {OrderService} from "./order.service";
 export {PaymentService} from "./payment.service";
+export {GenerateReceiptService} from "./generate-receipt.service";
 

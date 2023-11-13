@@ -33,11 +33,23 @@ export class OrderService {
 
   private orderCounter: number = 0;
 
+  // generateOrderNumber(): string {
+  //   const year = new Date().getFullYear();
+  //   const paddedCounter = (++this.orderCounter).toString().padStart(5, '0');
+  //   return `PRS${year}${paddedCounter}`;
+  // }
+
+  private static padWithZeros(number: number, length: number): string {
+    return number.toString().padStart(length, '0');
+  }
   generateOrderNumber(): string {
     const year = new Date().getFullYear();
-    const paddedCounter = (++this.orderCounter).toString().padStart(5, '0');
-    return `PRS${year}${paddedCounter}`;
+    return `PRS${year}${
+      OrderService.padWithZeros(++this.orderCounter, 5)
+    }`;
   }
+
+
 
 
   createOrder(productId: string, quantity: number, email: string, phoneNumber: number): void {
