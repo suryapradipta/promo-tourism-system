@@ -1,3 +1,11 @@
+/**
+ * A route guard that determines whether a route can be activated based on the user's role.
+ * If the user has the 'ministry' or 'merchant' role, the route is allowed; otherwise,
+ * the user is redirected to the home page.
+ *
+ * @author I Nyoman Surya Pradipta (E1900344)
+ */
+
 import { Injectable } from '@angular/core';
 import {
   CanActivate,
