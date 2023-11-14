@@ -10,7 +10,7 @@ import { SignInComponent } from './pages/customer/menus/auth/sign-in/sign-in.com
 import { DashboardComponent } from './pages/customer/dashboard/dashboard.component';
 import { CarouselComponent } from './pages/customer/dashboard/carousel/carousel.component';
 import { SignUpComponent } from './pages/customer/menus/auth/sign-up/sign-up.component';
-import {FormsModule, ReactiveFormsModule} from "@angular/forms";
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MinistryDashboardComponent } from './pages/ministry/ministry-dashboard/ministry-dashboard.component';
 import { RegisterMerchantComponent } from './pages/customer/menus/register-merchant/register-merchant.component';
 import { MobileSidebarComponent } from './pages/ministry/ministry-dashboard/mobile-sidebar/mobile-sidebar.component';
@@ -22,7 +22,7 @@ import { AdminDashboardComponent } from './pages/ministry/ministry-dashboard/men
 import { ProductDetailComponent } from './pages/customer/dashboard/product-detail/product-detail.component';
 import { ReviewsComponent } from './pages/customer/dashboard/product-detail/reviews/reviews.component';
 import { PaymentComponent } from './pages/customer/menus/payment/payment.component';
-import {NgxPayPalModule} from "ngx-paypal";
+import { NgxPayPalModule } from 'ngx-paypal';
 import { ReceiptComponent } from './pages/customer/dashboard/receipt/receipt.component';
 
 @NgModule({
@@ -56,6 +56,6 @@ import { ReceiptComponent } from './pages/customer/dashboard/receipt/receipt.com
     NgxPayPalModule,
   ],
   providers: [],
-  bootstrap: [AppComponent]
+  bootstrap: [AppComponent],
 })
-export class AppModule { }
+export class AppModule {}
