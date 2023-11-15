@@ -1,3 +1,11 @@
+/**
+ * This component is responsible for displaying and exporting order receipts.
+ * It retrieves product, payment, and order information based on query parameters,
+ * and additional address details from route parameters. It uses the GenerateReceiptService
+ * to export the receipt as a PDF and notifies the user upon successful save.
+ *
+ * @author I Nyoman Surya Pradipta (E1900344)
+ */
 import { Component, OnInit } from '@angular/core';
 import {
   OrderModel,
@@ -6,7 +14,8 @@ import {
 } from '../../../../shared/models';
 import { ActivatedRoute, Router } from '@angular/router';
 import {
-  GenerateReceiptService, NotificationService,
+  GenerateReceiptService,
+  NotificationService,
   OrderService,
   PaymentService,
   ProductListService,
@@ -18,9 +27,12 @@ import {
   styleUrls: ['./receipt.component.css'],
 })
 export class ReceiptComponent implements OnInit {
+  // Data models for product, payment, and order
   product: ProductModel;
   payment: PaymentModel;
   order: OrderModel;
+
+  // Address details
   orderDate: string;
   shippingName: string;
   addressLine: string;
@@ -28,6 +40,18 @@ export class ReceiptComponent implements OnInit {
   admin_area_1: string;
   postal_code: string;
 
+  /**
+   * Constructor function for ReceiptComponent.
+   *
+   * @constructor
+   * @param {ActivatedRoute} route - The Angular service for interacting with route parameters.
+   * @param {ProductListService} productListService - The service for managing product information.
+   * @param {PaymentService} paymentService - The service for managing payment information.
+   * @param {OrderService} orderService - The service for managing order information.
+   * @param {GenerateReceiptService} receiptService - The service for generating and exporting receipts.
+   * @param {Router} router - The Angular service for navigation.
+   * @param {NotificationService} notificationService - The service for displaying notifications.
+   */
   constructor(
     private route: ActivatedRoute,
     private productListService: ProductListService,
@@ -35,9 +59,13 @@ export class ReceiptComponent implements OnInit {
     private orderService: OrderService,
     private receiptService: GenerateReceiptService,
     private router: Router,
-    private notificationService:NotificationService
+    private notificationService: NotificationService
   ) {}
 
+  /**
+   * Retrieves product, payment, and order details based on query parameters and
+   * additional address details from route parameters. Formats the order date for display.
+   */
   ngOnInit(): void {
     this.route.queryParams.subscribe((params) => {
       const productID = params['productID'];
@@ -56,6 +84,7 @@ export class ReceiptComponent implements OnInit {
         this.postal_code = params['postal_code'];
       });
 
+      // Format the order date for display
       this.orderDate = new Date(this.payment.update_time).toLocaleDateString(
         'en-US',
         {
@@ -67,40 +96,15 @@ export class ReceiptComponent implements OnInit {
     });
   }
 
+  /**
+   * Exports the receipt as a PDF using the GenerateReceiptService,
+   * navigates back to the home page, and displays a success notification.
+   */
   exportToPdf(): void {
     this.receiptService.exportToPdf('receipt_container', 'receipt');
     this.router.navigate(['/']);
-    this.notificationService.showSuccessMessage('Official Receipt Successfully Saved')
-
+    this.notificationService.showSuccessMessage(
+      'Official Receipt Successfully Saved'
+    );
   }
-
-  /*handleExport(){
-
-
-    const invoiceContentElement=document.getElementById('receipt_container') as HTMLElement;
-
-    // Convert HTMLCollection to an array
-    const elementsToHide = Array.from(invoiceContentElement.getElementsByClassName('hide-in-pdf'));
-
-    // Hide elements with class 'hide-in-pdf' before capturing the HTML content
-    elementsToHide.forEach(element => {
-      (element as HTMLElement).style.display = 'none';
-    });
-
-    html2canvas(invoiceContentElement,{}).then(canvas=>{
-      // convert the canvas into base64 string url
-      const imgData=canvas.toDataURL('image/png');
-
-      const pageWidth = 210;
-      const pageHeight = 297;
-      // calculate the image actual height to fit width canvas and pdf
-      const height = canvas.height*pageWidth/canvas.width;
-      // init pdf
-      const doc = new jsPDF("p","mm", "a4");
-
-      // add image into pdf
-      doc.addImage(imgData, 'PNG', 0, 0, pageWidth, height);
-      doc.save('receipt.pdf');
-    })
-  }*/
 }

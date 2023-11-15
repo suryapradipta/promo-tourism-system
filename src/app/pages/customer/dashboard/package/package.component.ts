@@ -1,11 +1,14 @@
-import {Component} from '@angular/core';
+import { Component } from '@angular/core';
 
 @Component({
   selector: 'app-package',
   templateUrl: './package.component.html',
-  styleUrls: ['./package.component.css']
+  styleUrls: ['./package.component.css'],
 })
 export class PackageComponent {
+  /**
+   * Array of travel packages with details such as name, hyperlink, and image source.
+   */
   packages = [
     {
       name: 'Diving',
@@ -21,7 +24,6 @@ export class PackageComponent {
       name: 'Honeymoon',
       href: '#',
       imageSrc: 'assets/images/honeymoon.jpg',
-
     },
     {
       name: 'Homestay',
@@ -33,5 +35,5 @@ export class PackageComponent {
       href: '#',
       imageSrc: 'assets/images/shopping.jpg',
     },
-  ]
+  ];
 }

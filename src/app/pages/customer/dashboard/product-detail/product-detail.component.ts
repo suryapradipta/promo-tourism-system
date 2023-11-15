@@ -1,3 +1,10 @@
+/**
+ * This component manages the display and interaction of a detailed product view, including
+ * quantity selection, order creation, and integration with PayPal for payment processing.
+ *
+ * @author I Nyoman Surya Pradipta (E1900344)
+ */
+
 import { Component } from '@angular/core';
 import { PaymentModel, ProductModel } from '../../../../shared/models';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -18,7 +25,21 @@ import { ICreateOrderRequest, IPayPalConfig } from 'ngx-paypal';
 export class ProductDetailComponent {
   product: ProductModel | undefined;
   productForm: FormGroup;
+  // PayPal configuration for payment processing
+  public payPalConfig?: IPayPalConfig;
 
+  /**
+   * Constructor function for ProductDetailComponent.
+   *
+   * @constructor
+   * @param {ActivatedRoute} route - The Angular service that provides access to route parameters.
+   * @param {ProductListService} productListService - Service for retrieving product data.
+   * @param {Router} router - The Angular service for navigating between views.
+   * @param {FormBuilder} formBuilder - The Angular service for building and managing forms.
+   * @param {OrderService} orderService - Service for managing orders.
+   * @param {NotificationService} notificationService - Service for displaying notifications.
+   * @param {PaymentService} paymentService - Service for managing payment transactions.
+   */
   constructor(
     private route: ActivatedRoute,
     private productListService: ProductListService,
@@ -29,6 +50,9 @@ export class ProductDetailComponent {
     private paymentService: PaymentService
   ) {}
 
+  /**
+   * Retrieves product data based on the route parameter and initializes the form.
+   */
   ngOnInit(): void {
     const productId = this.route.snapshot.paramMap.get('id');
     this.product = this.productListService.getProductById(productId);
@@ -39,19 +63,31 @@ export class ProductDetailComponent {
       phoneNumber: ['', [Validators.required, Validators.pattern(/^\d{12}$/)]],
     });
 
+    // Initialize PayPal configuration
     this.initConfig();
   }
 
+  /**
+   * Getter for form controls to simplify access in the template.
+   *
+   * @returns {AbstractControl} - The form control.
+   */
   get formControl() {
     return this.productForm.controls;
   }
 
+  /**
+   * Increment the quantity of the selected product in the form.
+   */
   incrementQuantity(): void {
     this.productForm
       .get('quantity')
       .setValue(this.productForm.get('quantity').value + 1);
   }
 
+  /**
+   * Decrement the quantity of the selected product in the form, ensuring it stays above 1.
+   */
   decrementQuantity(): void {
     const currentQuantity = this.productForm.get('quantity').value;
     if (currentQuantity > 1) {
@@ -59,18 +95,36 @@ export class ProductDetailComponent {
     }
   }
 
+  /**
+   * Calculate the subtotal of the selected product based on the quantity.
+   *
+   * @returns {number} - The subtotal.
+   */
   get subtotal(): number {
     return this.productForm.value.quantity * this.product.price;
   }
 
+  /**
+   * Calculate the tax total based on the subtotal.
+   *
+   * @returns {number} - The tax total.
+   */
   get taxTotal(): number {
     return 0.1 * this.subtotal;
   }
 
+  /**
+   * Calculate the total cost, including subtotal and tax.
+   *
+   * @returns {number} - The total cost.
+   */
   get itemTotal(): number {
     return this.subtotal + this.taxTotal;
   }
 
+  /**
+   * Process the order if the form is valid, creating an order and resetting the form.
+   */
   onBooking(): void {
     if (this.productForm.valid) {
       this.orderService.createOrder(
@@ -83,8 +137,9 @@ export class ProductDetailComponent {
     }
   }
 
-  // Payment Feature
-  public payPalConfig?: IPayPalConfig;
+  /**
+   * Initialize the PayPal configuration for payment processing.
+   */
   private initConfig(): void {
     this.payPalConfig = {
       currency: 'USD',
@@ -92,6 +147,7 @@ export class ProductDetailComponent {
         'AXbp6-Ojon_2I2t6ACCq9gipRPGN9LjAOtYgZjDewvuI97s0DmoWTXLFrHgyzDXK-owvAgm4ptEBLIEQ',
       createOrderOnClient: (data) =>
         <ICreateOrderRequest>{
+          // Create order request details
           intent: 'CAPTURE',
           purchase_units: [
             {
@@ -99,6 +155,7 @@ export class ProductDetailComponent {
                 currency_code: 'USD',
                 value: this.itemTotal.toFixed(2),
                 breakdown: {
+                  // Breakdown of the amount
                   item_total: {
                     currency_code: 'USD',
                     value: (
@@ -112,6 +169,7 @@ export class ProductDetailComponent {
                 },
               },
               items: [
+                // Item details for the PayPal transaction
                 {
                   name: this.product.name,
                   quantity: this.productForm.value.quantity.toString(),
