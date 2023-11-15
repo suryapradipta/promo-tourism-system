@@ -17,7 +17,7 @@
           <div class="relative h-72 w-full overflow-hidden rounded-lg">
             <img
               src="assets/images/{{ product.image }}"
-              alt="{{product.name}}"
+              alt="{{ product.name }}"
               class="h-full w-full object-cover object-center"
             />
           </div>
@@ -48,15 +48,15 @@
                     clip-rule="evenodd"
                   />
                 </svg>
-                <p class="mt-1 text-sm text-gray-500"> ({{product.ratings }})</p>
+                <p class="mt-1 text-sm text-gray-500">
+                  ({{ product.ratings }})
+                </p>
               </div>
             </div>
           </div>
-          <p class="mt-1 text-sm text-gray-500 truncate max-w-xs">{{ product.description }}</p>
-
-
-
-
+          <p class="mt-1 text-sm text-gray-500 truncate max-w-xs">
+            {{ product.description }}
+          </p>
 
           <div
             class="absolute inset-x-0 top-0 flex h-72 items-end justify-between overflow-hidden rounded-lg p-4"
