@@ -46,15 +46,15 @@
                     class="mt-2 text-sm text-red-600"
                   >
                     <div *ngIf="name.errors?.['required']">
-                      Name is required.
+                      Company name is required.
                     </div>
                     <div *ngIf="name.errors?.['minlength']">
-                      Name must be at least 4 characters long.
+                      Company name must be at least 4 characters long.
                     </div>
                   </div>
                 </div>
 
-                <!-- Phone Number-->
+                <!--Phone Number-->
                 <div class="col-span-6 sm:col-span-3">
                   <label
                     for="phone_number"
@@ -116,7 +116,7 @@
                   </div>
                 </div>
 
-                <!--                Company Description-->
+                <!--Company Description-->
                 <div class="col-span-6">
                   <label
                     for="company_description"

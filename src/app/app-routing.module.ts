@@ -15,12 +15,12 @@ import { ReceiptComponent } from './pages/customer/dashboard/receipt/receipt.com
 
 const routes: Routes = [
   { path: '', component: DashboardComponent },
+  { path: 'register-merchant', component: RegisterMerchantComponent },
   { path: 'sign-in', component: SignInComponent },
   { path: 'sign-up', component: SignUpComponent },
   { path: 'product-list', component: ProductListComponent },
   { path: 'product/:id', component: ProductDetailComponent },
   { path: 'receipt', component: ReceiptComponent },
-
   {
     path: 'ministry-dashboard',
     component: MinistryDashboardComponent,
@@ -31,8 +31,6 @@ const routes: Routes = [
       { path: 'merchant/:id', component: DetailAccountComponent },
     ],
   },
-
-  { path: 'register-merchant', component: RegisterMerchantComponent },
 ];
 
 @NgModule({

@@ -8,7 +8,7 @@
  * @property {string} description - Description or additional information about the merchant.
  * @property {any} documents - Merchant's documents, in any format.
  * @property {string} document_description - Description or details about the merchant's documents.
- * @property {string} status - Current status of the merchant (e.g., active, inactive).
+ * @property {string} status - Current status of the merchant (e.g., PENDING, APPROVE, REJECT).
  */
 export interface MerchantModel {
   id: string;

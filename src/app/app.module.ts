@@ -23,6 +23,8 @@ import { ProductDetailComponent } from './pages/customer/dashboard/product-detai
 import { ReviewsComponent } from './pages/customer/dashboard/product-detail/reviews/reviews.component';
 import { NgxPayPalModule } from 'ngx-paypal';
 import { ReceiptComponent } from './pages/customer/dashboard/receipt/receipt.component';
+import { MobileMenuComponent } from './pages/customer/dashboard/header/mobile-menu/mobile-menu.component';
+import { HeroComponent } from './pages/customer/dashboard/hero/hero.component';
 
 @NgModule({
   declarations: [
@@ -45,6 +47,8 @@ import { ReceiptComponent } from './pages/customer/dashboard/receipt/receipt.com
     ProductDetailComponent,
     ReviewsComponent,
     ReceiptComponent,
+    MobileMenuComponent,
+    HeroComponent,
   ],
   imports: [
     BrowserModule,
