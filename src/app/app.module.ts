@@ -21,7 +21,6 @@ import { ProductListComponent } from './pages/customer/dashboard/product-list/pr
 import { AdminDashboardComponent } from './pages/ministry/ministry-dashboard/menus/admin-dashboard/admin-dashboard.component';
 import { ProductDetailComponent } from './pages/customer/dashboard/product-detail/product-detail.component';
 import { ReviewsComponent } from './pages/customer/dashboard/product-detail/reviews/reviews.component';
-import { PaymentComponent } from './pages/customer/menus/payment/payment.component';
 import { NgxPayPalModule } from 'ngx-paypal';
 import { ReceiptComponent } from './pages/customer/dashboard/receipt/receipt.component';
 
@@ -45,7 +44,6 @@ import { ReceiptComponent } from './pages/customer/dashboard/receipt/receipt.com
     AdminDashboardComponent,
     ProductDetailComponent,
     ReviewsComponent,
-    PaymentComponent,
     ReceiptComponent,
   ],
   imports: [
