@@ -68,4 +68,9 @@ export class ProductListComponent implements OnInit {
       });
     }
   }
+
+
+  getAverageRating(productId: string): number {
+    return this.productListService.getAverageRating(productId);
+  }
 }

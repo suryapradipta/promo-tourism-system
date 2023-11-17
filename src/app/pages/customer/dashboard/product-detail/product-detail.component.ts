@@ -27,7 +27,7 @@ export class ProductDetailComponent {
   product: ProductModel | undefined;
   productForm: FormGroup;
 
-  // PayPal configuration for payment processing
+  // PayPal's configuration for payment processing
   public payPalConfig?: IPayPalConfig;
 
   constructor(
@@ -113,13 +113,18 @@ export class ProductDetailComponent {
     return this.subtotal + this.taxTotal;
   }
 
+  get averageRating(): number {
+    return this.productListService.getAverageRating(this.product.id);
+  }
+
+
   /**
    * Process the order if the form is valid, creating an order and resetting the form.
    */
   onBooking(): void {
     if (this.productForm.valid) {
       this.orderService.createOrder(
-        this.product.id,
+        this.product,
         this.productForm.value.quantity,
         this.itemTotal,
         this.productForm.value.email,

@@ -22,11 +22,6 @@ export class ReviewService {
     localStorage.setItem('reviews', JSON.stringify(this.reviews));
   }
 
-  getReviewsData(): ReviewModel[] {
-    this.loadReviewsData();
-    return this.reviews;
-  }
-
   addReview(orderID: string, rating: number, comment: string): ReviewModel {
     const review: ReviewModel = {
       id: uuidv4(),
@@ -40,10 +35,8 @@ export class ReviewService {
   }
 
   getUnreviewedOrders(customerID: string): OrderModel[] {
-    // Assuming you have a method to get orders by customer ID
     const customerOrders = this.orderService.getOrdersByCustomer(customerID);
 
-    console.log("REVIEW SSERVICEE", customerOrders)
     // Filter out orders that already have reviews
     return customerOrders.filter(
       order => !this.reviews.some(review => review.orderID === order.orderID)

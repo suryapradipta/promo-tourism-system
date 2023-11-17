@@ -6,7 +6,7 @@
  */
 
 import { Injectable } from '@angular/core';
-import { ProductModel } from '../models';
+import {ProductModel, ReviewModel} from '../models';
 import { v4 as uuidv4 } from 'uuid';
 
 @Injectable({
@@ -36,35 +36,35 @@ export class ProductListService {
           name: 'Tour Package 1',
           description:
             'Pitt Meadows, BC, Canada with beautiful turquoise water and sea waves. Pitt Meadows, BC, Canada with beautiful turquoise water and sea waves.Pitt Meadows, BC, Canada with beautiful turquoise water and sea waves.Pitt Meadows, BC, Canada with beautiful turquoise water and sea waves.Pitt Meadows, BC, Canada with beautiful turquoise water and sea waves.Pitt Meadows, BC, Canada with beautiful turquoise water and sea waves.',
-          price: 100,
+          price: 50,
           image: 'tour-package1.jpg',
-          ratings: 4.5,
+          reviews: [],
         },
         {
           id: uuidv4(),
           name: 'Tour Package 2',
           description:
             'Ocean seashore with beautiful turquoise water and sea waves.',
-          price: 150,
+          price: 60,
           image: 'tour-package2.jpg',
-          ratings: 4.8,
+          reviews: [],
         },
         {
           id: uuidv4(),
           name: 'Tour Package 3',
           description:
             'Tourist walking towards historical architectural monument.',
-          price: 120,
+          price: 85,
           image: 'tour-package3.jpg',
-          ratings: 4.2,
+          reviews: [],
         },
         {
           id: uuidv4(),
           name: 'Tour Package 4',
           description: 'Bell tower part of ensemble of city cathedral.',
-          price: 90,
+          price: 45,
           image: 'tour-package4.jpg',
-          ratings: 4.6,
+          reviews: [],
         },
       ];
 
@@ -109,5 +109,25 @@ export class ProductListService {
    */
   getProductById(id: string): ProductModel | undefined {
     return this.products.find((product) => product.id === id);
+  }
+
+  addReviewToProduct(productId: string, review: ReviewModel): void {
+    const product = this.products.find((p) => p.id === productId);
+
+    if (product) {
+      product.reviews.push(review);
+      localStorage.setItem('products', JSON.stringify(this.products));
+    }
+  }
+
+  getAverageRating(productId: string): number {
+    const product = this.products.find((p) => p.id === productId);
+
+    if (product && product.reviews.length > 0) {
+      const totalRating = product.reviews.reduce((sum, review) => sum + review.rating, 0);
+      return totalRating / product.reviews.length;
+    }
+
+    return 0; // Default rating if there are no reviews
   }
 }

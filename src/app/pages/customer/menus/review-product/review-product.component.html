@@ -7,8 +7,7 @@
           Order history
         </h1>
         <p class="mt-2 text-sm text-gray-500">
-          Check the status of recent orders, manage returns, and discover
-          similar products.
+          Check the status of recent orders and review orders.
         </p>
       </div>
     </div>
@@ -17,16 +16,10 @@
       <h2 class="sr-only">Recent orders</h2>
       <div class="mx-auto max-w-7xl sm:px-2 lg:px-8">
         <div class="mx-auto max-w-2xl space-y-8 sm:px-4 lg:max-w-4xl lg:px-0">
-
-
-
           <div
             *ngFor="let order of unreviewedOrders"
             class="border-t border-b border-gray-200 bg-white shadow-sm sm:rounded-lg sm:border"
           >
-            <h3 class="sr-only">
-              Order placed on <time datetime="2021-07-06">[[Date]]</time>
-            </h3>
 
             <div
               class="flex items-center border-b border-gray-200 p-4 sm:grid sm:grid-cols-4 sm:gap-x-6 sm:p-6"
@@ -36,30 +29,24 @@
               >
                 <div>
                   <dt class="font-medium text-gray-900">Order number</dt>
-                  <dd class="mt-1 text-gray-500">{{order.orderNumber}}</dd>
-                </div>
-                <div class="hidden sm:block">
-                  <dt class="font-medium text-gray-900">Date placed</dt>
-                  <dd class="mt-1 text-gray-500">
-                    <time datetime="2021-07-06">[[DATE]]</time>
-                  </dd>
+                  <dd class="mt-1 text-gray-500">{{ order.orderNumber }}</dd>
                 </div>
                 <div>
                   <dt class="font-medium text-gray-900">Total amount</dt>
-                  <dd class="mt-1 font-medium text-gray-900">${{order.totalAmount}}</dd>
+                  <dd class="mt-1 font-medium text-gray-900">
+                    ${{ order.totalAmount }}
+                  </dd>
                 </div>
               </dl>
-
-
 
               <div
                 class="lg:col-span-2 lg:flex lg:items-center lg:justify-end lg:space-x-4"
               >
                 <button
+                  (click)="openReviewForm(order.orderID)"
                   class="flex items-center justify-center rounded-md border border-gray-300 bg-white py-2 px-2.5 text-sm font-medium text-gray-700 shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
                 >
                   <span>Review</span>
-                  <span class="sr-only">WU88191111</span>
                 </button>
               </div>
             </div>
@@ -73,7 +60,7 @@
                     class="h-20 w-20 flex-shrink-0 overflow-hidden rounded-lg bg-gray-200 sm:h-40 sm:w-40"
                   >
                     <img
-                      src="https://tailwindui.com/img/ecommerce-images/order-history-page-03-product-01.jpg"
+                      src="assets/images/{{ order.product.image }}"
                       alt="Moss green canvas compact backpack with double top zipper, zipper front pouch, and matching carry handle and backpack straps."
                       class="h-full w-full object-cover object-center"
                     />
@@ -82,72 +69,127 @@
                     <div
                       class="font-medium text-gray-900 sm:flex sm:justify-between"
                     >
-                      <h5>Micro Backpack</h5>
-                      <p class="mt-2 sm:mt-0">$70.00</p>
+                      <h5>{{ order.product.name }}</h5>
+                      <p class="mt-2 sm:mt-0">${{ order.product.price }}</p>
                     </div>
                     <p class="hidden text-gray-500 sm:mt-2 sm:block">
-                      Are you a minimalist looking for a compact carry option?
-                      The Micro Backpack is the perfect size for your essential
-                      everyday carry items. Wear it like a backpack or carry it
-                      like a satchel for all-day use.
+                      {{ order.product.description }}
                     </p>
                   </div>
                 </div>
 
+                <div *ngIf="showReviewForm">
+                  <form
+                    [formGroup]="reviewForm"
+                    (ngSubmit)="submitReview(order.product.id)"
+                    class="space-y-8 divide-y divide-gray-200"
+                  >
+                    <div class="mt-6 space-y-8 divide-y divide-gray-200">
+                      <div>
+                        <div
+                          class="mt-6 grid grid-cols-1 gap-y-6 gap-x-4 sm:grid-cols-6"
+                        >
+                          <div class="sm:col-span-6">
+                            <label
+                              for="rating"
+                              class="block text-sm font-medium text-gray-700"
+                              >Rating</label
+                            >
+                            <div class="mt-1">
+                              <input
+                                type="number"
+                                name="rating"
+                                id="rating"
+                                class="block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+                                formControlName="rating"
+                              />
+                            </div>
+                            <div
+                              *ngIf="
+                                formControl.rating.errors &&
+                                (formControl.rating.dirty ||
+                                  formControl.rating.touched)
+                              "
+                              class="mt-2 text-sm text-red-600 alert"
+                              id="rating-error"
+                            >
+                              <div
+                                *ngIf="formControl.rating.hasError('required')"
+                              >
+                                Rating is required.
+                              </div>
+                              <div *ngIf="formControl.rating.hasError('min')">
+                                Rating must be at least 1.
+                              </div>
+                              <div *ngIf="formControl.rating.hasError('max')">
+                                Rating must be at most 5.
+                              </div>
+                            </div>
+                          </div>
 
-                <form class="space-y-8 divide-y divide-gray-200">
+                          <div class="sm:col-span-6">
+                            <label
+                              for="comment"
+                              class="block text-sm font-medium text-gray-700"
+                              >Comment</label
+                            >
+                            <div class="mt-1">
+                              <textarea
+                                formControlName="comment"
+                                id="comment"
+                                name="comment"
+                                rows="3"
+                                class="block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+                              ></textarea>
+                            </div>
+                            <div
+                              *ngIf="
+                                formControl.comment.errors &&
+                                (formControl.comment.dirty ||
+                                  formControl.comment.touched)
+                              "
+                              class="mt-2 text-sm text-red-600 alert"
+                              id="comment-error"
+                            >
+                              <div
+                                *ngIf="formControl.comment.hasError('required')"
+                              >
+                                Comment is required.
+                              </div>
+                            </div>
 
-                  <div class=" mt-6 space-y-8 divide-y divide-gray-200">
-                    <div>
-
-                      <div class="mt-6 grid grid-cols-1 gap-y-6 gap-x-4 sm:grid-cols-6">
-                        <div class="sm:col-span-6">
-                          <label for="first-name" class="block text-sm font-medium text-gray-700">First name</label>
-                          <div class="mt-1">
-                            <input type="text" name="first-name" id="first-name" autocomplete="given-name" class="block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm">
                           </div>
                         </div>
-
-                        <div class="sm:col-span-6">
-                          <label for="about" class="block text-sm font-medium text-gray-700">About</label>
-                          <div class="mt-1">
-                            <textarea id="about" name="about" rows="3" class="block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"></textarea>
-                          </div>
-                        </div>
-
-
                       </div>
                     </div>
 
-
-                  </div>
-
-                  <div class="pt-5">
-                    <div class="flex justify-end">
-                      <button type="button" class="rounded-md border border-gray-300 bg-white py-2 px-4 text-sm font-medium text-gray-700 shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2">Cancel</button>
-                      <button type="submit" class="ml-3 inline-flex justify-center rounded-md border border-transparent bg-indigo-600 py-2 px-4 text-sm font-medium text-white shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2">Save</button>
+                    <div class="pt-5">
+                      <div class="flex justify-end">
+                        <button
+                          type="button"
+                          class="rounded-md border border-gray-300 bg-white py-2 px-4 text-sm font-medium text-gray-700 shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
+                        >
+                          Cancel
+                        </button>
+                        <button
+                          [disabled]="reviewForm.invalid"
+                          type="submit"
+                          class="ml-3 inline-flex justify-center rounded-md border border-transparent bg-indigo-600 py-2 px-4 text-sm font-medium text-white shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 disabled:cursor-not-allowed disabled:border-gray-200 disabled:bg-gray-50 disabled:text-gray-500"
+                        >
+                          Submit
+                        </button>
+                      </div>
                     </div>
-                  </div>
-                </form>
-
-
+                  </form>
+                </div>
               </li>
             </ul>
           </div>
 
 
-
-          <!-- More orders... -->
         </div>
       </div>
     </div>
   </div>
 </div>
 <app-footer></app-footer>
-<h2>Unreviewed Orders</h2>
-<ul>
-  <li *ngFor="let order of unreviewedOrders">
-    {{ order.productID }} -
-    <button (click)="onReview()">Review</button>
-  </li>
-</ul>

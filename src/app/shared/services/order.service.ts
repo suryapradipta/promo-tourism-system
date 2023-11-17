@@ -6,7 +6,7 @@
  */
 
 import { Injectable } from '@angular/core';
-import {AuthModel, OrderModel} from '../models';
+import {AuthModel, OrderModel, ProductModel} from '../models';
 import { v4 as uuidv4 } from 'uuid';
 
 @Injectable({
@@ -79,7 +79,7 @@ export class OrderService {
   }
 
   createOrder(
-    productId: string,
+    product: ProductModel,
     quantity: number,
     totalAmount: number,
     email: string,
@@ -89,7 +89,7 @@ export class OrderService {
     const order: OrderModel = {
       orderNumber: this.generateOrderNumber(),
       orderID: uuidv4(),
-      productID: productId,
+      product: product,
       quantity: quantity,
       totalAmount: totalAmount,
       email: email,

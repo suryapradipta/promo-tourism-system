@@ -9,9 +9,11 @@
  * @property {string} email - Email address associated with the order.
  * @property {number} phoneNumber - Phone number associated with the order.
  */
+import {ProductModel} from "./product.model";
+
 export interface OrderModel {
   orderID: string;
-  productID: string;
+  product: ProductModel;
   orderNumber: string;
   quantity: number;
   totalAmount: number;
