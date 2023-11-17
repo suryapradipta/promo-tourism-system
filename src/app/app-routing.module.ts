@@ -12,6 +12,9 @@ import { AdminDashboardComponent } from './pages/ministry/ministry-dashboard/men
 import { ProductListComponent } from './pages/customer/dashboard/product-list/product-list.component';
 import { ProductDetailComponent } from './pages/customer/dashboard/product-detail/product-detail.component';
 import { ReceiptComponent } from './pages/customer/dashboard/receipt/receipt.component';
+import {
+  ReviewProductComponent
+} from "./pages/customer/menus/review-product/review-product.component";
 
 const routes: Routes = [
   { path: '', component: DashboardComponent },
@@ -21,6 +24,8 @@ const routes: Routes = [
   { path: 'product-list', component: ProductListComponent },
   { path: 'product/:id', component: ProductDetailComponent },
   { path: 'receipt', component: ReceiptComponent },
+  { path: 'review', component: ReviewProductComponent },
+
   {
     path: 'ministry-dashboard',
     component: MinistryDashboardComponent,

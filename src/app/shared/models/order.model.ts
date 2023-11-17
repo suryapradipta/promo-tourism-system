@@ -14,6 +14,8 @@ export interface OrderModel {
   productID: string;
   orderNumber: string;
   quantity: number;
+  totalAmount: number;
   email: string;
   phoneNumber: number;
+  customerID: string;
 }

@@ -25,6 +25,7 @@ import { NgxPayPalModule } from 'ngx-paypal';
 import { ReceiptComponent } from './pages/customer/dashboard/receipt/receipt.component';
 import { MobileMenuComponent } from './pages/customer/dashboard/header/mobile-menu/mobile-menu.component';
 import { HeroComponent } from './pages/customer/dashboard/hero/hero.component';
+import { ReviewProductComponent } from './pages/customer/menus/review-product/review-product.component';
 
 @NgModule({
   declarations: [
@@ -49,6 +50,7 @@ import { HeroComponent } from './pages/customer/dashboard/hero/hero.component';
     ReceiptComponent,
     MobileMenuComponent,
     HeroComponent,
+    ReviewProductComponent,
   ],
   imports: [
     BrowserModule,

@@ -9,6 +9,7 @@ import { Component } from '@angular/core';
 import { PaymentModel, ProductModel } from '../../../../shared/models';
 import { ActivatedRoute, Router } from '@angular/router';
 import {
+  AuthService,
   NotificationService,
   OrderService,
   PaymentService,
@@ -25,21 +26,10 @@ import { ICreateOrderRequest, IPayPalConfig } from 'ngx-paypal';
 export class ProductDetailComponent {
   product: ProductModel | undefined;
   productForm: FormGroup;
+
   // PayPal configuration for payment processing
   public payPalConfig?: IPayPalConfig;
 
-  /**
-   * Constructor function for ProductDetailComponent.
-   *
-   * @constructor
-   * @param {ActivatedRoute} route - The Angular service that provides access to route parameters.
-   * @param {ProductListService} productListService - Service for retrieving product data.
-   * @param {Router} router - The Angular service for navigating between views.
-   * @param {FormBuilder} formBuilder - The Angular service for building and managing forms.
-   * @param {OrderService} orderService - Service for managing orders.
-   * @param {NotificationService} notificationService - Service for displaying notifications.
-   * @param {PaymentService} paymentService - Service for managing payment transactions.
-   */
   constructor(
     private route: ActivatedRoute,
     private productListService: ProductListService,
@@ -47,7 +37,8 @@ export class ProductDetailComponent {
     private formBuilder: FormBuilder,
     private orderService: OrderService,
     private notificationService: NotificationService,
-    private paymentService: PaymentService
+    private paymentService: PaymentService,
+    private authService : AuthService,
   ) {}
 
   /**
@@ -130,8 +121,10 @@ export class ProductDetailComponent {
       this.orderService.createOrder(
         this.product.id,
         this.productForm.value.quantity,
+        this.itemTotal,
         this.productForm.value.email,
-        this.productForm.value.phoneNumber
+        this.productForm.value.phoneNumber,
+        this.authService.getCurrentUser().id
       );
       this.productForm.reset();
     }

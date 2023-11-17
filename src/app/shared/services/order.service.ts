@@ -6,7 +6,7 @@
  */
 
 import { Injectable } from '@angular/core';
-import { OrderModel } from '../models';
+import {AuthModel, OrderModel} from '../models';
 import { v4 as uuidv4 } from 'uuid';
 
 @Injectable({
@@ -64,12 +64,6 @@ export class OrderService {
   // Counter for generating order numbers
   private orderCounter: number = 0;
 
-  // generateOrderNumber(): string {
-  //   const year = new Date().getFullYear();
-  //   const paddedCounter = (++this.orderCounter).toString().padStart(5, '0');
-  //   return `PRS${year}${paddedCounter}`;
-  // }
-
   private static padWithZeros(number: number, length: number): string {
     return number.toString().padStart(length, '0');
   }
@@ -84,29 +78,29 @@ export class OrderService {
     return `PRS${year}${OrderService.padWithZeros(++this.orderCounter, 5)}`;
   }
 
-  /**
-   * Create a new order with the provided details and save it.
-   *
-   * @param {string} productId - The identifier of the product in the order.
-   * @param {number} quantity - The quantity of the product in the order.
-   * @param {string} email - The email address associated with the order.
-   * @param {number} phoneNumber - The phone number associated with the order.
-   */
   createOrder(
     productId: string,
     quantity: number,
+    totalAmount: number,
     email: string,
-    phoneNumber: number
+    phoneNumber: number,
+    customerID: string
   ): void {
     const order: OrderModel = {
       orderNumber: this.generateOrderNumber(),
       orderID: uuidv4(),
       productID: productId,
       quantity: quantity,
+      totalAmount: totalAmount,
       email: email,
       phoneNumber: phoneNumber,
+      customerID: customerID
     };
 
     this.saveOrdersData(order);
+  }
+
+  getOrdersByCustomer(customerID: string): OrderModel[] {
+    return this.orders.filter(order => order.customerID === customerID);
   }
 }
