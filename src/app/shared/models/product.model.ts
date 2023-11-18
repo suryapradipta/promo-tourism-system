@@ -1,4 +1,3 @@
-
 import {ReviewModel} from "./review.model";
 
 export interface ProductModel {
@@ -7,5 +6,6 @@ export interface ProductModel {
   description: string;
   price: number;
   image: string;
+  category: "diving" | "cruise" | "honeymoon" | "homestay" | "shopping";
   reviews: ReviewModel[];
 }

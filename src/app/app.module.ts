@@ -18,7 +18,6 @@ import { DesktopSidebarComponent } from './pages/ministry/ministry-dashboard/des
 import { ManageAccountComponent } from './pages/ministry/ministry-dashboard/menus/manage-account/manage-account.component';
 import { DetailAccountComponent } from './pages/ministry/ministry-dashboard/menus/manage-account/detail-account/detail-account.component';
 import { ProductListComponent } from './pages/customer/dashboard/product-list/product-list.component';
-import { AdminDashboardComponent } from './pages/ministry/ministry-dashboard/menus/admin-dashboard/admin-dashboard.component';
 import { ProductDetailComponent } from './pages/customer/dashboard/product-detail/product-detail.component';
 import { ReviewsComponent } from './pages/customer/dashboard/product-detail/reviews/reviews.component';
 import { NgxPayPalModule } from 'ngx-paypal';
@@ -27,6 +26,8 @@ import { MobileMenuComponent } from './pages/customer/dashboard/header/mobile-me
 import { HeroComponent } from './pages/customer/dashboard/hero/hero.component';
 import { ReviewProductComponent } from './pages/customer/menus/review-product/review-product.component';
 import { ChangePasswordComponent } from './pages/customer/menus/auth/change-password/change-password.component';
+import { ManageProductComponent } from './pages/ministry/ministry-dashboard/menus/manage-product/manage-product.component';
+import { AddEditProductComponent } from './pages/ministry/ministry-dashboard/menus/manage-product/add-edit-product/add-edit-product.component';
 
 @NgModule({
   declarations: [
@@ -45,7 +46,6 @@ import { ChangePasswordComponent } from './pages/customer/menus/auth/change-pass
     ManageAccountComponent,
     DetailAccountComponent,
     ProductListComponent,
-    AdminDashboardComponent,
     ProductDetailComponent,
     ReviewsComponent,
     ReceiptComponent,
@@ -53,6 +53,8 @@ import { ChangePasswordComponent } from './pages/customer/menus/auth/change-pass
     HeroComponent,
     ReviewProductComponent,
     ChangePasswordComponent,
+    ManageProductComponent,
+    AddEditProductComponent,
   ],
   imports: [
     BrowserModule,

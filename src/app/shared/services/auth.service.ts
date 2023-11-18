@@ -26,6 +26,7 @@ export class AuthService {
   constructor(private signUpService: SignUpService) {
     this.loadUsersData();
 
+    this.signUpService.register('customer@gmail.com', 'customer', 'customer');
     this.signUpService.register('ministry@gmail.com', 'ministry', 'ministry');
     this.signUpService.register('merchant@gmail.com', 'merchant', 'merchant');
   }

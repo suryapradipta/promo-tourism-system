@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import {Component, OnInit} from '@angular/core';
 import {
   AuthService,
   NotificationService
@@ -11,7 +11,7 @@ import {FormBuilder, FormGroup, Validators} from "@angular/forms";
   templateUrl: './change-password.component.html',
   styleUrls: ['./change-password.component.css']
 })
-export class ChangePasswordComponent {
+export class ChangePasswordComponent implements OnInit{
   changePasswordForm: FormGroup;
   passwordMismatch: boolean = false;
 
@@ -39,7 +39,6 @@ export class ChangePasswordComponent {
     }
 
     const userEmail = this.authService.getCurrentUser().email;
-
     const currentPassword = this.f.currentPassword.value;
     const newPassword = this.f.newPassword.value;
     const confirmPassword = this.f.confirmPassword.value;
@@ -54,8 +53,9 @@ export class ChangePasswordComponent {
         this.authService.updatePassword(userEmail, newPassword);
         this.passwordMismatch = false;
         this.changePasswordForm.reset();
-        this.router.navigate(['/ministry-dashboard']);
-        this.alert.showSuccessMessage('Password successfully changed!')
+        this.router.navigate(['/ministry-dashboard']).then(r =>
+          this.alert.showSuccessMessage('Password successfully changed!')
+        );
       } else {
         this.alert.showErrorMessage('Incorrect current password.')
       }

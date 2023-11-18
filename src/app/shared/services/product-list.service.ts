@@ -8,6 +8,7 @@
 import { Injectable } from '@angular/core';
 import {ProductModel, ReviewModel} from '../models';
 import { v4 as uuidv4 } from 'uuid';
+import {Observable} from "rxjs";
 
 @Injectable({
   providedIn: 'root',
@@ -15,18 +16,12 @@ import { v4 as uuidv4 } from 'uuid';
 export class ProductListService {
   private products: ProductModel[] = [];
 
-  /**
-   * Constructor function for ProductListService.
-   * Initializes the service and loads existing product data from local storage.
-   */
   constructor() {
     this.initializeData();
     this.loadProductsData();
   }
 
-  /**
-   * Private method to initialize product data, adding default products if none exist.
-   */
+
   private initializeData() {
     this.loadProductsData();
     if (this.products.length === 0) {
@@ -40,7 +35,8 @@ export class ProductListService {
             'Our Riverside Retreat offers a perfect weekend getaway for nature enthusiasts, ' +
             'families, and those seeking a peaceful break.',
           price: 399,
-          image: 'tour-package1.jpg',
+          image: 'assets/images/tour-package1.jpg',
+          category: "cruise",
           reviews: [],
         },
         {
@@ -49,7 +45,8 @@ export class ProductListService {
           description:
             'Nestled against the backdrop of the majestic Mount Batur, this experience promises a harmonious blend of spirituality, culture, and natural beauty.',
           price: 699,
-          image: 'tour-package2.jpg',
+          image: 'assets/images/tour-package2.jpg',
+          category: "shopping",
           reviews: [],
         },
         {
@@ -58,7 +55,8 @@ export class ProductListService {
           description:
             'Picture yourself on a pristine sandy shore, surrounded by azure waters and swaying palm trees. This tropical retreat is designed for those seeking pure relaxation and seaside bliss.',
           price: 149,
-          image: 'tour-package3.jpg',
+          image: 'assets/images/tour-package3.jpg',
+          category: "diving",
           reviews: [],
         },
         {
@@ -66,7 +64,8 @@ export class ProductListService {
           name: 'Enchanted Family Escape: Disneyland Adventure',
           description: 'Create lifelong memories as you step into a world of fantasy, meet beloved characters, and experience the thrill of iconic rides in the heart of the magic kingdom.',
           price: 200,
-          image: 'tour-package4.jpg',
+          image: 'assets/images/tour-package4.jpg',
+          category: "shopping",
           reviews: [],
         },
         {
@@ -74,7 +73,8 @@ export class ProductListService {
           name: 'Northern Bliss: Vågan Fjord Adventure',
           description: 'Immerse yourself in the breathtaking landscapes of majestic fjords, charming fishing villages, and the mesmerizing Northern Lights.',
           price: 269,
-          image: 'tour-package5.jpg',
+          image: 'assets/images/tour-package5.jpg',
+          category: "cruise",
           reviews: [],
         },
         {
@@ -82,7 +82,8 @@ export class ProductListService {
           name: 'Canal Charm: A Romantic Getaway',
           description: 'Our "Canal Charm" package invites you to experience the magic of meandering water channels, historic architecture, and intimate moments in this picturesque destination.',
           price: 90,
-          image: 'tour-package6.jpg',
+          image: 'assets/images/tour-package6.jpg',
+          category: "shopping",
           reviews: [],
         },
         {
@@ -90,7 +91,8 @@ export class ProductListService {
           name: 'Adriatic Tranquility: Split-Dalmatia Escape',
           description: 'Our "Adriatic Tranquility" escape invites you to explore charming coastal towns, indulge in local cuisine, and relax in the beauty of this Croatian paradise.',
           price: 69,
-          image: 'tour-package7.jpg',
+          image: 'assets/images/tour-package7.jpg',
+          category: "homestay",
           reviews: [],
         },
         {
@@ -98,7 +100,8 @@ export class ProductListService {
           name: 'Adriatic Odyssey: Discover Split-Dalmatia Magic',
           description: 'Explore historic cities, relax on pristine beaches, and savor the rich flavors of Croatian cuisine.',
           price: 125,
-          image: 'tour-package8.jpg',
+          image: 'assets/images/tour-package8.jpg',
+          category: "honeymoon",
           reviews: [],
         },
       ];
@@ -144,6 +147,36 @@ export class ProductListService {
    */
   getProductById(id: string): ProductModel | undefined {
     return this.products.find((product) => product.id === id);
+  }
+
+  addProduct(product: ProductModel): void {
+
+    product.id = uuidv4();
+    this.saveProductsData(product);
+  }
+
+
+  updateProduct(product: ProductModel): void {
+    // Add logic to update the product in the database
+    const index = this.products.findIndex((p) => p.id === product.id);
+    if (index !== -1) {
+      this.products[index] = product;
+      localStorage.setItem('products', JSON.stringify(this.products));
+    }
+  }
+
+  deleteProduct(productId: string): void {
+    // Add logic to delete the product from the database
+    this.products = this.products.filter((p) => p.id !== productId);
+    localStorage.setItem('products', JSON.stringify(this.products));
+  }
+
+  uploadImage(file: File): Observable<string> {
+    const imageUrl = URL.createObjectURL(file);
+    return new Observable<string>((observer) => {
+      observer.next(imageUrl);
+      observer.complete();
+    });
   }
 
   addReviewToProduct(productId: string, review: ReviewModel): void {

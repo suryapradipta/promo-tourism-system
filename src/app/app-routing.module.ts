@@ -8,7 +8,6 @@ import { ManageAccountComponent } from './pages/ministry/ministry-dashboard/menu
 import { AdminGuard } from './shared/guards/admin.guard';
 import { SignUpComponent } from './pages/customer/menus/auth/sign-up/sign-up.component';
 import { DetailAccountComponent } from './pages/ministry/ministry-dashboard/menus/manage-account/detail-account/detail-account.component';
-import { AdminDashboardComponent } from './pages/ministry/ministry-dashboard/menus/admin-dashboard/admin-dashboard.component';
 import { ProductListComponent } from './pages/customer/dashboard/product-list/product-list.component';
 import { ProductDetailComponent } from './pages/customer/dashboard/product-detail/product-detail.component';
 import { ReceiptComponent } from './pages/customer/dashboard/receipt/receipt.component';
@@ -18,6 +17,12 @@ import {
 import {
   ChangePasswordComponent
 } from "./pages/customer/menus/auth/change-password/change-password.component";
+import {
+  ManageProductComponent
+} from "./pages/ministry/ministry-dashboard/menus/manage-product/manage-product.component";
+import {
+  AddEditProductComponent
+} from "./pages/ministry/ministry-dashboard/menus/manage-product/add-edit-product/add-edit-product.component";
 
 const routes: Routes = [
   { path: '', component: DashboardComponent },
@@ -35,9 +40,12 @@ const routes: Routes = [
     component: MinistryDashboardComponent,
     canActivate: [AdminGuard],
     children: [
-      { path: 'admin-dashboard', component: AdminDashboardComponent },
       { path: 'manage-account', component: ManageAccountComponent },
       { path: 'merchant/:id', component: DetailAccountComponent },
+      { path: 'manage-product', component: ManageProductComponent },
+      { path: 'add-product', component: AddEditProductComponent },
+      { path: 'edit-product/:id', component: AddEditProductComponent },
+
     ],
   },
 ];

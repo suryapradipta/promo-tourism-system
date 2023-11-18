@@ -1,0 +1,199 @@
+<div class="bg-white">
+  <div class="mx-auto max-w-7xl py-12 px-4 sm:px-6 lg:px-8">
+    <div class="mx-auto max-w-3xl">
+      <form
+        #productForm="ngForm"
+        (submit)="saveProduct(productForm)"
+        class="space-y-8 divide-y divide-gray-200"
+      >
+        <div class="space-y-8 divide-y divide-gray-200">
+          <div>
+            <div>
+              <h3 class="text-lg font-medium leading-6 text-gray-900">
+                {{ product ? "Edit" : "Add" }} Product
+              </h3>
+              <p class="mt-1 text-sm text-gray-500">
+                Ensure that the information is accurate and up-to-date before
+                saving.
+              </p>
+            </div>
+
+            <div class="mt-6 grid grid-cols-1 gap-y-6 gap-x-4 sm:grid-cols-6">
+              <div class="sm:col-span-3">
+                <label
+                  for="name"
+                  class="block text-sm font-medium text-gray-700"
+                  >Name</label
+                >
+                <div class="mt-1">
+                  <input
+                    [(ngModel)]="product.name"
+                    required
+                    #name="ngModel"
+                    type="text"
+                    name="name"
+                    id="name"
+                    class="block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+                  />
+                </div>
+                <div
+                  *ngIf="name.invalid && (name.dirty || name.touched)"
+                  class="mt-2 text-sm text-red-600"
+                >
+                  <div *ngIf="name.errors?.['required']">Name is required.</div>
+                </div>
+              </div>
+
+              <div class="sm:col-span-3">
+                <label
+                  for="price"
+                  class="block text-sm font-medium text-gray-700"
+                  >Price</label
+                >
+                <div class="relative mt-1 rounded-md shadow-sm">
+                  <div
+                    class="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3"
+                  >
+                    <span class="text-gray-500 sm:text-sm">$</span>
+                  </div>
+                  <input
+                    required
+                    [(ngModel)]="product.price"
+                    #price="ngModel"
+                    type="number"
+                    name="price"
+                    id="price"
+                    class="block w-full rounded-md border-gray-300 pl-7 pr-12 focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+                    placeholder="0.00"
+                    aria-describedby="price-currency"
+                  />
+                  <div
+                    class="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-3"
+                  >
+                    <span class="text-gray-500 sm:text-sm" id="price-currency"
+                      >USD</span
+                    >
+                  </div>
+                </div>
+                <div
+                  *ngIf="price.invalid && (price.dirty || price.touched)"
+                  class="mt-2 text-sm text-red-600"
+                >
+                  <div *ngIf="price.errors?.['required']">
+                    Price is required.
+                  </div>
+                </div>
+              </div>
+
+              <div class="sm:col-span-6">
+                <label
+                  for="description"
+                  class="block text-sm font-medium text-gray-700"
+                  >Description</label
+                >
+                <div class="mt-1">
+                  <textarea
+                    [(ngModel)]="product.description"
+                    required
+                    #description="ngModel"
+                    id="description"
+                    name="description"
+                    rows="3"
+                    class="block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+                  ></textarea>
+                </div>
+                <p class="mt-2 text-sm text-gray-500">
+                  Write a few sentences about product.
+                </p>
+                <div
+                  *ngIf="
+                    description.invalid &&
+                    (description.dirty || description.touched)
+                  "
+                  class="mt-2 text-sm text-red-600"
+                >
+                  <div *ngIf="description.errors?.['required']">
+                    Description is required.
+                  </div>
+                </div>
+              </div>
+
+              <div class="sm:col-span-3">
+                <label
+                  for="category"
+                  class="block text-sm font-medium text-gray-700"
+                  >Category</label
+                >
+                <div class="mt-1">
+                  <select
+                    id="category"
+                    name="category"
+                    required
+                    [(ngModel)]="product.category"
+                    #category="ngModel"
+                    class="block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+                  >
+                    <option value="" disabled>Select category</option>
+                    <option>Diving</option>
+                    <option>Cruise</option>
+                    <option>Honeymoon</option>
+                    <option>Homestay</option>
+                    <option>Shopping</option>
+                  </select>
+                </div>
+                <div
+                  *ngIf="
+                    category.invalid && (category.dirty || category.touched)
+                  "
+                  class="mt-2 text-sm text-red-600"
+                >
+                  <div *ngIf="category.errors?.['required']">
+                    Category is required.
+                  </div>
+                </div>
+              </div>
+
+
+
+              <div class="sm:col-span-6">
+                <label for="image"
+                       class="block text-sm font-medium text-gray-700">Image</label>
+                <div class="mt-1 flex justify-center rounded-md border-2 border-dashed border-gray-300 px-6 pt-5 pb-6">
+                  <div class="space-y-1 text-center">
+                    <!-- Image preview -->
+                    <img *ngIf="product.image" [src]="product.image" class="mx-auto max-w-[200px]" alt="Preview">
+
+                    <div class="flex text-sm text-gray-600">
+                      <label for="image" class="relative cursor-pointer rounded-md bg-white font-medium text-indigo-600 focus-within:outline-none focus-within:ring-2 focus-within:ring-indigo-500 focus-within:ring-offset-2 hover:text-indigo-500">
+                        <span>Upload an image</span>
+                        <input
+                          accept="image/*"
+                          id="image" name="image" type="file"
+                               (change)="handleImageUpload($event)" class="sr-only">
+                      </label>
+                      <p class="pl-1">or drag and drop</p>
+                    </div>
+                    <p class="text-xs text-gray-500">PNG, JPG up to 5MB</p>
+                  </div>
+                </div>
+              </div>
+
+
+
+
+            </div>
+          </div>
+        </div>
+
+        <div class="pt-5">
+          <button
+            type="submit"
+            class="ml-3 inline-flex justify-center rounded-md border border-transparent bg-indigo-600 py-2 px-4 text-sm font-medium text-white shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
+          >
+            Save
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
