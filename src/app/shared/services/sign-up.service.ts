@@ -74,6 +74,7 @@ export class SignUpService {
           : role === 'ministry'
           ? 'ministry'
           : '',
+      isFirstLogin: role === 'merchant',
     };
 
     // Check if the email is already in use

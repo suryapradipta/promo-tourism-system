@@ -13,7 +13,9 @@
         *ngFor="let product of products"
         class="transform duration-500 hover:-translate-y-2 cursor-pointer"
       >
-        <div class="relative">
+        <div
+          (click)="viewProductDetails(product)"
+          class="relative">
           <div class="relative h-72 w-full overflow-hidden rounded-lg">
             <img
               src="assets/images/{{ product.image }}"
@@ -26,10 +28,10 @@
             class="mt-4 flex items-center justify-between space-x-8 text-sm font-medium text-gray-900"
           >
             <h3>
-              <a href="#">
+              <p>
                 <span aria-hidden="true" class="absolute inset-0"></span>
                 {{ product.name }}
-              </a>
+              </p>
             </h3>
 
 
@@ -88,13 +90,6 @@
           </div>
         </div>
 
-        <div class="mt-6">
-          <a
-            (click)="viewProductDetails(product)"
-            class="relative flex items-center justify-center rounded-md border border-transparent bg-gray-100 py-2 px-8 text-sm font-medium text-gray-900 hover:bg-gray-200"
-            >Book now<span class="sr-only">, {{ product.name }}</span></a
-          >
-        </div>
       </div>
     </div>
   </div>

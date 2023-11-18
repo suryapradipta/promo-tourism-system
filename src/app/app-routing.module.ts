@@ -15,6 +15,9 @@ import { ReceiptComponent } from './pages/customer/dashboard/receipt/receipt.com
 import {
   ReviewProductComponent
 } from "./pages/customer/menus/review-product/review-product.component";
+import {
+  ChangePasswordComponent
+} from "./pages/customer/menus/auth/change-password/change-password.component";
 
 const routes: Routes = [
   { path: '', component: DashboardComponent },
@@ -25,6 +28,7 @@ const routes: Routes = [
   { path: 'product/:id', component: ProductDetailComponent },
   { path: 'receipt', component: ReceiptComponent },
   { path: 'review', component: ReviewProductComponent },
+  { path: 'change-password', component: ChangePasswordComponent },
 
   {
     path: 'ministry-dashboard',

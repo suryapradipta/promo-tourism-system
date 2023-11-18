@@ -72,7 +72,11 @@ export class SignInComponent implements OnInit {
         switch (user.role) {
           case 'ministry':
           case 'merchant':
-            this.router.navigate(['/ministry-dashboard']);
+            if (this.authService.isFirstLogin(this.loginForm.value.email)) {
+              this.router.navigate(['/change-password']);
+            } else {
+              this.router.navigate(['/ministry-dashboard']);
+            }
             break;
           case 'customer':
             this.router.navigate(['/']);

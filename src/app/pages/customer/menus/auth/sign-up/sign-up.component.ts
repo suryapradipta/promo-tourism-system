@@ -9,6 +9,7 @@ import {
 import {Router} from "@angular/router";
 import Swal from "sweetalert2";
 import {
+  NotificationService,
   SignUpService
 } from "../../../../../shared/services";
 import {AuthModel} from "../../../../../shared/models";
@@ -26,7 +27,8 @@ export class SignUpComponent implements OnInit {
 
   constructor(private formBuilder: FormBuilder,
               private router: Router,
-              private usersService: SignUpService,) {
+              private usersService: SignUpService,
+              private notificationService:NotificationService) {
   }
 
   ngOnInit(): void {
@@ -69,39 +71,12 @@ export class SignUpComponent implements OnInit {
       if (isUserRegistered) {
         this.router.navigate(["/sign-in"]);
 
-        this.handleRegistrationSuccess()
+        this.notificationService.showSuccessMessage('Register successful!')
       } else {
-        this.handleEmailInUse()
+        this.notificationService.showEmailInUseMessage();
       }
     } else {
-      this.handleInvalidForm();
+      this.notificationService.showErrorMessage('Register failed. Please check your credentials.');
     }
   }
-
-
-  private handleInvalidForm = (): void => {
-    Swal.fire({
-      icon: 'error',
-      title: 'Oops...',
-      text: 'Register failed. Please check your credentials.',
-    });
-  };
-
-  private handleEmailInUse = (): void => {
-    Swal.fire({
-      icon: 'error',
-      title: 'Email Already in Use',
-      text: 'The email address you provided is already registered in our system. Please use a different email address.',
-    });
-  };
-
-  private handleRegistrationSuccess = (): void => {
-    Swal.fire({
-      position: 'top-end',
-      icon: 'success',
-      title: 'Register successful!',
-      showConfirmButton: false,
-      timer: 1500
-    });
-  };
 }

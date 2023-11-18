@@ -26,6 +26,7 @@ import { ReceiptComponent } from './pages/customer/dashboard/receipt/receipt.com
 import { MobileMenuComponent } from './pages/customer/dashboard/header/mobile-menu/mobile-menu.component';
 import { HeroComponent } from './pages/customer/dashboard/hero/hero.component';
 import { ReviewProductComponent } from './pages/customer/menus/review-product/review-product.component';
+import { ChangePasswordComponent } from './pages/customer/menus/auth/change-password/change-password.component';
 
 @NgModule({
   declarations: [
@@ -51,6 +52,7 @@ import { ReviewProductComponent } from './pages/customer/menus/review-product/re
     MobileMenuComponent,
     HeroComponent,
     ReviewProductComponent,
+    ChangePasswordComponent,
   ],
   imports: [
     BrowserModule,

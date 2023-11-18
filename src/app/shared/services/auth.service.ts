@@ -37,6 +37,7 @@ export class AuthService {
     this.users = JSON.parse(localStorage.getItem('users')) || [];
   }
 
+
   /**
    * Get the current user data.
    *
@@ -94,5 +95,27 @@ export class AuthService {
   isLoggedIn(): boolean {
     const token = localStorage.getItem('currentUser');
     return !!token;
+  }
+
+  isFirstLogin(email: string): boolean {
+    const merchant = this.users.find((m) => m.email === email);
+    return merchant ? merchant.isFirstLogin : false;
+  }
+
+  updatePassword(email: string, newPassword: string): void {
+    const merchant = this.users.find((m) => m.email === email);
+    if (merchant) {
+      merchant.password = newPassword;
+      merchant.isFirstLogin = false;
+      localStorage.setItem('users', JSON.stringify(this.users));
+
+    }
+  }
+
+  checkPassword(email: string, password: string): boolean {
+    const user = this.users.find((u) => u.email === email);
+
+    // Check if the user exists and the entered password matches the stored password
+    return user && user.password === password;
   }
 }
