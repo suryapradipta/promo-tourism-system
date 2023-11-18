@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { ProductModel } from '../../../../../../shared/models';
 import { ActivatedRoute, Router } from '@angular/router';
 import {
+  AuthService,
   NotificationService,
   ProductListService,
 } from '../../../../../../shared/services';
@@ -21,13 +22,15 @@ export class AddEditProductComponent implements OnInit {
     name: '',
     price: 0,
     reviews: [],
+    merchantId: '',
   };
 
   constructor(
     private route: ActivatedRoute,
     private router: Router,
     private productService: ProductListService,
-    private alert: NotificationService
+    private alert: NotificationService,
+    private authService:AuthService
   ) {}
 
   ngOnInit(): void {
@@ -36,6 +39,7 @@ export class AddEditProductComponent implements OnInit {
       this.product = this.productService.getProductById(productId);
     }
   }
+
   handleImageUpload(event: any) {
     const file = event.target.files[0];
     if (file) {
@@ -53,12 +57,15 @@ export class AddEditProductComponent implements OnInit {
       );
       return;
     }
+    const merchantId = this.authService.getCurrentUser().id;
+    this.product.merchantId = merchantId;
+
     if (this.product.id) {
       this.alert.showSuccessMessage('Update product successful!');
       this.productService.updateProduct(this.product);
     } else {
       this.alert.showSuccessMessage('Add product successful!');
-      this.productService.addProduct(this.product);
+      this.productService.addProduct(this.product, merchantId);
     }
 
     this.router.navigate(['/ministry-dashboard/manage-product']);

@@ -28,7 +28,8 @@ export class AuthService {
 
     this.signUpService.register('customer@gmail.com', 'customer', 'customer');
     this.signUpService.register('ministry@gmail.com', 'ministry', 'ministry');
-    this.signUpService.register('merchant@gmail.com', 'merchant', 'merchant');
+    this.signUpService.register('merchant1@gmail.com', 'merchant', 'merchant');
+    this.signUpService.register('merchant2@gmail.com', 'merchant', 'merchant');
   }
 
   /**

@@ -1,13 +1,6 @@
-/**
- * This service manages the list of products, providing functionality for retrieving,
- * adding, and initializing product data. It uses local storage to persist product information.
- *
- * @author I Nyoman Surya Pradipta (E1900344)
- */
-
-import { Injectable } from '@angular/core';
+import {Injectable} from '@angular/core';
 import {ProductModel, ReviewModel} from '../models';
-import { v4 as uuidv4 } from 'uuid';
+import {v4 as uuidv4} from 'uuid';
 import {Observable} from "rxjs";
 
 @Injectable({
@@ -38,6 +31,7 @@ export class ProductListService {
           image: 'assets/images/tour-package1.jpg',
           category: "cruise",
           reviews: [],
+          merchantId:'',
         },
         {
           id: uuidv4(),
@@ -48,6 +42,7 @@ export class ProductListService {
           image: 'assets/images/tour-package2.jpg',
           category: "shopping",
           reviews: [],
+          merchantId:'',
         },
         {
           id: uuidv4(),
@@ -58,6 +53,7 @@ export class ProductListService {
           image: 'assets/images/tour-package3.jpg',
           category: "diving",
           reviews: [],
+          merchantId:'',
         },
         {
           id: uuidv4(),
@@ -67,6 +63,7 @@ export class ProductListService {
           image: 'assets/images/tour-package4.jpg',
           category: "shopping",
           reviews: [],
+          merchantId:'',
         },
         {
           id: uuidv4(),
@@ -76,6 +73,7 @@ export class ProductListService {
           image: 'assets/images/tour-package5.jpg',
           category: "cruise",
           reviews: [],
+          merchantId:'',
         },
         {
           id: uuidv4(),
@@ -85,6 +83,7 @@ export class ProductListService {
           image: 'assets/images/tour-package6.jpg',
           category: "shopping",
           reviews: [],
+          merchantId:'',
         },
         {
           id: uuidv4(),
@@ -94,6 +93,7 @@ export class ProductListService {
           image: 'assets/images/tour-package7.jpg',
           category: "homestay",
           reviews: [],
+          merchantId:'',
         },
         {
           id: uuidv4(),
@@ -103,6 +103,7 @@ export class ProductListService {
           image: 'assets/images/tour-package8.jpg',
           category: "honeymoon",
           reviews: [],
+          merchantId:'',
         },
       ];
 
@@ -112,45 +113,31 @@ export class ProductListService {
     }
   }
 
-  /**
-   * Private method to load product data from local storage.
-   */
   private loadProductsData() {
     this.products = JSON.parse(localStorage.getItem('products')) || [];
   }
 
-  /**
-   * Get the current list of products.
-   *
-   * @returns {ProductModel[]} - Array of product data.
-   */
   getProductsData(): ProductModel[] {
     this.loadProductsData();
     return this.products;
   }
 
-  /**
-   * Private method to save product data to local storage.
-   *
-   * @param {ProductModel} product - The product to be saved.
-   */
+  getProductsByMerchantId(merchantId: string): ProductModel[] {
+    return this.products.filter(product => product.merchantId === merchantId);
+  }
+
+
   private saveProductsData(product: ProductModel) {
     this.products.push(product);
     localStorage.setItem('products', JSON.stringify(this.products));
   }
 
-  /**
-   * Get a product by its unique identifier.
-   *
-   * @param {string} id - The unique identifier of the product.
-   * @returns {ProductModel | undefined} - The product with the specified ID or undefined if not found.
-   */
   getProductById(id: string): ProductModel | undefined {
     return this.products.find((product) => product.id === id);
   }
 
-  addProduct(product: ProductModel): void {
-
+  addProduct(product: ProductModel, merchantId: string): void {
+    product.merchantId = merchantId;
     product.id = uuidv4();
     this.saveProductsData(product);
   }
@@ -160,16 +147,17 @@ export class ProductListService {
     // Add logic to update the product in the database
     const index = this.products.findIndex((p) => p.id === product.id);
     if (index !== -1) {
+      product.merchantId = this.products[index].merchantId;
       this.products[index] = product;
       localStorage.setItem('products', JSON.stringify(this.products));
     }
   }
 
-  deleteProduct(productId: string): void {
-    // Add logic to delete the product from the database
-    this.products = this.products.filter((p) => p.id !== productId);
+  deleteProduct(productId: string, merchantId: string): void {
+    this.products = this.products.filter((p) => p.id !== productId || p.merchantId !== merchantId);
     localStorage.setItem('products', JSON.stringify(this.products));
   }
+
 
   uploadImage(file: File): Observable<string> {
     const imageUrl = URL.createObjectURL(file);

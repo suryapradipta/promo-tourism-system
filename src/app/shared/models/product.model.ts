@@ -8,4 +8,5 @@ export interface ProductModel {
   image: string;
   category: "diving" | "cruise" | "honeymoon" | "homestay" | "shopping";
   reviews: ReviewModel[];
+  merchantId: string;
 }

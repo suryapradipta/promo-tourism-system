@@ -1,7 +1,7 @@
 import {Component, OnInit} from '@angular/core';
-import {MerchantModel, ProductModel} from "../../../../../shared/models";
+import {ProductModel} from "../../../../../shared/models";
 import {
-  NotificationService,
+  AuthService,
   ProductListService
 } from "../../../../../shared/services";
 import {Router} from "@angular/router";
@@ -18,11 +18,12 @@ export class ManageProductComponent implements OnInit{
   constructor(
     private productService: ProductListService,
     private router: Router,
+    private authService:AuthService
 
   ) {}
 
   ngOnInit(): void {
-    this.products = this.productService.getProductsData();
+    this.products = this.productService.getProductsByMerchantId(this.authService.getCurrentUser().id);
   }
 
   addProduct(): void {
@@ -33,7 +34,7 @@ export class ManageProductComponent implements OnInit{
     this.router.navigate(['/ministry-dashboard/edit-product', product.id]);
   }
 
-  deleteProduct(productId: string): void {
+  deleteProduct(productId: string, merchantId: string): void {
     Swal.fire({
       title: 'Are you sure you want to delete this product?',
       icon: 'warning',
@@ -44,14 +45,9 @@ export class ManageProductComponent implements OnInit{
     }).then((result) => {
       if (result.isConfirmed) {
         Swal.fire('Deleted!', 'Product have been successfully deleted.', 'success');
-        this.productService.deleteProduct(productId);
-        this.products = this.productService.getProductsData();
+        this.productService.deleteProduct(productId, merchantId);
+        this.products = this.productService.getProductsByMerchantId(this.authService.getCurrentUser().id);
       }
     });
-
-
   }
-
-
-
 }
