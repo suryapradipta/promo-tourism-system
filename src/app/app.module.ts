@@ -28,6 +28,8 @@ import { ReviewProductComponent } from './pages/customer/menus/review-product/re
 import { ChangePasswordComponent } from './pages/customer/menus/auth/change-password/change-password.component';
 import { ManageProductComponent } from './pages/ministry/ministry-dashboard/menus/manage-product/manage-product.component';
 import { AddEditProductComponent } from './pages/ministry/ministry-dashboard/menus/manage-product/add-edit-product/add-edit-product.component';
+import { MerchantAnalyticsComponent } from './pages/ministry/ministry-dashboard/menus/merchant-analytics/merchant-analytics.component';
+import { MinistryAnalyticsComponent } from './pages/ministry/ministry-dashboard/menus/ministry-analytics/ministry-analytics.component';
 
 @NgModule({
   declarations: [
@@ -55,6 +57,8 @@ import { AddEditProductComponent } from './pages/ministry/ministry-dashboard/men
     ChangePasswordComponent,
     ManageProductComponent,
     AddEditProductComponent,
+    MerchantAnalyticsComponent,
+    MinistryAnalyticsComponent,
   ],
   imports: [
     BrowserModule,

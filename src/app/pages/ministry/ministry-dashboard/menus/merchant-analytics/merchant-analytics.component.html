@@ -1,0 +1,55 @@
+<div class="bg-white">
+  <div class="mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:px-8">
+    <div x-data="{ openTab: 1 }">
+      <div class="sm:hidden">
+        <label for="tabs" class="sr-only">Select a tab</label>
+        <select id="tabs" name="tabs" x-model="openTab" class="block w-full rounded-md border-gray-300 py-2 pl-3 pr-10 text-base focus:border-indigo-500 focus:outline-none focus:ring-indigo-500 sm:text-sm">
+          <option value="1">Product Sold</option>
+          <option value="2">Purchasing Power</option>
+        </select>
+      </div>
+
+      <div class="hidden sm:block">
+        <div class="border-b border-gray-200">
+          <nav class="-mb-px flex space-x-8" aria-label="Tabs">
+            <button (click)="showProductSoldChart()" x-bind:class="{ 'border-indigo-500 text-indigo-600': openTab === 1, 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300': openTab !== 1 }" x-on:click.prevent="openTab = 1" class="whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm">Product Sold</button>
+
+            <button (click)="showPurchasingPowerChart()" x-bind:class="{ 'border-indigo-500 text-indigo-600': openTab === 2, 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300': openTab !== 2 }" x-on:click.prevent="openTab = 2" class="whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm">Purchasing Power</button>
+
+          </nav>
+        </div>
+      </div>
+    </div>
+
+
+
+    <!-- Product Sold Chart -->
+    <div *ngIf="showProductSold ">
+      <canvas id="productSoldChart" ></canvas>
+    </div>
+
+    <!-- Total Spent Chart -->
+    <div *ngIf="showPurchasingPower">
+      <canvas id="purchasingPowerChart"></canvas>
+    </div>
+  </div>
+</div>
+
+
+
+
+
+
+
+
+<!--
+<h3>Product Analytics</h3>
+&lt;!&ndash; Display product analytics data for the current merchant here &ndash;&gt;
+<pre>{{ merchantProductAnalytics | json }}</pre>
+
+<h3>Purchasing Power Analytics</h3>
+&lt;!&ndash; Display purchasing power analytics data for the current merchant here &ndash;&gt;
+<pre>{{ merchantPurchasingPowerAnalytics | json }}</pre>
+-->
+
+

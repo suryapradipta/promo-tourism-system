@@ -20,4 +20,5 @@ export interface OrderModel {
   email: string;
   phoneNumber: number;
   customerID: string;
+  merchantID: string;
 }

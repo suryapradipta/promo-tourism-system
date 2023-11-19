@@ -38,14 +38,13 @@
           <!-- Menus -->
           <div class="hidden lg:ml-8 lg:block lg:self-stretch">
             <div class="flex h-full space-x-8">
-              <a
+              <button
                 *ngFor="let page of pages"
-                routerLink="{{ page.href }}"
                 class="flex items-center text-sm font-medium text-gray-700 hover:text-gray-800"
                 (click)="scrollToSection('products')"
               >
                 {{ page.name }}
-              </a>
+              </button>
             </div>
           </div>
 
@@ -113,16 +112,17 @@
                       id="user-menu-item-1"
                       role="menuitem"
                       tabindex="-1"
-                      >Review product</a
-                    >
+                      >
+                      Review product
+                    </a>
 
-                    <a
+                    <button
                       (click)="logout()"
                       class="block px-4 py-2 text-sm text-gray-700"
                       id="user-menu-item-2"
                       role="menuitem"
                       tabindex="-1"
-                      >Sign out</a
+                      >Sign out</button
                     >
                   </div>
                 </div>
