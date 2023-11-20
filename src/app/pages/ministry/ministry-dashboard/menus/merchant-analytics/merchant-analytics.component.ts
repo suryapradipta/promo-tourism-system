@@ -1,5 +1,8 @@
 import {Component, OnInit} from '@angular/core';
-import {AnalyticsService} from "../../../../../shared/services";
+import {
+  AnalyticsService,
+  AuthService
+} from "../../../../../shared/services";
 import { Chart, registerables} from 'chart.js';
 
 Chart.register(...registerables);
@@ -26,12 +29,13 @@ export class MerchantAnalyticsComponent implements OnInit{
   showPurchasingPower = false;
 
 
-  constructor(private analyticsService: AnalyticsService) {}
+  constructor(private analyticsService: AnalyticsService,
+              private authService: AuthService) {}
 
   ngOnInit(): void {
     // Get analytics data for the current merchant
-    this.merchantProductAnalytics = this.analyticsService.getMerchantProductAnalytics();
-    this.merchantPurchasingPowerAnalytics = this.analyticsService.getMerchantPurchasingPowerAnalytics();
+    this.merchantProductAnalytics = this.analyticsService.getMerchantProductAnalytics(this.authService.getCurrentUser().id);
+    this.merchantPurchasingPowerAnalytics = this.analyticsService.getMerchantPurchasingPowerAnalytics(this.authService.getCurrentUser().id);
   }
   ngAfterViewInit(): void {
     // Call the chart functions after the view has been initialized

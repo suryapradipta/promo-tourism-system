@@ -16,8 +16,8 @@ export class AnalyticsService {
 
 
 // Get analytics data for products sold for the current merchant
-  getMerchantProductAnalytics() {
-    const merchantId = this.authService.getCurrentUser().id;
+  getMerchantProductAnalytics(merchantId: string) {
+    // const merchantId = this.authService.getCurrentUser().id;
 
     const products = this.productService.getProductsData();
     const merchantProducts = products.filter((p) => p.merchantId === merchantId);
@@ -37,8 +37,8 @@ export class AnalyticsService {
   }
 
   // Get analytics data for customers purchasing power for the current merchant
-  getMerchantPurchasingPowerAnalytics() {
-    const merchantId = this.authService.getCurrentUser().id;
+  getMerchantPurchasingPowerAnalytics(merchantId: string) {
+    // const merchantId = this.authService.getCurrentUser().id;
 
     const orders = this.orderService.getOrdersByMerchant(merchantId);
 
@@ -62,13 +62,12 @@ export class AnalyticsService {
     return customerPurchasingPower;
   }
 
-  /*// Get analytics data for all merchants
+  // Get analytics data for all merchants
   getAllMerchantAnalytics() {
     const allMerchants = this.merchantsService.getMerchantsData();
     const allAnalytics = allMerchants.map((merchant) => {
       const productAnalytics = this.getMerchantProductAnalytics(merchant.id);
       const purchasingPowerAnalytics = this.getMerchantPurchasingPowerAnalytics(merchant.id);
-
       return {
         merchant,
         productAnalytics,
@@ -77,7 +76,7 @@ export class AnalyticsService {
     });
 
     return allAnalytics;
-  }*/
+  }
 
 
 }

@@ -2,6 +2,7 @@ import {Injectable} from '@angular/core';
 import {v4 as uuidv4} from 'uuid';
 import {MerchantModel} from '../models';
 import {MERCHANTS} from "../mock/mock-merchants";
+import {PRODUCTS} from "../mock/mock-products";
 
 @Injectable({
   providedIn: 'root',
@@ -16,8 +17,10 @@ export class RegisterMerchantsService {
   }
 
   private initializeData() {
-    for (const item of MERCHANTS) {
-      this.saveMerchantsData(item);
+    if (this.merchants.length === 0) {
+      for (const item of MERCHANTS) {
+        this.saveMerchantsData(item);
+      }
     }
   }
 

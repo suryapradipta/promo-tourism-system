@@ -1,9 +1,8 @@
 import {Injectable} from '@angular/core';
-import {MerchantModel, ProductModel, ReviewModel} from '../models';
+import {ProductModel, ReviewModel} from '../models';
 import {v4 as uuidv4} from 'uuid';
 import {Observable} from "rxjs";
 import {PRODUCTS} from "../mock/mock-products";
-import {RegisterMerchantsService} from "./register-merchants.service";
 
 @Injectable({
   providedIn: 'root',
@@ -58,7 +57,7 @@ export class ProductListService {
 
 
   updateProduct(product: ProductModel): void {
-    // Add logic to update the product in the database
+
     const index = this.products.findIndex((p) => p.id === product.id);
     if (index !== -1) {
       product.merchantId = this.products[index].merchantId;
