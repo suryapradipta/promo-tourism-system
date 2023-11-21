@@ -16,8 +16,10 @@ export class SignUpService {
   }
 
   private initializeData() {
-    for (const user of USERS) {
-      this.saveUsersData(user)
+    if (this.users.length === 0) {
+      for (const user of USERS) {
+        this.saveUsersData(user)
+      }
     }
   }
 

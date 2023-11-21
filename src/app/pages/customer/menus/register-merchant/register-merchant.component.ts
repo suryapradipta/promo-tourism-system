@@ -86,7 +86,6 @@ export class RegisterMerchantComponent implements OnInit {
     for (let i = 0; i < event.target.files.length; i++) {
       this.fileNames.push(event.target.files[i].name);
     }
-    // console.log("filename:", this.file[0].name)
   }
 
   /**

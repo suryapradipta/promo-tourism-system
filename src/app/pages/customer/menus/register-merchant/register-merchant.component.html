@@ -1,9 +1,13 @@
+<!-- Header Component -->
 <app-header />
 
+<!-- Main Content Section -->
 <div class="bg-gray-100">
   <div class="mx-auto max-w-7xl py-6 sm:px-6 lg:px-8">
+    <!-- Company Information Section -->
     <div class="md:grid md:grid-cols-3 md:gap-6">
       <div class="md:col-span-1">
+        <!-- Company Information Header -->
         <div class="px-4 sm:px-0">
           <h3 class="text-lg font-medium leading-6 text-gray-900">
             Company Information
@@ -18,6 +22,8 @@
           (submit)="onRegisterMerchant(merchantForm)"
           #merchantForm="ngForm"
         >
+          <!-- Form Fields for Company Name, Phone Number, Email, and Company Description -->
+          <!-- Validation messages are displayed if there are errors -->
           <div class="overflow-hidden shadow sm:rounded-md">
             <div class="bg-white px-4 py-5 sm:p-6">
               <div class="grid grid-cols-6 gap-6">
@@ -161,6 +167,7 @@
           </div>
         </form>
 
+        <!-- Error Message for Incomplete Form -->
         <div
           *ngIf="merchantForm.form.invalid && !submitted"
           class="mx-auto max-w-4xl py-6"
@@ -178,7 +185,11 @@
                 >
                   <path
                     fill-rule="evenodd"
-                    d="M8.485 2.495c.673-1.167 2.357-1.167 3.03 0l6.28 10.875c.673 1.167-.17 2.625-1.516 2.625H3.72c-1.347 0-2.189-1.458-1.515-2.625L8.485 2.495zM10 5a.75.75 0 01.75.75v3.5a.75.75 0 01-1.5 0v-3.5A.75.75 0 0110 5zm0 9a1 1 0 100-2 1 1 0 000 2z"
+                    d="M8.485 2.495c.673-1.167 2.357-1.167 3.03 0l6.28 
+                    10.875c.673 1.167-.17 2.625-1.516 2.625H3.72c-1.347 
+                    0-2.189-1.458-1.515-2.625L8.485 2.495zM10 5a.75.75 0 
+                    01.75.75v3.5a.75.75 0 01-1.5 0v-3.5A.75.75 0 0110 
+                    5zm0 9a1 1 0 100-2 1 1 0 000 2z"
                     clip-rule="evenodd"
                   ></path>
                 </svg>

@@ -11,24 +11,12 @@ import { DetailAccountComponent } from './pages/ministry/ministry-dashboard/menu
 import { ProductListComponent } from './pages/customer/dashboard/product-list/product-list.component';
 import { ProductDetailComponent } from './pages/customer/dashboard/product-detail/product-detail.component';
 import { ReceiptComponent } from './pages/customer/dashboard/receipt/receipt.component';
-import {
-  ReviewProductComponent
-} from "./pages/customer/menus/review-product/review-product.component";
-import {
-  ChangePasswordComponent
-} from "./pages/customer/menus/auth/change-password/change-password.component";
-import {
-  ManageProductComponent
-} from "./pages/ministry/ministry-dashboard/menus/manage-product/manage-product.component";
-import {
-  AddEditProductComponent
-} from "./pages/ministry/ministry-dashboard/menus/manage-product/add-edit-product/add-edit-product.component";
-import {
-  MerchantAnalyticsComponent
-} from "./pages/ministry/ministry-dashboard/menus/merchant-analytics/merchant-analytics.component";
-import {
-  MinistryAnalyticsComponent
-} from "./pages/ministry/ministry-dashboard/menus/ministry-analytics/ministry-analytics.component";
+import { ReviewProductComponent } from './pages/customer/menus/review-product/review-product.component';
+import { ChangePasswordComponent } from './pages/customer/menus/auth/change-password/change-password.component';
+import { ManageProductComponent } from './pages/ministry/ministry-dashboard/menus/manage-product/manage-product.component';
+import { AddEditProductComponent } from './pages/ministry/ministry-dashboard/menus/manage-product/add-edit-product/add-edit-product.component';
+import { MerchantAnalyticsComponent } from './pages/ministry/ministry-dashboard/menus/merchant-analytics/merchant-analytics.component';
+import { MinistryAnalyticsComponent } from './pages/ministry/ministry-dashboard/menus/ministry-analytics/ministry-analytics.component';
 
 const routes: Routes = [
   { path: '', component: DashboardComponent },

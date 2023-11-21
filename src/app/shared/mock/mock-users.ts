@@ -10,21 +10,21 @@ export const USERS: AuthModel[] =
       role: 'customer',
       isFirstLogin: false
     }, {
-    id: 'ministry',
+    id: uuidv4(),
     email: 'ministry@gmail.com',
     password: 'ministry',
     role: 'ministry',
     isFirstLogin: false
   },
     {
-      id: 'default1',
+      id: 'defaultMerchantID1',
       email: 'merchant1@gmail.com',
       password: 'merchant',
       role: 'merchant',
       isFirstLogin: false
     },
     {
-      id: 'default2',
+      id: 'defaultMerchantID2',
       email: 'merchant2@gmail.com',
       password: 'merchant',
       role: 'merchant',

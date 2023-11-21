@@ -14,7 +14,7 @@ export const PRODUCTS: ProductModel[] = [
     image: 'assets/images/tour-package1.jpg',
     category: "cruise",
     reviews: [],
-    merchantId:'default1',
+    merchantId:'defaultMerchantID1',
   },
   {
     id: uuidv4(),
@@ -25,7 +25,7 @@ export const PRODUCTS: ProductModel[] = [
     image: 'assets/images/tour-package2.jpg',
     category: "shopping",
     reviews: [],
-    merchantId:'default1',
+    merchantId:'defaultMerchantID1',
   },
   {
     id: uuidv4(),
@@ -36,7 +36,7 @@ export const PRODUCTS: ProductModel[] = [
     image: 'assets/images/tour-package3.jpg',
     category: "diving",
     reviews: [],
-    merchantId:'default1',
+    merchantId:'defaultMerchantID1',
   },
   {
     id: uuidv4(),
@@ -46,7 +46,7 @@ export const PRODUCTS: ProductModel[] = [
     image: 'assets/images/tour-package4.jpg',
     category: "shopping",
     reviews: [],
-    merchantId:'default1',
+    merchantId:'defaultMerchantID1',
   },
   {
     id: uuidv4(),
@@ -56,7 +56,7 @@ export const PRODUCTS: ProductModel[] = [
     image: 'assets/images/tour-package5.jpg',
     category: "cruise",
     reviews: [],
-    merchantId:'default2',
+    merchantId:'defaultMerchantID2',
   },
   {
     id: uuidv4(),
@@ -66,7 +66,7 @@ export const PRODUCTS: ProductModel[] = [
     image: 'assets/images/tour-package6.jpg',
     category: "shopping",
     reviews: [],
-    merchantId:'default2',
+    merchantId:'defaultMerchantID2',
   },
   {
     id: uuidv4(),
@@ -76,7 +76,7 @@ export const PRODUCTS: ProductModel[] = [
     image: 'assets/images/tour-package7.jpg',
     category: "homestay",
     reviews: [],
-    merchantId:'default2',
+    merchantId:'defaultMerchantID2',
   },
   {
     id: uuidv4(),
@@ -86,7 +86,7 @@ export const PRODUCTS: ProductModel[] = [
     image: 'assets/images/tour-package8.jpg',
     category: "honeymoon",
     reviews: [],
-    merchantId:'default2',
+    merchantId:'defaultMerchantID2',
   },
 ];
 

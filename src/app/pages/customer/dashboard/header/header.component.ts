@@ -1,10 +1,12 @@
 /**
- * This Angular component represents the header section of the application,
- * including navigation links, user authentication status, and logout functionality.
+ *
+ * This component represents the header of the application, including navigation links,
+ * user authentication status, and logout functionality. It utilizes the AuthService
+ * for managing user authentication and the Router for navigation. Additionally, it
+ * uses the SweetAlert2 library for a user-friendly logout confirmation dialog.
  *
  * @author I Nyoman Surya Pradipta (E1900344)
  */
-
 import { Component } from '@angular/core';
 import { AuthService } from '../../../../shared/services';
 import { Router } from '@angular/router';
@@ -16,7 +18,7 @@ import Swal from 'sweetalert2';
   styleUrls: ['./header.component.css'],
 })
 export class HeaderComponent {
-  // Array of navigation pages
+  // Array of page links in the header
   pages = [
     { name: 'Products', href: '/product-list#products' },
     { name: 'Company', href: '#' },
@@ -27,8 +29,8 @@ export class HeaderComponent {
    * Constructor function for HeaderComponent.
    *
    * @constructor
-   * @param {AuthService} authService - The service responsible for user authentication.
-   * @param {Router} router - The Angular router for navigation.
+   * @param {AuthService} authService - Service for managing user authentication.
+   * @param {Router} router - Angular Router service for navigation.
    */
   constructor(private authService: AuthService, private router: Router) {}
 

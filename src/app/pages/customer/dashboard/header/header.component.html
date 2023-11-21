@@ -38,6 +38,7 @@
           <!-- Menus -->
           <div class="hidden lg:ml-8 lg:block lg:self-stretch">
             <div class="flex h-full space-x-8">
+              <!-- Navigation buttons for different pages -->
               <button
                 *ngFor="let page of pages"
                 class="flex items-center text-sm font-medium text-gray-700 hover:text-gray-800"
@@ -48,10 +49,12 @@
             </div>
           </div>
 
+          <!-- User Authentication Section -->
           <div class="ml-auto flex items-center">
             <div
               class="hidden lg:flex lg:flex-1 lg:items-center lg:justify-end lg:space-x-6"
             >
+              <!-- Display Sign In link if user is not logged in -->
               <div *ngIf="!isLogged()">
                 <a
                   routerLink="/sign-in"
@@ -60,9 +63,11 @@
                 >
               </div>
 
+              <!-- Display User Profile and Logout options if user is logged in -->
               <div *ngIf="isLogged()">
                 <div class="relative ml-3" x-data="{ open: false }">
                   <div>
+                    <!-- User Profile Button -->
                     <button
                       type="button"
                       class="flex max-w-xs items-center rounded-full bg-white text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
@@ -80,6 +85,7 @@
                     </button>
                   </div>
 
+                  <!-- User Menu Dropdown -->
                   <div
                     aria-labelledby="user-menu-button"
                     aria-orientation="vertical"
@@ -97,6 +103,7 @@
                     x-transition:leave-end="transform opacity-0 scale-95"
                     x-transition:leave-start="transform opacity-100 scale-100"
                   >
+                    <!-- User Profile Link -->
                     <a
                       class="block px-4 py-2 text-sm text-gray-700"
                       routerLink="/"
@@ -106,37 +113,39 @@
                       >Your Profile</a
                     >
 
+                    <!-- Review Product Link -->
                     <a
                       class="block px-4 py-2 text-sm text-gray-700"
                       routerLink="/review"
                       id="user-menu-item-1"
                       role="menuitem"
                       tabindex="-1"
-                      >
+                    >
                       Review product
                     </a>
 
+                    <!-- Logout Button -->
                     <button
                       (click)="logout()"
                       class="block px-4 py-2 text-sm text-gray-700"
                       id="user-menu-item-2"
                       role="menuitem"
                       tabindex="-1"
-                      >Sign out</button
                     >
+                      Sign out
+                    </button>
                   </div>
                 </div>
               </div>
 
               <span class="h-6 w-px bg-gray-200" aria-hidden="true"></span>
+              <!-- Register Merchant Link -->
               <a
                 routerLink="/register-merchant"
                 class="text-sm font-medium text-gray-700 hover:text-gray-800"
               >
                 Register Merchant
               </a>
-
-
             </div>
           </div>
         </div>
