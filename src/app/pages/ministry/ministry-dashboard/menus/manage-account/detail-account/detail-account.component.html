@@ -1,13 +1,17 @@
 <section>
+  <!-- Container for Account Management -->
   <div class="bg-white">
+    <!-- Header Section -->
     <div
       class="mx-auto max-w-7xl px-4 sm:px-6 md:px-8 border-b border-gray-200 pb-5"
     >
       <h1 class="text-2xl font-semibold text-gray-900">Manage Account</h1>
     </div>
 
+    <!-- Main Content Section -->
     <div class="py-12 px-4 sm:px-6 lg:px-8">
       <div>
+        <!-- Applicant Information Header -->
         <h3 class="text-lg font-medium leading-6 text-gray-900">
           Applicant Information
         </h3>
@@ -17,6 +21,7 @@
       </div>
 
       <div class="mt-5 border-t border-gray-200">
+        <!-- Details List -->
         <dl class="sm:divide-y sm:divide-gray-200" *ngIf="merchant">
           <div class="py-4 sm:grid sm:grid-cols-3 sm:gap-4 sm:py-5">
             <dt class="text-sm font-medium text-gray-500">Full name</dt>
@@ -25,9 +30,7 @@
             </dd>
           </div>
           <div class="py-4 sm:grid sm:grid-cols-3 sm:gap-4 sm:py-5">
-            <dt class="text-sm font-medium text-gray-500">
-              Contact Number
-            </dt>
+            <dt class="text-sm font-medium text-gray-500">Contact Number</dt>
             <dd class="mt-1 text-sm text-gray-900 sm:col-span-2 sm:mt-0">
               {{ merchant.contact_number }}
             </dd>
@@ -53,6 +56,7 @@
             </dd>
           </div>
 
+          <!-- Attachments Section -->
           <div class="py-4 sm:grid sm:grid-cols-3 sm:gap-4 sm:py-5">
             <dt class="text-sm font-medium text-gray-500">Attachments</dt>
             <dd
@@ -83,15 +87,14 @@
                       ></path>
                     </svg>
 
-                    <span class="ml-2 w-0 flex-1 truncate">{{
-                      document
-                      }}</span>
+                    <!-- Document Name -->
+                    <span class="ml-2 w-0 flex-1 truncate">{{ document }}</span>
                   </div>
                   <div class="ml-4 flex-shrink-0">
                     <a
                       href="#"
                       class="font-medium text-indigo-600 hover:text-indigo-500"
-                    >Download</a
+                      >Download</a
                     >
                   </div>
                 </li>

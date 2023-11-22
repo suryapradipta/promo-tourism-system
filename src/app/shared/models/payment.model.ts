@@ -1,12 +1,15 @@
 /**
- * Interface definition for the PaymentModel, representing the structure of payment-related data.
+ * Defines the structure of a payment object, capturing essential information
+ * related to a transaction, such as order details, payment amount, currency,
+ * payment method, PayPal order ID, transaction status, and timestamps.
+ *
  * @interface PaymentModel
- * @property {string} orderId - Unique identifier for the associated order.
+ * @property {string} orderId - Unique identifier for the order associated with the payment.
  * @property {number} amount - The amount of the payment.
- * @property {string} currency_code - The currency code used for the payment.
- * @property {string} paymentMethod - The method used for the payment (e.g., credit card, PayPal).
- * @property {string} paypalOrderId - Unique identifier for the PayPal transaction, if applicable.
- * @property {string} status - Current status of the payment (e.g., pending, completed).
+ * @property {string} currency_code - The currency code for the payment amount.
+ * @property {string} paymentMethod - The payment method used for the transaction.
+ * @property {string} paypalOrderId - The PayPal order ID associated with the payment.
+ * @property {string} status - The status of the payment transaction.
  * @property {string} create_time - Timestamp indicating the creation time of the payment.
  * @property {string} update_time - Timestamp indicating the last update time of the payment.
  */

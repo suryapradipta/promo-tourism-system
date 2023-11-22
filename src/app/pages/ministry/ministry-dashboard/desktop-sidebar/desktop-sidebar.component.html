@@ -1,4 +1,5 @@
 <div class="hidden md:fixed md:inset-y-0 md:flex md:w-64 md:flex-col">
+  <!-- Sidebar Header -->
   <div class="flex min-h-0 flex-1 flex-col border-r border-gray-200 bg-white">
     <div class="flex flex-1 flex-col overflow-y-auto pt-5 pb-4">
       <div class="flex flex-shrink-0 items-center px-4">
@@ -9,7 +10,9 @@
         />
       </div>
 
+      <!-- Sidebar Navigation Links -->
       <nav class="mt-5 flex-1 space-y-1 bg-white px-2">
+        <!-- Dashboard Link -->
         <div
           [ngClass]="{
             'bg-gray-100 text-gray-900 group flex items-center px-2 py-2 text-sm font-medium rounded-md':
@@ -46,6 +49,7 @@
           </a>
         </div>
 
+        <!-- Manage Account Link (visible for ministry users) -->
         <div
           *ngIf="isMinistry()"
           [ngClass]="{
@@ -79,6 +83,41 @@
           </a>
         </div>
 
+        <!-- Analytic Reports Link (visible for ministry users) -->
+        <div
+          *ngIf="isMinistry()"
+          [ngClass]="{
+            'bg-gray-100 text-gray-900 group flex items-center px-2 py-2 text-sm font-medium rounded-md':
+              activeLink === 'analytic-reports',
+            'text-gray-600 hover:bg-gray-50 hover:text-gray-900 group flex items-center px-2 py-2 text-sm font-medium rounded-md':
+              activeLink !== 'analytic-reports'
+          }"
+          (click)="setActiveLink('analytic-reports')"
+        >
+          <a
+            routerLink="/ministry-dashboard/ministry-analytics"
+            class="text-gray-600 hover:bg-gray-50 hover:text-gray-900 group flex items-center px-2 py-2 text-sm font-medium rounded-md"
+          >
+            <svg
+              class="text-gray-400 group-hover:text-gray-500 mr-3 flex-shrink-0 h-6 w-6"
+              xmlns="http://www.w3.org/2000/svg"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke-width="1.5"
+              stroke="currentColor"
+              aria-hidden="true"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                d="M3 13.125C3 12.504 3.504 12 4.125 12h2.25c.621 0 1.125.504 1.125 1.125v6.75C7.5 20.496 6.996 21 6.375 21h-2.25A1.125 1.125 0 013 19.875v-6.75zM9.75 8.625c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125v11.25c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 01-1.125-1.125V8.625zM16.5 4.125c0-.621.504-1.125 1.125-1.125h2.25C20.496 3 21 3.504 21 4.125v15.75c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 01-1.125-1.125V4.125z"
+              />
+            </svg>
+            Analytic Reports
+          </a>
+        </div>
+
+        <!-- Manage Product Link (visible for merchant users) -->
         <div
           *ngIf="isMerchant()"
           [ngClass]="{
@@ -95,17 +134,23 @@
           >
             <svg
               class="text-gray-400 group-hover:text-gray-500 mr-3 flex-shrink-0 h-6 w-6"
-              xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
-              <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 10.5V6a3.75 3.75 0 10-7.5 0v4.5m11.356-1.993l1.263 12c.07.665-.45 1.243-1.119 1.243H4.25a1.125 1.125 0 01-1.12-1.243l1.264-12A1.125 1.125 0 015.513 7.5h12.974c.576 0 1.059.435 1.119 1.007zM8.625 10.5a.375.375 0 11-.75 0 .375.375 0 01.75 0zm7.5 0a.375.375 0 11-.75 0 .375.375 0 01.75 0z" />
+              xmlns="http://www.w3.org/2000/svg"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke-width="1.5"
+              stroke="currentColor"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                d="M15.75 10.5V6a3.75 3.75 0 10-7.5 0v4.5m11.356-1.993l1.263 12c.07.665-.45 1.243-1.119 1.243H4.25a1.125 1.125 0 01-1.12-1.243l1.264-12A1.125 1.125 0 015.513 7.5h12.974c.576 0 1.059.435 1.119 1.007zM8.625 10.5a.375.375 0 11-.75 0 .375.375 0 01.75 0zm7.5 0a.375.375 0 11-.75 0 .375.375 0 01.75 0z"
+              />
             </svg>
-
             Manage Product
           </a>
         </div>
 
-
-
-
+        <!-- Analytic Reports Link (visible for merchant users) -->
         <div
           *ngIf="isMerchant()"
           [ngClass]="{
@@ -120,7 +165,6 @@
             routerLink="/ministry-dashboard/merchant-analytics"
             class="text-gray-600 hover:bg-gray-50 hover:text-gray-900 group flex items-center px-2 py-2 text-sm font-medium rounded-md"
           >
-            <!-- Heroicon name: outline/chart-bar -->
             <svg
               class="text-gray-400 group-hover:text-gray-500 mr-3 flex-shrink-0 h-6 w-6"
               xmlns="http://www.w3.org/2000/svg"
@@ -139,46 +183,12 @@
             Analytic Reports
           </a>
         </div>
-
-        <div
-          *ngIf="isMinistry()"
-          [ngClass]="{
-            'bg-gray-100 text-gray-900 group flex items-center px-2 py-2 text-sm font-medium rounded-md':
-              activeLink === 'analytic-reports',
-            'text-gray-600 hover:bg-gray-50 hover:text-gray-900 group flex items-center px-2 py-2 text-sm font-medium rounded-md':
-              activeLink !== 'analytic-reports'
-          }"
-          (click)="setActiveLink('analytic-reports')"
-        >
-          <a
-            routerLink="/ministry-dashboard/ministry-analytics"
-            class="text-gray-600 hover:bg-gray-50 hover:text-gray-900 group flex items-center px-2 py-2 text-sm font-medium rounded-md"
-          >
-            <!-- Heroicon name: outline/chart-bar -->
-            <svg
-              class="text-gray-400 group-hover:text-gray-500 mr-3 flex-shrink-0 h-6 w-6"
-              xmlns="http://www.w3.org/2000/svg"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke-width="1.5"
-              stroke="currentColor"
-              aria-hidden="true"
-            >
-              <path
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                d="M3 13.125C3 12.504 3.504 12 4.125 12h2.25c.621 0 1.125.504 1.125 1.125v6.75C7.5 20.496 6.996 21 6.375 21h-2.25A1.125 1.125 0 013 19.875v-6.75zM9.75 8.625c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125v11.25c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 01-1.125-1.125V8.625zM16.5 4.125c0-.621.504-1.125 1.125-1.125h2.25C20.496 3 21 3.504 21 4.125v15.75c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 01-1.125-1.125V4.125z"
-              />
-            </svg>
-            Analytic Reports
-          </a>
-        </div>
-
 
 
       </nav>
     </div>
 
+    <!-- Sidebar Logout Button -->
     <div class="flex flex-shrink-0 border-t border-gray-200 p-4">
       <div class="group block w-full flex-shrink-0">
         <a
@@ -199,7 +209,6 @@
               d="M15.75 9V5.25A2.25 2.25 0 0013.5 3h-6a2.25 2.25 0 00-2.25 2.25v13.5A2.25 2.25 0 007.5 21h6a2.25 2.25 0 002.25-2.25V15M12 9l-3 3m0 0l3 3m-3-3h12.75"
             />
           </svg>
-
           Log out
         </a>
       </div>

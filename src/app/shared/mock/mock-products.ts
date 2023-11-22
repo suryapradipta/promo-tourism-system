@@ -13,7 +13,14 @@ export const PRODUCTS: ProductModel[] = [
     price: 399,
     image: 'assets/images/tour-package1.jpg',
     category: "cruise",
-    reviews: [],
+    reviews: [
+      {
+        id: "defaultReviews1",
+        orderID: "",
+        rating: 5,
+        comment: "good"
+      }
+    ],
     merchantId:'defaultMerchantID1',
   },
   {
@@ -24,7 +31,14 @@ export const PRODUCTS: ProductModel[] = [
     price: 699,
     image: 'assets/images/tour-package2.jpg',
     category: "shopping",
-    reviews: [],
+    reviews: [
+      {
+        id: "defaultReviews2",
+        orderID: "",
+        rating: 3,
+        comment: "good"
+      }
+    ],
     merchantId:'defaultMerchantID1',
   },
   {
@@ -35,7 +49,14 @@ export const PRODUCTS: ProductModel[] = [
     price: 149,
     image: 'assets/images/tour-package3.jpg',
     category: "diving",
-    reviews: [],
+    reviews: [
+      {
+        id: "defaultReviews3",
+        orderID: "",
+        rating: 4,
+        comment: "good"
+      }
+    ],
     merchantId:'defaultMerchantID1',
   },
   {
@@ -45,7 +66,14 @@ export const PRODUCTS: ProductModel[] = [
     price: 200,
     image: 'assets/images/tour-package4.jpg',
     category: "shopping",
-    reviews: [],
+    reviews: [
+      {
+        id: "defaultReviews4",
+        orderID: "",
+        rating: 1,
+        comment: "good"
+      }
+    ],
     merchantId:'defaultMerchantID1',
   },
   {
@@ -55,7 +83,14 @@ export const PRODUCTS: ProductModel[] = [
     price: 269,
     image: 'assets/images/tour-package5.jpg',
     category: "cruise",
-    reviews: [],
+    reviews: [
+      {
+        id: "defaultReviews5",
+        orderID: "",
+        rating: 3,
+        comment: "good"
+      }
+    ],
     merchantId:'defaultMerchantID2',
   },
   {
@@ -65,7 +100,14 @@ export const PRODUCTS: ProductModel[] = [
     price: 90,
     image: 'assets/images/tour-package6.jpg',
     category: "shopping",
-    reviews: [],
+    reviews: [
+      {
+        id: "defaultReviews6",
+        orderID: "",
+        rating: 5,
+        comment: "good"
+      }
+    ],
     merchantId:'defaultMerchantID2',
   },
   {
@@ -75,7 +117,14 @@ export const PRODUCTS: ProductModel[] = [
     price: 69,
     image: 'assets/images/tour-package7.jpg',
     category: "homestay",
-    reviews: [],
+    reviews: [
+      {
+        id: "defaultReviews7",
+        orderID: "",
+        rating: 3,
+        comment: "good"
+      }
+    ],
     merchantId:'defaultMerchantID2',
   },
   {
@@ -85,7 +134,14 @@ export const PRODUCTS: ProductModel[] = [
     price: 125,
     image: 'assets/images/tour-package8.jpg',
     category: "honeymoon",
-    reviews: [],
+    reviews: [
+      {
+        id: "defaultReviews8",
+        orderID: "",
+        rating: 2,
+        comment: "good"
+      }
+    ],
     merchantId:'defaultMerchantID2',
   },
 ];

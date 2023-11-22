@@ -1,6 +1,7 @@
 <div class="bg-white">
   <div class="mx-auto max-w-7xl py-12 px-4 sm:px-6 lg:px-8">
     <div class="mx-auto max-w-3xl">
+      <!-- Product Form -->
       <form
         #productForm="ngForm"
         (submit)="saveProduct(productForm)"
@@ -10,7 +11,7 @@
           <div>
             <div>
               <h3 class="text-lg font-medium leading-6 text-gray-900">
-                {{ product ? "Edit" : "Add" }} Product
+                {{ product.id ? "Edit" : "Add" }} Product
               </h3>
               <p class="mt-1 text-sm text-gray-500">
                 Ensure that the information is accurate and up-to-date before
@@ -153,23 +154,38 @@
                 </div>
               </div>
 
-
-
               <div class="sm:col-span-6">
-                <label for="image"
-                       class="block text-sm font-medium text-gray-700">Image</label>
-                <div class="mt-1 flex justify-center rounded-md border-2 border-dashed border-gray-300 px-6 pt-5 pb-6">
+                <label
+                  for="image"
+                  class="block text-sm font-medium text-gray-700"
+                  >Image</label
+                >
+                <div
+                  class="mt-1 flex justify-center rounded-md border-2 border-dashed border-gray-300 px-6 pt-5 pb-6"
+                >
                   <div class="space-y-1 text-center">
                     <!-- Image preview -->
-                    <img *ngIf="product.image" [src]="product.image" class="mx-auto max-w-[200px]" alt="Preview">
+                    <img
+                      *ngIf="product.image"
+                      [src]="product.image"
+                      class="mx-auto max-w-[200px]"
+                      alt="Preview"
+                    />
 
                     <div class="flex text-sm text-gray-600">
-                      <label for="image" class="relative cursor-pointer rounded-md bg-white font-medium text-indigo-600 focus-within:outline-none focus-within:ring-2 focus-within:ring-indigo-500 focus-within:ring-offset-2 hover:text-indigo-500">
+                      <label
+                        for="image"
+                        class="relative cursor-pointer rounded-md bg-white font-medium text-indigo-600 focus-within:outline-none focus-within:ring-2 focus-within:ring-indigo-500 focus-within:ring-offset-2 hover:text-indigo-500"
+                      >
                         <span>Upload an image</span>
                         <input
                           accept="image/*"
-                          id="image" name="image" type="file"
-                               (change)="handleImageUpload($event)" class="sr-only">
+                          id="image"
+                          name="image"
+                          type="file"
+                          (change)="handleImageUpload($event)"
+                          class="sr-only"
+                        />
                       </label>
                       <p class="pl-1">or drag and drop</p>
                     </div>
@@ -177,10 +193,6 @@
                   </div>
                 </div>
               </div>
-
-
-
-
             </div>
           </div>
         </div>

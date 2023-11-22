@@ -1,10 +1,7 @@
 /**
- * This component handles user sign-in functionality, including form validation,
- * authentication, and navigation based on user roles.
- *
- * @author I Nyoman Surya Pradipta (E1900344)
+ * This component handles user login functionality, utilizing the AuthService for
+ * authentication and navigation, and the NotificationService for displaying login-related messages.
  */
-
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
@@ -28,7 +25,7 @@ export class SignInComponent implements OnInit {
    * @constructor
    * @param {FormBuilder} formBuilder - Angular service for building and managing forms.
    * @param {Router} router - Angular service for navigating between views.
-   * @param {AuthService} authService - Service responsible for user authentication.
+   * @param {AuthService} authService - Service for handling user authentication.
    * @param {NotificationService} notificationService - Service for displaying notifications.
    */
   constructor(
@@ -39,7 +36,7 @@ export class SignInComponent implements OnInit {
   ) {}
 
   /**
-   * Initializes the login form and retrieves user data.
+   * Initializes the login form and retrieves user data for validation purposes.
    */
   ngOnInit(): void {
     this.users = this.authService.getUsersData();
@@ -51,15 +48,15 @@ export class SignInComponent implements OnInit {
   }
 
   /**
-   * Getter function to easily access form controls.
+   * Getter function for accessing form controls in the template.
    */
   get formControl() {
     return this.loginForm.controls;
   }
 
   /**
-   * If the form is valid, attempts to authenticate the user and navigates
-   * based on the user's role. Displays appropriate notifications.
+   * Validates the login form, attempts user login using the AuthService,
+   * and navigates to the appropriate dashboard based on the user's role.
    */
   onLogin(): void {
     if (this.loginForm.valid) {

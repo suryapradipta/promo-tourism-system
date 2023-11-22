@@ -1,10 +1,12 @@
 /**
- * Interface definition for the AuthModel, representing the structure of user authentication data.
+ * Defines the structure of user authentication data.
+ *
  * @interface AuthModel
- * @property {string} id - Unique identifier for the user.
- * @property {string} email - User's email address used for authentication.
- * @property {string} password - User's password for authentication.
- * @property {string} role - User's role, indicating their permissions or level of access.
+ * @property {string} id - User identifier.
+ * @property {string} email - User's email address.
+ * @property {string} password - User's password.
+ * @property {string} role - User's role or access level.
+ * @property {boolean} isFirstLogin - Indicates whether it is the user's first login.
  */
 export interface AuthModel {
   id: string;

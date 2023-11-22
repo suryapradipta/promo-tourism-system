@@ -1,6 +1,10 @@
+/**
+ * This service manages user authentication, providing functionality for user login, logout,
+ * checking the authentication status, updating passwords, and determining if it's the user's
+ * first login. It interacts with local storage for data persistence.
+ */
 
 import { Injectable } from '@angular/core';
-import { SignUpService } from '.';
 import { AuthModel } from '../models';
 
 @Injectable({
@@ -9,20 +13,41 @@ import { AuthModel } from '../models';
 export class AuthService {
   private users: AuthModel[] = [];
 
+  /**
+   * Constructor function for AuthService.
+   * Initializes the service and loads user data from local storage.
+   *
+   * @constructor
+   */
   constructor() {
     this.loadUsersData();
   }
 
+  /**
+   * Private method to load user data from local storage.
+   */
   private loadUsersData() {
     this.users = JSON.parse(localStorage.getItem('users')) || [];
   }
 
-
+  /**
+   * Get the current user data.
+   *
+   * @returns {AuthModel[]} - Array of user data.
+   */
   getUsersData(): AuthModel[] {
     this.loadUsersData();
     return this.users;
   }
 
+  /**
+   * Authenticate user by checking the provided email and password.
+   * If a matching user is found, store the user data in local storage and return the user.
+   *
+   * @param {string} email - User's email address.
+   * @param {string} password - User's password.
+   * @returns {AuthModel | null} - Authenticated user data or null if authentication fails.
+   */
   login(email: string, password: string): AuthModel | null {
     this.loadUsersData();
     const user = this.users.find(
@@ -37,39 +62,68 @@ export class AuthService {
     return null;
   }
 
+  /**
+   * Log out the current user by removing their data from local storage.
+   */
   logout(): void {
     localStorage.removeItem('currentUser');
   }
 
+  /**
+   * Get the currently authenticated user.
+   *
+   * @returns {AuthModel | null} - Current authenticated user data or null if not authenticated.
+   */
   getCurrentUser(): AuthModel | null {
     const user = localStorage.getItem('currentUser');
     return user ? JSON.parse(user) : null;
   }
 
+  /**
+   * Check if a user is currently authenticated.
+   *
+   * @returns {boolean} - True if a user is authenticated, false otherwise.
+   */
   isLoggedIn(): boolean {
     const token = localStorage.getItem('currentUser');
     return !!token;
   }
 
+  /**
+   * Check if it's the user's first login.
+   *
+   * @param {string} email - User's email address.
+   * @returns {boolean} - True if it's the user's first login, false otherwise.
+   */
   isFirstLogin(email: string): boolean {
     const merchant = this.users.find((m) => m.email === email);
     return merchant ? merchant.isFirstLogin : false;
   }
 
+  /**
+   * Update the user's password and set isFirstLogin to false.
+   *
+   * @param {string} email - User's email address.
+   * @param {string} newPassword - New password to set.
+   */
   updatePassword(email: string, newPassword: string): void {
     const merchant = this.users.find((m) => m.email === email);
     if (merchant) {
       merchant.password = newPassword;
       merchant.isFirstLogin = false;
       localStorage.setItem('users', JSON.stringify(this.users));
-
     }
   }
 
+  /**
+   * Check if the entered password matches the stored password for a given email.
+   *
+   * @param {string} email - User's email address.
+   * @param {string} password - Entered password to check.
+   * @returns {boolean} - True if the entered password matches the stored password, false otherwise.
+   */
   checkPassword(email: string, password: string): boolean {
     const user = this.users.find((u) => u.email === email);
-
-    // Check if the user exists and the entered password matches the stored password
     return user && user.password === password;
   }
 }

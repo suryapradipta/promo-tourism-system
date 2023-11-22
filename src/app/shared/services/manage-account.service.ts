@@ -1,12 +1,7 @@
 /**
- * This service is responsible for managing merchant accounts, including loading merchant data,
- * retrieving merchants, handling pending applications, approving or rejecting merchants, and creating
- * merchant accounts with default passwords. It uses SignUpService for registration and
- * NotificationService for displaying account-related notifications.
- *
- * @author I Nyoman Surya Pradipta (E1900344)
+ * This service handles the management of merchant accounts, including retrieval of merchant data,
+ * approval or rejection of merchant applications, and the creation of merchant accounts.
  */
-
 import { Injectable } from '@angular/core';
 import { MerchantModel } from '../models';
 import { SignUpService } from './sign-up.service';
@@ -20,12 +15,11 @@ export class ManageAccountService {
   private merchants: MerchantModel[] = [];
 
   /**
-   * Constructor function for ManageAccountService.
-   * Initializes the service and loads merchant data from local storage.
+   * Initializes the service and loads existing merchant data from local storage.
    *
    * @constructor
    * @param {SignUpService} signUpService - The service responsible for user registration.
-   * @param {NotificationService} notificationService - The service responsible for displaying notifications.
+   * @param {NotificationService} notificationService - The service for displaying notifications.
    */
   constructor(
     private signUpService: SignUpService,
@@ -52,9 +46,9 @@ export class ManageAccountService {
   }
 
   /**
-   * Get merchant by ID.
+   * Get merchant data by ID.
    *
-   * @param {string} id - Merchant ID.
+   * @param {string} id - The ID of the merchant.
    * @returns {MerchantModel | undefined} - Merchant data or undefined if not found.
    */
   getMerchantById(id: string): MerchantModel | undefined {
@@ -63,9 +57,9 @@ export class ManageAccountService {
   }
 
   /**
-   * Get all pending merchant applications.
+   * Get a list of pending merchant applications.
    *
-   * @returns {MerchantModel[]} - Array of merchants with 'PENDING' status.
+   * @returns {MerchantModel[]} - Array of pending merchant applications.
    */
   getPendingApplications(): MerchantModel[] {
     this.loadMerchantsData();
@@ -75,7 +69,7 @@ export class ManageAccountService {
   /**
    * Approve a merchant application.
    *
-   * @param {MerchantModel} merchant - Merchant to be approved.
+   * @param {MerchantModel} merchant - The merchant to be approved.
    */
   approveMerchant(merchant: MerchantModel) {
     merchant.status = 'APPROVE';
@@ -86,7 +80,7 @@ export class ManageAccountService {
   /**
    * Reject a merchant application.
    *
-   * @param {MerchantModel} merchant - Merchant to be rejected.
+   * @param {MerchantModel} merchant - The merchant to be rejected.
    */
   rejectMerchant(merchant: MerchantModel) {
     merchant.status = 'REJECT';
@@ -95,19 +89,17 @@ export class ManageAccountService {
   }
 
   /**
-   * Create a merchant account with a default password and send a confirmation email.
+   * Create a merchant account by registering the merchant and sending an account creation email.
    *
-   * @param {MerchantModel} merchant - Merchant for whom the account is being created.
+   * @param {MerchantModel} merchant - The merchant for whom the account is being created.
    */
   createMerchantAccount(merchant: MerchantModel) {
     const email = merchant.email;
     const defaultPassword =
       'PRS*' + Math.round(Math.random()) + Math.round(Math.random());
 
-    // Register merchant account
     this.signUpService.register(email, defaultPassword, 'merchant');
 
-    // Prepare template parameters for the confirmation email
     const templateParams = {
       merchant_name: merchant.name,
       role: 'Merchant',
@@ -117,7 +109,6 @@ export class ManageAccountService {
       email_address: email,
     };
 
-    // Send confirmation email using emailjs
     emailjs
       .send(
         'service_boieepv',

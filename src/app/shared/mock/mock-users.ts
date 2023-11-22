@@ -4,7 +4,7 @@ import {v4 as uuidv4} from "uuid";
 export const USERS: AuthModel[] =
   [
     {
-      id: uuidv4(),
+      id: 'defaultCustomerID1',
       email: 'customer@gmail.com',
       password: 'customer',
       role: 'customer',
