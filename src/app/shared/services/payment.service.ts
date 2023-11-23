@@ -39,7 +39,6 @@ export class PaymentService {
   savePaymentsData(payment: PaymentModel) {
     this.payments.push(payment);
     localStorage.setItem('payments', JSON.stringify(this.payments));
-    console.log('PAYMENT SERVICE', payment);
   }
 
   /**

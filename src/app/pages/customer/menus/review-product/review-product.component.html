@@ -16,11 +16,11 @@
       <h2 class="sr-only">Recent orders</h2>
       <div class="mx-auto max-w-7xl sm:px-2 lg:px-8">
         <div class="mx-auto max-w-2xl space-y-8 sm:px-4 lg:max-w-4xl lg:px-0">
+          <!-- Order Details -->
           <div
             *ngFor="let order of unreviewedOrders"
             class="border-t border-b border-gray-200 bg-white shadow-sm sm:rounded-lg sm:border"
           >
-
             <div
               class="flex items-center border-b border-gray-200 p-4 sm:grid sm:grid-cols-4 sm:gap-x-6 sm:p-6"
             >
@@ -39,6 +39,7 @@
                 </div>
               </dl>
 
+              <!-- Review Button -->
               <div
                 class="lg:col-span-2 lg:flex lg:items-center lg:justify-end lg:space-x-4"
               >
@@ -51,7 +52,7 @@
               </div>
             </div>
 
-            <!-- Products -->
+            <!-- Product Details -->
             <h4 class="sr-only">Items</h4>
             <ul role="list" class="divide-y divide-gray-200">
               <li class="p-4 sm:p-6">
@@ -61,7 +62,7 @@
                   >
                     <img
                       src="{{ order.product.image }}"
-                      alt="{{order.product.name}}"
+                      alt="{{ order.product.name }}"
                       class="h-full w-full object-cover object-center"
                     />
                   </div>
@@ -78,7 +79,10 @@
                   </div>
                 </div>
 
-                <div *ngIf="showReviewForm && selectedOrderID === order.orderID">
+                <!-- Review Form -->
+                <div
+                  *ngIf="showReviewForm && selectedOrderID === order.orderID"
+                >
                   <form
                     [formGroup]="reviewForm"
                     (ngSubmit)="submitReview(order.product.id)"
@@ -89,6 +93,7 @@
                         <div
                           class="mt-6 grid grid-cols-1 gap-y-6 gap-x-4 sm:grid-cols-6"
                         >
+                          <!-- Rating Input -->
                           <div class="sm:col-span-6">
                             <label
                               for="rating"
@@ -127,6 +132,7 @@
                             </div>
                           </div>
 
+                          <!-- Comment Input -->
                           <div class="sm:col-span-6">
                             <label
                               for="comment"
@@ -157,12 +163,12 @@
                                 Comment is required.
                               </div>
                             </div>
-
                           </div>
                         </div>
                       </div>
                     </div>
 
+                    <!-- Submit and Cancel Buttons -->
                     <div class="pt-5">
                       <div class="flex justify-end">
                         <button
@@ -185,8 +191,6 @@
               </li>
             </ul>
           </div>
-
-
         </div>
       </div>
     </div>

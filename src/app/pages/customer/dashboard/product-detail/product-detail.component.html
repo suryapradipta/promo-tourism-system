@@ -56,8 +56,7 @@
 
           <div aria-hidden="true" class="ml-4 text-sm text-gray-300">·</div>
           <div class="ml-4 flex">
-            <a
-              class="text-sm font-medium text-indigo-600 hover:text-indigo-500"
+            <a class="text-sm font-medium text-indigo-600 hover:text-indigo-500"
               >See all reviews</a
             >
           </div>
@@ -73,6 +72,7 @@
 
       <div class="mt-8 lg:col-span-5">
         <form [formGroup]="productForm">
+          <!-- Quantity Section -->
           <div class="flex justify-between">
             <label
               for="quantity"
@@ -80,6 +80,7 @@
               >Quantity</label
             >
             <div class="flex items-center space-x-3">
+              <!-- Decrease Quantity Button -->
               <button
                 (click)="decrementQuantity()"
                 class="w-full justify-center border border-transparent bg-indigo-600 text-base font-medium text-white hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 inline-flex items-center h-6 w-6 p-1 rounded-full"
@@ -103,6 +104,7 @@
                 </svg>
               </button>
 
+              <!-- Quantity Input -->
               <input
                 type="number"
                 id="quantity"
@@ -112,6 +114,7 @@
                 formControlName="quantity"
               />
 
+              <!-- Increase Quantity Button -->
               <button
                 (click)="incrementQuantity()"
                 class="w-full justify-center border border-transparent bg-indigo-600 text-base font-medium text-white hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 inline-flex items-center h-6 w-6 p-1 rounded-full"
@@ -137,6 +140,7 @@
             </div>
           </div>
 
+          <!-- Email Input Section -->
           <div class="mt-6">
             <label for="email" class="block text-sm font-medium text-gray-700"
               >Email address</label
@@ -152,6 +156,8 @@
               />
             </div>
           </div>
+
+          <!-- Email Validation Errors Section -->
           <div
             *ngIf="
               formControl.email.errors &&
@@ -168,6 +174,7 @@
             </div>
           </div>
 
+          <!-- Phone Number Input Section -->
           <div class="mt-6">
             <label
               for="phoneNumber"
@@ -186,6 +193,7 @@
             </div>
           </div>
 
+          <!-- Phone Number Validation Errors Section -->
           <div
             *ngIf="
               formControl.phoneNumber.errors &&
@@ -203,6 +211,7 @@
             </div>
           </div>
 
+          <!-- Order Summary Section -->
           <dl
             class="mt-10 space-y-6 text-sm font-medium text-gray-500 border-t border-gray-200 py-6"
           >
@@ -222,16 +231,17 @@
             </div>
           </dl>
 
+          <!-- PayPal Integration -->
           <ngx-paypal [config]="payPalConfig"></ngx-paypal>
         </form>
       </div>
-
     </div>
 
+    <!-- Reviews Section -->
     <div
       class="mx-auto mt-16 w-full max-w-2xl lg:col-span-4 lg:mt-0 lg:max-w-none"
     >
-      <app-reviews/>
+      <app-reviews />
     </div>
   </div>
 </main>

@@ -1,10 +1,7 @@
 /**
- * This component manages the display and interaction of a detailed product view, including
- * quantity selection, order creation, and integration with PayPal for payment processing.
- *
- * @author I Nyoman Surya Pradipta (E1900344)
+ * This component manages the details and interactions related to a specific product,
+ * including quantity selection, order creation, and PayPal payment integration.
  */
-
 import { Component } from '@angular/core';
 import { PaymentModel, ProductModel } from '../../../../shared/models';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -30,23 +27,35 @@ export class ProductDetailComponent {
   // PayPal's configuration for payment processing
   public payPalConfig?: IPayPalConfig;
 
+  /**
+   * @constructor
+   * @param {ActivatedRoute} route - Angular service to access the route information.
+   * @param {ProductListService} productService - Service to retrieve product details.
+   * @param {Router} router - Angular service for navigation.
+   * @param {FormBuilder} formBuilder - Angular service for building and managing forms.
+   * @param {OrderService} orderService - Service for managing user orders.
+   * @param {NotificationService} alert - Service for displaying notifications.
+   * @param {PaymentService} paymentService - Service for managing payment-related data.
+   * @param {AuthService} authService - Service for managing user authentication.
+   */
   constructor(
     private route: ActivatedRoute,
-    private productListService: ProductListService,
+    private productService: ProductListService,
     private router: Router,
     private formBuilder: FormBuilder,
     private orderService: OrderService,
-    private notificationService: NotificationService,
+    private alert: NotificationService,
     private paymentService: PaymentService,
-    private authService : AuthService,
+    private authService: AuthService
   ) {}
 
   /**
-   * Retrieves product data based on the route parameter and initializes the form.
+   * Retrieves the product details based on the route parameter, initializes the form,
+   * and sets up the PayPal configuration.
    */
   ngOnInit(): void {
     const productId = this.route.snapshot.paramMap.get('id');
-    this.product = this.productListService.getProductById(productId);
+    this.product = this.productService.getProductById(productId);
 
     this.productForm = this.formBuilder.group({
       quantity: [1, [Validators.required, Validators.min(1)]],
@@ -59,16 +68,14 @@ export class ProductDetailComponent {
   }
 
   /**
-   * Getter for form controls to simplify access in the template.
-   *
-   * @returns {AbstractControl} - The form control.
+   * Getter function for easy access to form controls.
    */
   get formControl() {
     return this.productForm.controls;
   }
 
   /**
-   * Increment the quantity of the selected product in the form.
+   * Increase the quantity of the selected product.
    */
   incrementQuantity(): void {
     this.productForm
@@ -77,7 +84,7 @@ export class ProductDetailComponent {
   }
 
   /**
-   * Decrement the quantity of the selected product in the form, ensuring it stays above 1.
+   * Decrease the quantity of the selected product, ensuring it does not go below 1.
    */
   decrementQuantity(): void {
     const currentQuantity = this.productForm.get('quantity').value;
@@ -87,9 +94,9 @@ export class ProductDetailComponent {
   }
 
   /**
-   * Calculate the subtotal of the selected product based on the quantity.
+   * Calculate the subtotal of the order.
    *
-   * @returns {number} - The subtotal.
+   * @returns {number} - Subtotal amount.
    */
   get subtotal(): number {
     return this.productForm.value.quantity * this.product.price;
@@ -98,28 +105,33 @@ export class ProductDetailComponent {
   /**
    * Calculate the tax total based on the subtotal.
    *
-   * @returns {number} - The tax total.
+   * @returns {number} - Tax total amount.
    */
   get taxTotal(): number {
     return 0.1 * this.subtotal;
   }
 
   /**
-   * Calculate the total cost, including subtotal and tax.
+   * Calculate the total amount of the order, including tax.
    *
-   * @returns {number} - The total cost.
+   * @returns {number} - Total amount.
    */
   get itemTotal(): number {
     return this.subtotal + this.taxTotal;
   }
 
+  /**
+   * Calculate the average rating of the product.
+   *
+   * @returns {number} - Average product rating.
+   */
   get averageRating(): number {
-    return this.productListService.getAverageRating(this.product.id);
+    return this.productService.getAverageRating(this.product.id);
   }
 
-
   /**
-   * Process the order if the form is valid, creating an order and resetting the form.
+   * Handle the booking process when the user clicks on the "Book Now" button.
+   * If the form is valid, create an order, reset the form, and display a success message.
    */
   onBooking(): void {
     if (this.productForm.valid) {
@@ -130,14 +142,14 @@ export class ProductDetailComponent {
         this.productForm.value.email,
         this.productForm.value.phoneNumber,
         this.authService.getCurrentUser().id,
-        this.product.merchantId,
+        this.product.merchantId
       );
       this.productForm.reset();
     }
   }
 
   /**
-   * Initialize the PayPal configuration for payment processing.
+   * Initialize the PayPal configuration with the necessary details for payment processing.
    */
   private initConfig(): void {
     this.payPalConfig = {
@@ -208,7 +220,7 @@ export class ProductDetailComponent {
         );
 
         this.onBooking();
-        this.notificationService.showSuccessMessage('Transaction successful!');
+        this.alert.showSuccessMessage('Transaction successful!');
 
         const orders = this.orderService.getOrdersData();
         const orderID = orders[orders.length - 1].orderID;
@@ -253,11 +265,11 @@ export class ProductDetailComponent {
       },
       onCancel: (data, actions) => {
         console.log('OnCancel', data, actions);
-        this.notificationService.showWarningMessage('Transaction canceled!');
+        this.alert.showWarningMessage('Transaction canceled!');
       },
       onError: (err) => {
         console.log('OnError', err);
-        this.notificationService.showErrorMessage('Transaction failed!');
+        this.alert.showErrorMessage('Transaction failed!');
       },
       onClick: (data, actions) => {
         console.log('onClick', data, actions);
