@@ -1,11 +1,12 @@
 <div class="bg-white">
   <div class="mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:px-8">
-
     <div class="py-3">
       <!-- Dropdown to select a specific merchant -->
       <label
         class="block text-sm font-medium text-gray-700"
-        for="merchantSelect">Select a Merchant: </label>
+        for="merchantSelect"
+        >Select a Merchant:
+      </label>
 
       <select
         id="merchantSelect"
@@ -24,7 +25,7 @@
       </select>
     </div>
 
-
+    <!-- Tab selection for different analytics views -->
     <div x-data="{ openTab: 1 }">
       <div class="sm:hidden">
         <label for="tabs" class="sr-only">Select a tab</label>
@@ -39,6 +40,7 @@
         </select>
       </div>
 
+      <!-- Tab navigation for larger screens -->
       <div class="hidden sm:block">
         <div class="border-b border-gray-200">
           <nav class="-mb-px flex space-x-8" aria-label="Tabs">
@@ -84,9 +86,6 @@
       </div>
     </div>
 
-
-
-
     <!-- Display analytics data for the selected merchant -->
     <div *ngIf="selectedMerchantId">
       <div *ngIf="selectedProductSold">
@@ -99,6 +98,7 @@
       </div>
     </div>
 
+    <!-- Display analytics data for all merchants -->
     <div *ngIf="!selectedMerchantId">
       <div *ngIf="allMerchantProductSold">
         <canvas id="allProductSoldChart"></canvas>

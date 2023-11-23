@@ -96,7 +96,7 @@ export class ManageAccountService {
   createMerchantAccount(merchant: MerchantModel) {
     const email = merchant.email;
     const defaultPassword =
-      'PRS*' + Math.round(Math.random()) +'@'+ Math.round(Math.random());
+      'PRS*' + Math.round(Math.random()) + '@' + Math.round(Math.random());
 
     this.signUpService.register(email, defaultPassword, 'merchant', merchant.id);
 
