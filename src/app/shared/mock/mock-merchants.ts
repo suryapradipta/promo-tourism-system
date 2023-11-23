@@ -3,7 +3,7 @@ import {MerchantModel} from "../models";
 export const MERCHANTS: MerchantModel[] =
   [
     {
-      id: 'defaultMerchant1',
+      id: 'defaultMerchantID1',
       name: 'City Explorer Tours',
       contact_number: 123456789,
       email: 'merchant1@gmail.com',
@@ -13,7 +13,7 @@ export const MERCHANTS: MerchantModel[] =
       status: 'APPROVE',
     },
     {
-      id: 'defaultMerchant2',
+      id: 'defaultMerchantID2',
       name: 'Serenity Suites & Spa',
       contact_number: 987654321,
       email: 'merchant2@gmail.com',

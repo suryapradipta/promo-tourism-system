@@ -72,8 +72,8 @@ export class SignUpService {
    * @param {string} role - User's role ('merchant', 'customer', 'ministry').
    * @returns {boolean} - True if registration is successful, false if the email is not unique.
    */
-  register(email: string, password: string, role: string): boolean {
-    const uniqueID = uuidv4();
+  register(email: string, password: string, role: string, id?: string): boolean {
+    const uniqueID = id || uuidv4();
 
     const user: AuthModel = {
       id: uniqueID,
