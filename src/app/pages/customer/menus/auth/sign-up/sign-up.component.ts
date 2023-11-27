@@ -13,6 +13,7 @@ import {
 } from '@angular/forms';
 import { Router } from '@angular/router';
 import {
+  AuthService,
   NotificationService,
   SignUpService,
 } from '../../../../../shared/services';
@@ -29,20 +30,15 @@ export class SignUpComponent implements OnInit {
 
   users: AuthModel[] = [];
 
-  /**
-   * Constructor function for SignUpComponent.
-   *
-   * @constructor
-   * @param {FormBuilder} formBuilder - Angular service to create form groups and controls.
-   * @param {Router} router - Angular service for navigation.
-   * @param {SignUpService} userService - Service for user registration.
-   * @param {NotificationService} alert - Service for displaying notifications.
-   */
   constructor(
     private formBuilder: FormBuilder,
     private router: Router,
     private userService: SignUpService,
-    private alert: NotificationService
+    private alert: NotificationService,
+
+
+
+    private authService: AuthService,
   ) {}
 
   /**
@@ -90,19 +86,34 @@ export class SignUpComponent implements OnInit {
   onRegister(): void {
     this.submitted = true;
     if (this.registerForm.valid) {
-      const isUserRegistered = this.userService.register(
+
+      this.authService.createUser(
         this.registerForm.value.email,
         this.registerForm.value.password,
         'customer'
+      ).subscribe(
+        () => {
+          this.router.navigate(['/sign-in']);
+          this.alert.showSuccessMessage('Register successful!');
+        },
+        (error) => {
+          if (error.status === 500) {
+            this.alert.showEmailInUseMessage();
+          } else {
+            this.alert.showErrorMessage('Register failed. Please try again later.');
+          }
+        }
       );
 
-      if (isUserRegistered) {
+
+
+      /*if (isUserRegistered) {
         this.router.navigate(['/sign-in']);
 
         this.alert.showSuccessMessage('Register successful!');
       } else {
         this.alert.showEmailInUseMessage();
-      }
+      }*/
     } else {
       this.alert.showErrorMessage(
         'Register failed. Please check your credentials.'

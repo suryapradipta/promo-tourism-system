@@ -6,21 +6,37 @@
 
 import { Injectable } from '@angular/core';
 import { AuthModel } from '../models';
+import {HttpClient} from "@angular/common/http";
 
 @Injectable({
   providedIn: 'root',
 })
 export class AuthService {
+  private apiUrl = 'http://localhost:3000/api/users';
+
   private users: AuthModel[] = [];
 
-  /**
-   * Constructor function for AuthService.
-   * Initializes the service and loads user data from local storage.
-   *
-   * @constructor
-   */
-  constructor() {
+  constructor(private http: HttpClient) {
     this.loadUsersData();
+  }
+
+  createUser(email: string, password: string, role: string) {
+    const authData: AuthModel = {
+      id: null,
+      email: email,
+      password: password,
+      role:
+        role === 'merchant'
+          ? 'merchant'
+          : role === 'customer'
+            ? 'customer'
+            : role === 'ministry'
+              ? 'ministry'
+              : '',
+      isFirstLogin: role === 'merchant',
+    };
+    return this.http.post(this.apiUrl, authData);
+
   }
 
   /**

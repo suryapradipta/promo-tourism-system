@@ -5,6 +5,8 @@ const mongoose = require('mongoose');
 const app = express();
 require('dotenv').config();
 
+const userRoutes = require('./src/routes/user.routes');
+
 app.use(bodyParser.json());
 app.use(cors());
 
@@ -15,5 +17,7 @@ mongoose.connect(process.env.MONGO_URI)
   .catch(() => {
     console.log("Connection failed");
   });
+
+app.use(userRoutes);
 
 module.exports = app;

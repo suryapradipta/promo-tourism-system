@@ -98,6 +98,20 @@ export class ManageAccountService {
     const defaultPassword =
       'PRS*' + Math.round(Math.random()) + '@' + Math.round(Math.random());
 
+    /*
+    this.userService.register(email, defaultPassword, 'merchant', merchantId).subscribe(
+    () => {
+      this.alert.showSuccessMessage('Merchant account created successfully!');
+    },
+    (error) => {
+      if (error.status === 400) {
+        this.alert.showEmailInUseMessage();
+      } else {
+        this.alert.showErrorMessage('Merchant account creation failed. Please try again later.');
+      }
+    }
+  );
+    */
     this.signUpService.register(email, defaultPassword, 'merchant', merchant.id);
 
     const templateParams = {
