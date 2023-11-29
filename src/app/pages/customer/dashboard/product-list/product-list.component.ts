@@ -44,7 +44,7 @@ export class ProductListComponent implements OnInit {
    * @param {ProductModel} product - The selected product for which details are to be viewed.
    */
   viewProductDetails(product: ProductModel) {
-    if (this.authService.isLoggedIn()) {
+    if (this.authService.isAuthenticated()) {
       this.router.navigate(['/product', product.id]);
 
       /* [[PROBLEM]] after navigate the scroll position stick on previous page

@@ -8,8 +8,7 @@ import {Observable} from "rxjs";
   providedIn: 'root',
 })
 export class AuthService {
-  private apiUrl = 'http://localhost:3000/api/users/';
-
+  private apiUrl = 'http://localhost:3000/api/users';
   private users: AuthModel[] = [];
 
   constructor(private http: HttpClient) {
@@ -30,16 +29,20 @@ export class AuthService {
               : '',
       isFirstLogin: role === 'merchant',
     };
-    return this.http.post(this.apiUrl + 'register', authData);
+    return this.http.post(`${this.apiUrl}/register`, authData);
   }
 
   login(email: string, password: string): Observable<{ token: string }> {
     const authData = {email: email, password: password};
-    return this.http.post<{ token: string }>(this.apiUrl + 'login', authData);
+    return this.http.post<{ token: string }>(`${this.apiUrl}/login`, authData);
+  }
+
+  isFirstLogin(email: string): Observable<boolean> {
+    return this.http.get<boolean>(`${this.apiUrl}/is-first-login/${email}`);
   }
 
   getCurrentUser(): Observable<any> {
-    return this.http.get(this.apiUrl + 'current-user');
+    return this.http.get(`${this.apiUrl}/current-user`);
   }
 
   getCurrentUserJson(): AuthModel | null {
@@ -56,32 +59,16 @@ export class AuthService {
     localStorage.removeItem('currentUser');
   }
 
-  isLoggedIn(): boolean {
+  isAuthenticated(): boolean {
     const token = localStorage.getItem('token');
     return !!token;
   }
 
-
-
-
-
-
-  isFirstLogin(email: string): boolean {
-    const merchant = this.users.find((m) => m.email === email);
-    return merchant ? merchant.isFirstLogin : false;
+  updatePassword(email: string, newPassword: string): Observable<any> {
+    return this.http.post(`${this.apiUrl}/update-password`, { email, newPassword });
   }
 
-  updatePassword(email: string, newPassword: string): void {
-    const merchant = this.users.find((m) => m.email === email);
-    if (merchant) {
-      merchant.password = newPassword;
-      merchant.isFirstLogin = false;
-      localStorage.setItem('users', JSON.stringify(this.users));
-    }
-  }
-
-  checkPassword(email: string, password: string): boolean {
-    const user = this.users.find((u) => u.email === email);
-    return user && user.password === password;
+  checkPassword(email: string, currentPassword: string): Observable<any> {
+    return this.http.post<boolean>(`${this.apiUrl}/check-password`, { email, currentPassword });
   }
 }

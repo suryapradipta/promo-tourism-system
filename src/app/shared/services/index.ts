@@ -10,3 +10,4 @@ export { PaymentService } from './payment.service';
 export { GenerateReceiptService } from './generate-receipt.service';
 export { ReviewService } from './review.service';
 export { AnalyticsService } from './analytics.service';
+export { AuthInterceptor } from './auth-interceptor';

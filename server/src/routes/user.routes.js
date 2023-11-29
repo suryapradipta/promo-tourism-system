@@ -60,5 +60,50 @@ router.get('/current-user', authMiddleware, (req, res) => {
   res.json(req.user);
 });
 
+router.get('/is-first-login/:email', async (req, res) => {
+  const email = req.params.email;
+
+  try {
+    const user = await User.findOne({ email });
+    const isFirstLogin = user && user.isFirstLogin;
+    res.json(isFirstLogin);
+  } catch (error) {
+    console.error(error);
+    res.status(500).send('Internal Server Error');
+  }
+});
+
+router.post('/update-password', async (req, res) => {
+  const { email, newPassword } = req.body;
+
+  try {
+    const hashedPassword = await bcrypt.hash(newPassword, 10);
+    const user = await User.findOneAndUpdate(
+      { email: email },
+      { password: hashedPassword, isFirstLogin: false },
+      { new: true }
+    );
+    res.json(user);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: 'Internal Server Error' });
+  }
+});
+
+router.post('/check-password', async (req, res) => {
+  const { email, currentPassword } = req.body;
+
+  try {
+    const user = await User.findOne({ email: email });
+    const isValid = user
+      ? await bcrypt.compare(currentPassword, user.password)
+      : false;
+
+    res.json({ isValid: isValid });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: 'Internal Server Error' });
+  }
+});
 
 module.exports = router;
