@@ -5,7 +5,6 @@
 import { Injectable } from '@angular/core';
 import { AuthModel } from '../models';
 import { v4 as uuidv4 } from 'uuid';
-import { USERS } from '../mock/mock-users';
 
 @Injectable({
   providedIn: 'root',
@@ -21,19 +20,8 @@ export class SignUpService {
    */
   constructor() {
     this.loadUsersData();
-    this.initializeData();
   }
 
-  /**
-   * Initialize mock user data if no users are present.
-   */
-  private initializeData() {
-    if (this.users.length === 0) {
-      for (const user of USERS) {
-        this.saveUsersData(user);
-      }
-    }
-  }
 
   /**
    * Load user data from local storage.

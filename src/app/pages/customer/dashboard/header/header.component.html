@@ -55,7 +55,7 @@
               class="hidden lg:flex lg:flex-1 lg:items-center lg:justify-end lg:space-x-6"
             >
               <!-- Display Sign In link if user is not logged in -->
-              <div *ngIf="!isLogged()">
+              <div *ngIf="!isAuthenticated()">
                 <a
                   routerLink="/sign-in"
                   class="text-sm font-medium text-gray-700 hover:text-gray-800"
@@ -64,7 +64,7 @@
               </div>
 
               <!-- Display User Profile and Logout options if user is logged in -->
-              <div *ngIf="isLogged()">
+              <div *ngIf="isAuthenticated()">
                 <div class="relative ml-3" x-data="{ open: false }">
                   <div>
                     <!-- User Profile Button -->
@@ -110,7 +110,7 @@
                       id="user-menu-item-0"
                       role="menuitem"
                       tabindex="-1"
-                      >Your Profile</a
+                    >Your Profile</a
                     >
 
                     <!-- Review Product Link -->
@@ -126,7 +126,7 @@
 
                     <!-- Logout Button -->
                     <button
-                      (click)="logout()"
+                      (click)="onLogout()"
                       class="block px-4 py-2 text-sm text-gray-700"
                       id="user-menu-item-2"
                       role="menuitem"

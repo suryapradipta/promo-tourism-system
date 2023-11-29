@@ -1,12 +1,3 @@
-/**
- *
- * This component represents the header of the application, including navigation links,
- * user authentication status, and logout functionality. It utilizes the AuthService
- * for managing user authentication and the Router for navigation. Additionally, it
- * uses the SweetAlert2 library for a user-friendly logout confirmation dialog.
- *
- * @author I Nyoman Surya Pradipta (E1900344)
- */
 import { Component } from '@angular/core';
 import { AuthService } from '../../../../shared/services';
 import { Router } from '@angular/router';
@@ -18,37 +9,20 @@ import Swal from 'sweetalert2';
   styleUrls: ['./header.component.css'],
 })
 export class HeaderComponent {
-  // Array of page links in the header
   pages = [
     { name: 'Products', href: '/product-list#products' },
-    { name: 'Company', href: '#' },
-    { name: 'Services', href: '#' },
+    { name: 'Company', href: '/' },
+    { name: 'Services', href: '/' },
   ];
 
-  /**
-   * Constructor function for HeaderComponent.
-   *
-   * @constructor
-   * @param {AuthService} authService - Service for managing user authentication.
-   * @param {Router} router - Angular Router service for navigation.
-   */
   constructor(private authService: AuthService, private router: Router) {}
 
-  /**
-   * Check if a user is logged in as a customer.
-   *
-   * @returns {boolean} - True if the user is logged in as a customer, false otherwise.
-   */
-  isLogged(): boolean {
-    const user = this.authService.getCurrentUser();
+  isAuthenticated(): boolean {
+    const user = this.authService.getCurrentUserJson();
     return user && user.role === 'customer';
   }
 
-  /**
-   * Log out the current user, displaying a confirmation dialog.
-   * If the user confirms, log out and navigate to the home page.
-   */
-  logout(): void {
+  onLogout(): void {
     Swal.fire({
       title: 'Are you sure you want to log out?',
       icon: 'warning',
@@ -59,17 +33,12 @@ export class HeaderComponent {
     }).then((result) => {
       if (result.isConfirmed) {
         Swal.fire('Log out!', 'You have been logged out.', 'success');
-        this.authService.logout();
+        this.authService.logOut();
         this.router.navigate(['/']);
       }
     });
   }
 
-  /**
-   * Scroll to a specific section on the page.
-   *
-   * @param {string} sectionId - The HTML element ID of the target section.
-   */
   scrollToSection(sectionId: string): void {
     const element = document.getElementById(sectionId);
     if (element) {

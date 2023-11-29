@@ -63,7 +63,7 @@ export class ChangePasswordComponent implements OnInit {
       return;
     }
 
-    const userEmail = this.authService.getCurrentUser().email;
+    const userEmail = this.authService.getCurrentUserJson().email;
     const currentPassword = this.f.currentPassword.value;
     const newPassword = this.f.newPassword.value;
     const confirmPassword = this.f.confirmPassword.value;

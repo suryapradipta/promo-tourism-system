@@ -91,7 +91,7 @@ export class AddEditProductComponent implements OnInit {
       );
       return;
     }
-    const merchantId = this.authService.getCurrentUser().id;
+    const merchantId = this.authService.getCurrentUserJson().id;
     this.product.merchantId = merchantId;
 
     if (this.product.id) {

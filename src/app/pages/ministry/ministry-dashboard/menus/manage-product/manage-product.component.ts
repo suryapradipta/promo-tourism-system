@@ -40,7 +40,7 @@ export class ManageProductComponent implements OnInit {
    */
   ngOnInit(): void {
     this.products = this.productService.getProductsByMerchantId(
-      this.authService.getCurrentUser().id
+      this.authService.getCurrentUserJson().id
     );
   }
   /**
@@ -82,7 +82,7 @@ export class ManageProductComponent implements OnInit {
         );
         this.productService.deleteProduct(productId, merchantId);
         this.products = this.productService.getProductsByMerchantId(
-          this.authService.getCurrentUser().id
+          this.authService.getCurrentUserJson().id
         );
       }
     });

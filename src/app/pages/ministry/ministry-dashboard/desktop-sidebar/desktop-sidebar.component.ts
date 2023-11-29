@@ -40,7 +40,7 @@ export class DesktopSidebarComponent {
    * @returns {boolean} - True if the user has the 'ministry' role, false otherwise.
    */
   isMinistry(): boolean {
-    const user = this.authService.getCurrentUser();
+    const user = this.authService.getCurrentUserJson();
     return user && user.role === 'ministry';
   }
 
@@ -50,7 +50,7 @@ export class DesktopSidebarComponent {
    * @returns {boolean} - True if the user has the 'merchant' role, false otherwise.
    */
   isMerchant(): boolean {
-    const user = this.authService.getCurrentUser();
+    const user = this.authService.getCurrentUserJson();
     return user && user.role === 'merchant';
   }
 
@@ -69,7 +69,7 @@ export class DesktopSidebarComponent {
     }).then((result) => {
       if (result.isConfirmed) {
         Swal.fire('Log out!', 'You have been logged out.', 'success');
-        this.authService.logout();
+        this.authService.logOut();
         this.router.navigate(['/']);
       }
     });

@@ -61,7 +61,7 @@ export class ReviewProductComponent {
    * Load unreviewed orders for the currently logged-in customer.
    */
   private loadUnreviewedOrders() {
-    const loggedInCustomer = this.authService.getCurrentUser();
+    const loggedInCustomer = this.authService.getCurrentUserJson();
     if (loggedInCustomer) {
       this.unreviewedOrders = this.reviewService.getUnreviewedOrders(
         loggedInCustomer.id

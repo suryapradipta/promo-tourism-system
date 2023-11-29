@@ -18,6 +18,6 @@ mongoose.connect(process.env.MONGO_URI)
     console.log("Connection failed");
   });
 
-app.use(userRoutes);
+app.use('/api/users', userRoutes);
 
 module.exports = app;

@@ -1,14 +1,12 @@
-/**
- * This component handles user login functionality, utilizing the AuthService for
- * authentication and navigation, and the NotificationService for displaying login-related messages.
- */
-import { Component, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { Router } from '@angular/router';
+import {Component, OnInit} from '@angular/core';
+import {FormBuilder, FormGroup, Validators} from '@angular/forms';
+import {Router} from '@angular/router';
 
-import { AuthService } from '../../../../../shared/services';
-import { AuthModel } from '../../../../../shared/models';
-import { NotificationService } from '../../../../../shared/services';
+import {
+  AuthService,
+  NotificationService
+} from '../../../../../shared/services';
+import {AuthModel} from '../../../../../shared/models';
 
 @Component({
   selector: 'app-sign-in',
@@ -19,72 +17,102 @@ export class SignInComponent implements OnInit {
   loginForm: FormGroup;
   users: AuthModel[] = [];
 
-  /**
-   * Constructor function for SignInComponent.
-   *
-   * @constructor
-   * @param {FormBuilder} formBuilder - Angular service for building and managing forms.
-   * @param {Router} router - Angular service for navigating between views.
-   * @param {AuthService} authService - Service for handling user authentication.
-   * @param {NotificationService} notificationService - Service for displaying notifications.
-   */
+
   constructor(
     private formBuilder: FormBuilder,
     private router: Router,
     private authService: AuthService,
-    private notificationService: NotificationService
-  ) {}
+    private alert: NotificationService
+  ) {
+  }
 
-  /**
-   * Initializes the login form and retrieves user data for validation purposes.
-   */
   ngOnInit(): void {
-    this.users = this.authService.getUsersData();
-
     this.loginForm = this.formBuilder.group({
       email: ['', [Validators.required, Validators.email]],
       password: ['', [Validators.required]],
     });
+
   }
 
-  /**
-   * Getter function for accessing form controls in the template.
-   */
   get formControl() {
     return this.loginForm.controls;
   }
 
-  /**
-   * Validates the login form, attempts user login using the AuthService,
-   * and navigates to the appropriate dashboard based on the user's role.
-   */
+/*
   onLogin(): void {
     if (this.loginForm.valid) {
-      const user = this.authService.login(
+      this.authService.login(
         this.loginForm.value.email,
         this.loginForm.value.password
-      );
+      ).subscribe(
+        (response) => {
+          localStorage.setItem('token', response.token);
 
-      if (user !== null) {
-        switch (user.role) {
-          case 'ministry':
-          case 'merchant':
-            if (this.authService.isFirstLogin(this.loginForm.value.email)) {
-              this.router.navigate(['/change-password']);
-            } else {
-              this.router.navigate(['/ministry-dashboard']);
+          this.authService.getCurrentUser().subscribe((currentUser) => {
+              localStorage.setItem('currentUser', JSON.stringify(currentUser));
+
+              switch (currentUser.role) {
+                case 'ministry':
+                case 'merchant':
+                  if (this.authService.isFirstLogin(this.loginForm.value.email)) {
+                    this.router.navigate(['/change-password']);
+                  } else {
+                    this.router.navigate(['/ministry-dashboard']);
+                  }
+                  break;
+                case 'customer':
+                  this.router.navigate(['/']);
+                  break;
+              }
+              this.alert.showSuccessMessage('Login successful!');
+            },
+            (error) => {
+              console.error(error);
             }
-            break;
-          case 'customer':
-            this.router.navigate(['/']);
-            break;
+          );
+        },
+        (error) => {
+          this.alert.showErrorMessage(
+            'Login failed. Please check your credentials.'
+          );
         }
-        this.notificationService.showSuccessMessage('Login successful!');
-      } else {
-        this.notificationService.showErrorMessage(
-          'Login failed. Please check your credentials.'
-        );
+      );
+    }
+  }
+*/
+
+  async onLogin() {
+    if (this.loginForm.valid) {
+      try {
+        const { email, password } = this.loginForm.value;
+        const response = await this.authService.login(email, password).toPromise();
+        localStorage.setItem('token', response.token);
+
+        const currentUser = await this.authService.getCurrentUser().toPromise();
+        localStorage.setItem('currentUser', JSON.stringify(currentUser));
+
+        this.handleLoginSuccess(currentUser);
+
+      } catch (error) {
+        this.alert.showErrorMessage('Login failed. Please check your credentials.');
       }
     }
+  }
+
+  private handleLoginSuccess(currentUser: AuthModel): void {
+    switch (currentUser.role) {
+      case 'ministry':
+      case 'merchant':
+        if (this.authService.isFirstLogin(this.loginForm.value.email)) {
+          this.router.navigate(['/change-password']);
+        } else {
+          this.router.navigate(['/ministry-dashboard']);
+        }
+        break;
+      case 'customer':
+        this.router.navigate(['/']);
+        break;
+    }
+    this.alert.showSuccessMessage('Login successful!');
   }
 }
