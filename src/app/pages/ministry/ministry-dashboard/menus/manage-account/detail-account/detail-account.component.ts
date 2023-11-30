@@ -2,9 +2,11 @@ import {Component, OnInit} from '@angular/core';
 import {MerchantModel} from '../../../../../../shared/models';
 import {ActivatedRoute, Router} from '@angular/router';
 import {
+  AuthService,
   MerchantService,
   NotificationService
 } from '../../../../../../shared/services';
+import emailjs from "@emailjs/browser";
 
 @Component({
   selector: 'app-detail-account',
@@ -18,7 +20,8 @@ export class DetailAccountComponent implements OnInit {
     private route: ActivatedRoute,
     private router: Router,
     private merchantService: MerchantService,
-    private alert: NotificationService
+    private alert: NotificationService,
+    private authService: AuthService
   ) {
   }
 
@@ -37,11 +40,10 @@ export class DetailAccountComponent implements OnInit {
     }
   }
 
-  approveMerchant(merchantId: string): void {
-    this.merchantService.approveMerchant(merchantId).subscribe(
+  approveMerchant(merchant: MerchantModel): void {
+    this.merchantService.approveMerchant(merchant._id).subscribe(
       () => {
-        this.alert.showSuccessMessage('Merchant approved successfully!');
-        this.router.navigate(['/ministry-dashboard/manage-account']);
+        this.createMerchantAccount(merchant);
       },
       (error) => {
         this.alert.showErrorMessage('Failed to approve merchant');
@@ -50,8 +52,68 @@ export class DetailAccountComponent implements OnInit {
     );
   }
 
-  rejectMerchant(merchantId: string): void {
-    this.merchantService.rejectMerchant(merchantId).subscribe(
+   private generateRandomPassword = () => {
+    const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*()_+';
+    const passwordLength = 12;
+
+    let randomPassword = '';
+
+    for (let i = 0; i < passwordLength; i++) {
+      const randomIndex = Math.floor(Math.random() * characters.length);
+      randomPassword += characters.charAt(randomIndex);
+    }
+
+    return randomPassword;
+  };
+  createMerchantAccount(merchant: MerchantModel) {
+    const email = merchant.email;
+    const defaultPassword = 'PRS*' + this.generateRandomPassword() + '@';
+    console.log(defaultPassword);
+
+
+    this.authService.createUser(email, defaultPassword, 'merchant').subscribe(
+      () => {
+        this.alert.showSuccessMessage('Merchant account created successfully!');
+        this.router.navigate(['/ministry-dashboard/manage-account']);
+      },
+      (error) => {
+        if (error.status === 400) {
+          this.alert.showEmailInUseMessage();
+        } else {
+          this.alert.showErrorMessage('Merchant account creation failed. Please try again later.');
+        }
+      }
+    );
+
+
+    const templateParams = {
+      merchant_name: merchant.name,
+      role: 'Merchant',
+      contact_number: merchant.contact_number,
+      default_password: defaultPassword,
+      to_email: email,
+      email_address: email,
+    };
+
+    emailjs
+      .send(
+        'service_boieepv',
+        'template_eucbozs',
+        templateParams,
+        'gNO_gcVs2TvsZSaJK'
+      )
+      .then(
+        (response) => {
+          this.alert.showAccountCreatedMessage();
+        },
+        (err) => {
+          this.alert.showAccountFailedMessage(err.message);
+        }
+      );
+  }
+
+  rejectMerchant(merchant: MerchantModel): void {
+    this.merchantService.rejectMerchant(merchant._id).subscribe(
       () => {
         this.router.navigate(['/ministry-dashboard/manage-account']).then(r =>
           this.alert.showSuccessMessage('Merchant rejected successfully!')
