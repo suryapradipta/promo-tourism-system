@@ -1,12 +1,24 @@
 const multer = require('multer');
+const path = require('path');
 const express = require('express');
+
 const Merchant = require('../models/merchant');
 const User = require('../models/user');
 
 
 const router = express.Router();
-const storage = multer.memoryStorage();
+const projectRoot = path.resolve(__dirname, '..');
+const storage = multer.diskStorage({
+  destination: function (req, file, cb) {
+    cb(null, path.join(projectRoot, 'uploads')); // Define the destination directory
+  },
+  filename: function (req, file, cb) {
+    const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1e9);
+    cb(null, file.fieldname + '-' + uniqueSuffix + path.extname(file.originalname));
+  },
+});
 const upload = multer({storage: storage});
+const uploadDirectory = path.join(__dirname, '..', 'uploads');
 
 router.post('/register-merchant', async (req, res) => {
   try {
@@ -48,8 +60,7 @@ router.post('/:id/upload', upload.array('documents'), async (req, res) => {
     const documentDescription = req.body.document_description;
 
     const files = req.files.map((file) => ({
-      filename: file.originalname,
-      content: file.buffer.toString('base64'),
+      filename: file.filename, // Use the filename provided by multer
     }));
 
     const merchant = await Merchant.findById(merchantId);
@@ -66,6 +77,18 @@ router.post('/:id/upload', upload.array('documents'), async (req, res) => {
     console.error(error);
     res.status(500).json({message: 'Internal server error'});
   }
+});
+
+router.get('/server/src/uploads/:filename', (req, res) => {
+  const filename = req.params.filename;
+  const filePath = path.join(uploadDirectory, filename);
+
+  res.download(filePath, (err) => {
+    if (err) {
+      console.error(err);
+      res.status(500).json({ message: 'Internal server error' });
+    }
+  });
 });
 
 router.get('/pending', async (req, res) => {
