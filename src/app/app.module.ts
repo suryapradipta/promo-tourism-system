@@ -32,6 +32,7 @@ import { AddEditProductComponent } from './pages/ministry/ministry-dashboard/men
 import { MerchantAnalyticsComponent } from './pages/ministry/ministry-dashboard/menus/merchant-analytics/merchant-analytics.component';
 import { MinistryAnalyticsComponent } from './pages/ministry/ministry-dashboard/menus/ministry-analytics/ministry-analytics.component';
 import {AuthInterceptor} from "./shared/services/auth-interceptor";
+import { LoadingSpinnerComponent } from './pages/loading-spinner/loading-spinner.component';
 
 @NgModule({
   declarations: [
@@ -61,6 +62,7 @@ import {AuthInterceptor} from "./shared/services/auth-interceptor";
     AddEditProductComponent,
     MerchantAnalyticsComponent,
     MinistryAnalyticsComponent,
+    LoadingSpinnerComponent,
   ],
   imports: [
     BrowserModule,

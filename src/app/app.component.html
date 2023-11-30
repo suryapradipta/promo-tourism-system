@@ -1,1 +1,10 @@
-<router-outlet></router-outlet>
+<ng-container *ngIf="!loading; else loadingSpinner">
+  <router-outlet></router-outlet>
+</ng-container>
+
+<ng-template #loadingSpinner>
+  <app-loading-spinner></app-loading-spinner>
+</ng-template>
+
+
+
