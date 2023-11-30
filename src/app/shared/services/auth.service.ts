@@ -14,7 +14,7 @@ export class AuthService {
 
   createUser(email: string, password: string, role: string) {
     const authData: AuthModel = {
-      id: null,
+      _id: null,
       email: email,
       password: password,
       role:

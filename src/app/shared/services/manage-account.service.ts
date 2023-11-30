@@ -1,27 +1,17 @@
-import { Injectable } from '@angular/core';
-import { MerchantModel } from '../models';
-import { SignUpService } from './sign-up.service';
+import {Injectable} from '@angular/core';
+import {MerchantModel} from '../models';
 import emailjs from '@emailjs/browser';
-import { NotificationService } from './notification.service';
+import {NotificationService} from './notification.service';
 
 @Injectable({
   providedIn: 'root',
 })
 export class ManageAccountService {
-  private merchants: MerchantModel[] = [];
 
   constructor(
-    private signUpService: SignUpService,
     private alert: NotificationService
   ) {
-    this.loadMerchantsData();
   }
-
-  private loadMerchantsData() {
-    this.merchants = JSON.parse(localStorage.getItem('merchants')) || [];
-  }
-
-
 
 
   /*
@@ -45,7 +35,7 @@ export class ManageAccountService {
       'PRS*' + Math.round(Math.random()) + '@' + Math.round(Math.random());
 
 
-    this.signUpService.register(email, defaultPassword, 'merchant', merchant.id);
+    // this.signUpService.register(email, defaultPassword, 'merchant', merchant._id);
 
     const templateParams = {
       merchant_name: merchant.name,

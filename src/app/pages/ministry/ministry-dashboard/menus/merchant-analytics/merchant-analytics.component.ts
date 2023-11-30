@@ -38,11 +38,11 @@ export class MerchantAnalyticsComponent implements OnInit {
   ngOnInit(): void {
     this.merchantProductAnalytics =
       this.analyticsService.getMerchantProductAnalytics(
-        this.authService.getCurrentUserJson().id
+        this.authService.getCurrentUserJson()._id
       );
     this.merchantPurchasingPowerAnalytics =
       this.analyticsService.getMerchantPurchasingPowerAnalytics(
-        this.authService.getCurrentUserJson().id
+        this.authService.getCurrentUserJson()._id
       );
   }
 

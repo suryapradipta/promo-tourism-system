@@ -104,10 +104,21 @@
             </dd>
           </div>
 
+          <!-- Document Description Section -->
+          <div class="py-4 sm:grid sm:grid-cols-3 sm:gap-4 sm:py-5">
+            <dt class="text-sm font-medium text-gray-500">
+              Document Description
+            </dt>
+            <dd class="mt-1 text-sm text-gray-900 sm:col-span-2 sm:mt-0">
+              {{ merchant.document_description}}
+            </dd>
+          </div>
+
+
           <div class="py-4 sm:grid sm:grid-cols-1 sm:py-5">
             <dt class="text-sm font-medium text-gray-500 flex justify-end">
               <button
-                (click)="rejectMerchant(merchant.id)"
+                (click)="rejectMerchant(merchant._id)"
                 type="button"
                 class="inline-flex items-center rounded-md border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
               >
@@ -115,7 +126,7 @@
               </button>
 
               <button
-                (click)="approveMerchant(merchant.id)"
+                (click)="approveMerchant(merchant._id)"
                 type="button"
                 class="ml-3 inline-flex items-center rounded-md border border-transparent bg-indigo-600 px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
               >

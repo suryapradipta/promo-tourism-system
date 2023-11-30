@@ -64,7 +64,7 @@ export class ReviewProductComponent {
     const loggedInCustomer = this.authService.getCurrentUserJson();
     if (loggedInCustomer) {
       this.unreviewedOrders = this.reviewService.getUnreviewedOrders(
-        loggedInCustomer.id
+        loggedInCustomer._id
       );
     }
   }

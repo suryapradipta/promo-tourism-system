@@ -1,5 +1,5 @@
 export interface MerchantModel {
-  id: string;
+  _id: string;
   name: string;
   contact_number: number;
   email: string;

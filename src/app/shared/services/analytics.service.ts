@@ -90,9 +90,9 @@ export class AnalyticsService {
   getAllMerchantAnalytics() {
     const allMerchants = this.merchantsService.getMerchantsData();
     const allAnalytics = allMerchants.map((merchant) => {
-      const productAnalytics = this.getMerchantProductAnalytics(merchant.id);
+      const productAnalytics = this.getMerchantProductAnalytics(merchant._id);
       const purchasingPowerAnalytics = this.getMerchantPurchasingPowerAnalytics(
-        merchant.id
+        merchant._id
       );
       return {
         merchant,

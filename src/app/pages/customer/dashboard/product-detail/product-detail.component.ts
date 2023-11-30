@@ -141,7 +141,7 @@ export class ProductDetailComponent {
         this.itemTotal,
         this.productForm.value.email,
         this.productForm.value.phoneNumber,
-        this.authService.getCurrentUserJson().id,
+        this.authService.getCurrentUserJson()._id,
         this.product.merchantId
       );
       this.productForm.reset();

@@ -21,7 +21,7 @@ export class MerchantService {
       {
         document_description: null,
         documents: null,
-        id: null,
+        _id: null,
         status: null,
         name,
         contact_number,
