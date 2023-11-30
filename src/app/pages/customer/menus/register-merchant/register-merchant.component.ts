@@ -2,6 +2,7 @@
 import { Component, OnInit } from '@angular/core';
 import { NgForm } from '@angular/forms';
 import {
+  MerchantService,
   NotificationService,
   RegisterMerchantsService,
 } from '../../../../shared/services';
@@ -12,62 +13,66 @@ import { MerchantModel } from '../../../../shared/models';
   templateUrl: './register-merchant.component.html',
   styleUrls: ['./register-merchant.component.css'],
 })
-export class RegisterMerchantComponent implements OnInit {
+export class RegisterMerchantComponent{
   public submitted = false;
-  merchants: MerchantModel[] = [];
+  private merchantId: string;
+  files: any;
 
   constructor(
-    private merchantService: RegisterMerchantsService,
+    private merchantService: MerchantService,
     private alert: NotificationService
   ) {}
 
-  ngOnInit(): void {
-    this.merchants = this.merchantService.getMerchantsData();
-  }
 
   onRegisterMerchant(form: NgForm) {
     if (form.invalid) {
       return;
     }
 
-    const isMerchantRegistered = this.merchantService.registerProfileMerchant(
+    this.merchantService.registerMerchant(
       form.value.name,
-      form.value.phone_number,
+      form.value.contact_number,
       form.value.email,
       form.value.company_description
+    ).subscribe(
+      (response) => {
+        this.submitted = true;
+        this.alert.showSuccessMessage('Merchant registered successfully!');
+        this.merchantId = response.id;
+      },
+      (error) => {
+        console.error(error);
+        if (error.status === 500 || error.status === 409) {
+          this.alert.showErrorMessage('Email is already registered');
+        } else {
+          this.alert.showErrorMessage('Registration failed. Please try again.');
+        }
+      }
     );
-
-    if (isMerchantRegistered) {
-      this.submitted = true;
-      this.alert.showSuccessMessage('Register successful!');
-    } else {
-      this.alert.showEmailInUseMessage();
-      return;
-    }
   }
-
-  files: any;
-  fileNames = [];
 
   onGetFile(event: any) {
     this.files = event.target.files;
-
-    for (let i = 0; i < event.target.files.length; i++) {
-      this.fileNames.push(event.target.files[i].name);
-    }
   }
 
-  onUploadFile(form: NgForm) {
+  onUploadFile(form: NgForm): void {
     if (form.invalid) {
       return;
     }
 
-    this.merchantService.addDocumentsAndDescription(
-      this.fileNames,
+    this.merchantService.uploadDocuments(
+      this.merchantId,
+      this.files,
       form.value.file_description
+    ).subscribe(
+      () => {
+        this.submitted = true;
+        this.alert.showApplicationSuccessMessage();
+      },
+      (error) => {
+        console.error(error);
+        this.alert.showErrorMessage('Error uploading documents.');
+      }
     );
-    this.fileNames = [];
-
-    this.alert.showApplicationSuccessMessage();
   }
 }

@@ -31,7 +31,7 @@ export class ChangePasswordComponent implements OnInit {
     });
   }
 
-  get f() {
+  get formControl() {
     return this.changePasswordForm.controls;
   }
 
@@ -41,9 +41,9 @@ export class ChangePasswordComponent implements OnInit {
     }
 
     const userEmail = this.authService.getCurrentUserJson().email;
-    const currentPassword = this.f.currentPassword.value;
-    const newPassword = this.f.newPassword.value;
-    const confirmPassword = this.f.confirmPassword.value;
+    const currentPassword = this.formControl.currentPassword.value;
+    const newPassword = this.formControl.newPassword.value;
+    const confirmPassword = this.formControl.confirmPassword.value;
 
     if (newPassword !== confirmPassword) {
       this.passwordMismatch = true;
@@ -74,6 +74,4 @@ export class ChangePasswordComponent implements OnInit {
       );
     }
   }
-
-
 }

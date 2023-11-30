@@ -1,12 +1,8 @@
-/**
- * This component is responsible for displaying and managing pending merchant account applications.
- * It retrieves pending applications from the ManageAccountService and provides a method
- * to preview individual merchant details, allowing navigation to the corresponding merchant dashboard.
- */
-import { Component, OnInit } from '@angular/core';
-import { MerchantModel } from '../../../../../shared/models';
-import { Router } from '@angular/router';
-import { ManageAccountService } from '../../../../../shared/services';
+import {Component, OnInit} from '@angular/core';
+import {MerchantModel} from '../../../../../shared/models';
+import {Router} from '@angular/router';
+import {MerchantService} from '../../../../../shared/services';
+import {map} from "rxjs";
 
 @Component({
   selector: 'app-manage-account',
@@ -16,32 +12,38 @@ import { ManageAccountService } from '../../../../../shared/services';
 export class ManageAccountComponent implements OnInit {
   pendingApplications: MerchantModel[] = [];
 
-  /**
-   * Constructor function for ManageAccountComponent.
-   *
-   * @constructor
-   * @param {ManageAccountService} manageAccountService - Service for managing merchant accounts.
-   * @param {Router} router - Angular router service for navigation.
-   */
   constructor(
-    private manageAccountService: ManageAccountService,
+    private merchantService: MerchantService,
     private router: Router
   ) {}
 
-  /**
-   * Retrieves pending merchant applications from the service and logs them to the console.
-   */
   ngOnInit(): void {
-    this.pendingApplications =
-      this.manageAccountService.getPendingApplications();
+    this.merchantService.getPendingApplications()
+      .pipe(
+        map((merchants: MerchantModel[]) => {
+          return merchants.map((merchant: any) => ({
+            id: merchant._id,
+            name: merchant.name,
+            contact_number: merchant.contact_number,
+            email: merchant.email,
+            company_description: merchant.company_description,
+            documents: merchant.documents,
+            document_description: merchant.document_description,
+            status: merchant.status,
+          }));
+        })
+      ).subscribe(
+      (merchants: MerchantModel[]) => {
+        this.pendingApplications = merchants;
+        console.log(this.pendingApplications);
+      },
+      (error) => {
+        console.error('Error fetching pending applications:', error);
+      }
+    );
   }
 
-  /**
-   * Navigate to the merchant dashboard for a given merchant.
-   *
-   * @param {MerchantModel} merchant - The merchant whose dashboard is to be previewed.
-   */
   previewMerchant(merchant: MerchantModel) {
-    this.router.navigate(['/ministry-dashboard/merchant', merchant.id]);
+      this.router.navigate(['/ministry-dashboard/merchant', merchant.id]);
   }
 }

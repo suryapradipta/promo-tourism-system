@@ -52,7 +52,7 @@
               Company Description
             </dt>
             <dd class="mt-1 text-sm text-gray-900 sm:col-span-2 sm:mt-0">
-              {{ merchant.description }}
+              {{ merchant.company_description }}
             </dd>
           </div>
 
@@ -88,7 +88,7 @@
                     </svg>
 
                     <!-- Document Name -->
-                    <span class="ml-2 w-0 flex-1 truncate">{{ document }}</span>
+                    <span class="ml-2 w-0 flex-1 truncate">{{ document.filename }}</span>
                   </div>
                   <div class="ml-4 flex-shrink-0">
                     <a
@@ -105,7 +105,7 @@
           <div class="py-4 sm:grid sm:grid-cols-1 sm:py-5">
             <dt class="text-sm font-medium text-gray-500 flex justify-end">
               <button
-                (click)="onRejectMerchant()"
+                (click)="rejectMerchant(merchant.id)"
                 type="button"
                 class="inline-flex items-center rounded-md border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
               >
@@ -113,7 +113,7 @@
               </button>
 
               <button
-                (click)="onApproveMerchant()"
+                (click)="approveMerchant(merchant.id)"
                 type="button"
                 class="ml-3 inline-flex items-center rounded-md border border-transparent bg-indigo-600 px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
               >

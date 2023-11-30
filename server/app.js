@@ -6,6 +6,8 @@ const app = express();
 require('dotenv').config();
 
 const userRoutes = require('./src/routes/user.routes');
+const merchantRoutes = require('./src/routes/merchant.routes');
+
 
 app.use(bodyParser.json());
 app.use(cors());
@@ -19,5 +21,6 @@ mongoose.connect(process.env.MONGO_URI)
   });
 
 app.use('/api/users', userRoutes);
+app.use('/api/merchants', merchantRoutes);
 
 module.exports = app;
