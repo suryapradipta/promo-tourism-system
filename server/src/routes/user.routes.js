@@ -99,7 +99,7 @@ router.post('/check-password', async (req, res) => {
       ? await bcrypt.compare(currentPassword, user.password)
       : false;
 
-    res.json({ isValid: isValid });
+    res.json(isValid);
   } catch (error) {
     console.error(error);
     res.status(500).json({ error: 'Internal Server Error' });

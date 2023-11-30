@@ -38,49 +38,6 @@ export class SignInComponent implements OnInit {
     return this.loginForm.controls;
   }
 
-  /*
-    onLogin(): void {
-      if (this.loginForm.valid) {
-        this.authService.login(
-          this.loginForm.value.email,
-          this.loginForm.value.password
-        ).subscribe(
-          (response) => {
-            localStorage.setItem('token', response.token);
-
-            this.authService.getCurrentUser().subscribe((currentUser) => {
-                localStorage.setItem('currentUser', JSON.stringify(currentUser));
-
-                switch (currentUser.role) {
-                  case 'ministry':
-                  case 'merchant':
-                    if (this.authService.isFirstLogin(this.loginForm.value.email)) {
-                      this.router.navigate(['/change-password']);
-                    } else {
-                      this.router.navigate(['/ministry-dashboard']);
-                    }
-                    break;
-                  case 'customer':
-                    this.router.navigate(['/']);
-                    break;
-                }
-                this.alert.showSuccessMessage('Login successful!');
-              },
-              (error) => {
-                console.error(error);
-              }
-            );
-          },
-          (error) => {
-            this.alert.showErrorMessage(
-              'Login failed. Please check your credentials.'
-            );
-          }
-        );
-      }
-    }
-  */
-
   async onLogin() {
     if (this.loginForm.valid) {
       try {
@@ -94,6 +51,7 @@ export class SignInComponent implements OnInit {
         this.handleLoginSuccess(currentUser);
 
       } catch (error) {
+        console.error(error);
         this.alert.showErrorMessage('Login failed. Please check your credentials.');
       }
     }
@@ -110,15 +68,13 @@ export class SignInComponent implements OnInit {
           switch (currentUser.role) {
             case 'ministry':
             case 'merchant':
-              this.router.navigate(['/ministry-dashboard']).then(() =>
-                this.alert.showSuccessMessage('Login successful!'));
+              this.router.navigate(['/ministry-dashboard']);
               break;
             case 'customer':
-              this.router.navigate(['/']).then(() =>
-                this.alert.showSuccessMessage('Login successful!')
-              );
+              this.router.navigate(['/']);
               break;
           }
+          this.alert.showSuccessMessage('Login successful!')
         }
       },
       (error) => {

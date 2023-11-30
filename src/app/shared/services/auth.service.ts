@@ -9,10 +9,8 @@ import {Observable} from "rxjs";
 })
 export class AuthService {
   private apiUrl = 'http://localhost:3000/api/users';
-  private users: AuthModel[] = [];
 
-  constructor(private http: HttpClient) {
-  }
+  constructor(private http: HttpClient) {}
 
   createUser(email: string, password: string, role: string) {
     const authData: AuthModel = {
@@ -68,7 +66,7 @@ export class AuthService {
     return this.http.post(`${this.apiUrl}/update-password`, { email, newPassword });
   }
 
-  checkPassword(email: string, currentPassword: string): Observable<any> {
+  checkPassword(email: string, currentPassword: string): Observable<boolean> {
     return this.http.post<boolean>(`${this.apiUrl}/check-password`, { email, currentPassword });
   }
 }

@@ -1,10 +1,10 @@
-import {ChangeDetectorRef, Component, OnInit} from '@angular/core';
+import {Component, OnInit} from '@angular/core';
 import {
   AuthService,
   NotificationService,
 } from '../../../../../shared/services';
-import { Router } from '@angular/router';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import {Router} from '@angular/router';
+import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 
 @Component({
   selector: 'app-change-password',
@@ -19,9 +19,9 @@ export class ChangePasswordComponent implements OnInit {
     private authService: AuthService,
     private router: Router,
     private fb: FormBuilder,
-    private alert: NotificationService,
-    private cdr: ChangeDetectorRef
-  ) {}
+    private alert: NotificationService
+  ) {
+  }
 
   ngOnInit(): void {
     this.changePasswordForm = this.fb.group({
@@ -35,7 +35,7 @@ export class ChangePasswordComponent implements OnInit {
     return this.changePasswordForm.controls;
   }
 
-  async onSubmit() {
+  onSubmit() {
     if (this.changePasswordForm.invalid) {
       return;
     }
@@ -50,8 +50,8 @@ export class ChangePasswordComponent implements OnInit {
       this.alert.showErrorMessage('New password and confirm password must match.');
     } else {
       this.authService.checkPassword(userEmail, currentPassword).subscribe(
-        (response) => {
-          if (response.isValid) {
+        (isValid) => {
+          if (isValid) {
             this.authService.updatePassword(userEmail, newPassword).subscribe(
               () => {
                 this.passwordMismatch = false;
