@@ -1,9 +1,11 @@
 const multer = require('multer');
+const nodemailer = require('nodemailer');
 const path = require('path');
 const express = require('express');
 
 const Merchant = require('../models/merchant');
 const User = require('../models/user');
+const authMiddleware = require('../middleware/auth.middleware');
 
 
 const router = express.Router();
@@ -19,6 +21,36 @@ const storage = multer.diskStorage({
 });
 const upload = multer({storage: storage});
 const uploadDirectory = path.join(__dirname, '..', 'uploads');
+
+const transporter = nodemailer.createTransport({
+  service: 'gmail',
+  auth: {
+    user: process.env.GMAIL_USER,
+    pass: process.env.GMAIL_PASS,
+  },
+});
+
+router.post('/send-email',async(req, res) => {
+  const { to, subject, html } = req.body;
+
+  const mailOptions = {
+    from: process.env.GMAIL_USER,
+    to: "suryapradipta8@gmail.com",
+    subject: 'THisi testing',
+    html: '<p>hello surya</p>',
+  };
+    await transporter.sendMail(mailOptions, function (error, info) {
+      if (error) {
+        console.error(error);
+        res.status(500).send('Internal Server Error');
+      } else {
+        console.log('Email sent: ' + info.response);
+        res.status(200).send('Email Sent');
+      }
+    })
+});
+
+
 
 router.post('/register-merchant', async (req, res) => {
   try {
@@ -79,7 +111,7 @@ router.post('/:id/upload', upload.array('documents'), async (req, res) => {
   }
 });
 
-router.get('/server/src/uploads/:filename', (req, res) => {
+router.get('/server/src/uploads/:filename', authMiddleware, (req, res) => {
   const filename = req.params.filename;
   const filePath = path.join(uploadDirectory, filename);
 
@@ -91,7 +123,7 @@ router.get('/server/src/uploads/:filename', (req, res) => {
   });
 });
 
-router.get('/pending', async (req, res) => {
+router.get('/pending', authMiddleware, async (req, res) => {
   try {
     const pendingMerchants = await Merchant.find({ status: 'PENDING' });
     res.json(pendingMerchants);
@@ -101,7 +133,7 @@ router.get('/pending', async (req, res) => {
   }
 });
 
-router.get('/:id', async (req, res) => {
+router.get('/:id', authMiddleware, async (req, res) => {
   const merchantId = req.params.id;
 
   try {
@@ -118,7 +150,7 @@ router.get('/:id', async (req, res) => {
   }
 });
 
-router.put('/approve/:id', async (req, res) => {
+router.put('/approve/:id', authMiddleware, async (req, res) => {
   const merchantId = req.params.id;
 
   try {
@@ -139,7 +171,7 @@ router.put('/approve/:id', async (req, res) => {
   }
 });
 
-router.put('/reject/:id', async (req, res) => {
+router.put('/reject/:id', authMiddleware, async (req, res) => {
   const merchantId = req.params.id;
 
   try {

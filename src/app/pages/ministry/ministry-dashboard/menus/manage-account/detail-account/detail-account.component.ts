@@ -95,7 +95,10 @@ export class DetailAccountComponent implements OnInit {
       email_address: email,
     };
 
-    emailjs
+
+
+
+    /*emailjs
       .send(
         'service_boieepv',
         'template_eucbozs',
@@ -109,7 +112,21 @@ export class DetailAccountComponent implements OnInit {
         (err) => {
           this.alert.showAccountFailedMessage(err.message);
         }
-      );
+      );*/
+  }
+  sendEmail() {
+    const to = 'promotourism.system@gmail.com';
+    const subject = 'Subject of the Email';
+    const html = '<p>Content of the Email</p>';
+
+    this.merchantService.sendEmail(to, subject, html).subscribe(
+      (response) => {
+        console.log('Email sent successfully:', response);
+      },
+      (error) => {
+        console.error('Error sending email:', error);
+      }
+    );
   }
 
   rejectMerchant(merchant: MerchantModel): void {
