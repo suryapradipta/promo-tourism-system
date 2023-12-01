@@ -11,6 +11,55 @@ export class MerchantService {
 
   constructor(private http: HttpClient) { }
 
+  getMerchants(): Observable<MerchantModel[]> {
+    return this.http.get<MerchantModel[]>(this.apiUrl);
+  }
+  /*
+  merchants: MerchantModel[] = [];
+
+  constructor(private merchantService: MerchantService) {}
+
+  ngOnInit(): void {
+    this.loadMerchants();
+  }
+
+  loadMerchants() {
+    this.merchantService.getMerchants().subscribe(
+      (data) => {
+        this.merchants = data;
+      },
+      (error) => {
+        console.error('Error fetching merchants:', error);
+      }
+    );
+  }
+  * */
+
+  getMerchantIdByEmail(email: string): Observable<any> {
+    return this.http.get<any>( `${this.apiUrl}/${email}`);
+  }
+  /*
+  merchantId: string | undefined;
+
+  constructor(private merchantService: MerchantService) {}
+
+  ngOnInit(): void {
+    const merchantEmail = 'merchant@example.com'; // Replace with the actual email
+    this.getMerchantIdByEmail(merchantEmail);
+  }
+
+  getMerchantIdByEmail(email: string) {
+    this.merchantService.getMerchantIdByEmail(email).subscribe(
+      (data) => {
+        this.merchantId = data.merchantId;
+      },
+      (error) => {
+        console.error('Error fetching merchant ID:', error);
+      }
+    );
+  }
+ */
+
   registerMerchant(
     name: string,
     contact_number: number,
@@ -27,7 +76,7 @@ export class MerchantService {
         contact_number,
         email,
         company_description };
-    
+
     return this.http.post(`${this.apiUrl}/register-merchant`, merchantData);
   }
 

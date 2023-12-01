@@ -1,11 +1,13 @@
 const multer = require('multer');
 const path = require('path');
+const fs = require('fs');
 const express = require('express');
 const nodemailer = require('nodemailer');
 
 const Merchant = require('../models/merchant');
 const User = require('../models/user');
 const authMiddleware = require("../middleware/auth.middleware");
+const mongoose = require("mongoose");
 
 
 const router = express.Router();
@@ -19,7 +21,10 @@ const storage = multer.diskStorage({
     cb(null, file.fieldname + '-' + uniqueSuffix + path.extname(file.originalname));
   },
 });
-const upload = multer({storage: storage});
+const upload = multer({
+  storage: storage,
+  limits: { fileSize: 1024 * 1024 },
+});
 const uploadDirectory = path.join(__dirname, '..', 'uploads');
 
 const transporter = nodemailer.createTransport({
@@ -38,6 +43,10 @@ router.post('/register-merchant', async (req, res) => {
       email,
       company_description,
     } = req.body;
+
+    if (!name || !contact_number || !email || !company_description) {
+      return res.status(400).json({ message: 'All fields are required' });
+    }
 
     const existingUser = await User.findOne({ email });
     if (existingUser) {
@@ -69,9 +78,23 @@ router.post('/:id/upload', upload.array('documents'), async (req, res) => {
     const merchantId = req.params.id;
     const documentDescription = req.body.document_description;
 
+    if (!documentDescription) {
+      return res.status(400).json({ message: 'Document description is required' });
+    }
+
     const files = req.files.map((file) => ({
       filename: file.filename, // Use the filename provided by multer
     }));
+
+    if (!files || files.length === 0) {
+      return res.status(400).json({ message: 'At least one document is required' });
+    }
+    for (const file of files) {
+      if (file.size > 1024 * 1024) {
+        // Limit file size to 1MB
+        return res.status(400).json({ message: 'File size exceeds the limit (1MB)' });
+      }
+    }
 
     const merchant = await Merchant.findById(merchantId);
     if (!merchant) {
@@ -89,9 +112,14 @@ router.post('/:id/upload', upload.array('documents'), async (req, res) => {
   }
 });
 
-router.get('/server/src/uploads/:filename', authMiddleware,(req, res) => {
+router.get('/server/src/uploads/:filename',(req, res) => {
   const filename = req.params.filename;
   const filePath = path.join(uploadDirectory, filename);
+
+  // Check if the file exists
+  if (!fs.existsSync(filePath)) {
+    return res.status(404).json({ message: 'File not found' });
+  }
 
   res.download(filePath, (err) => {
     if (err) {
@@ -103,7 +131,16 @@ router.get('/server/src/uploads/:filename', authMiddleware,(req, res) => {
 
 router.get('/pending', authMiddleware,async (req, res) => {
   try {
-    const pendingMerchants = await Merchant.find({ status: 'PENDING' });
+    // Parse query parameters for pagination
+    const page = parseInt(req.query.page) || 1;
+    const limit = parseInt(req.query.limit) || 5; // Default limit is 10
+
+    // Calculate the skip value based on the page and limit
+    const skip = (page - 1) * limit;
+    const pendingMerchants = await Merchant.find({ status: 'PENDING' })
+      .skip(skip)
+      .limit(limit);
+
     res.json(pendingMerchants);
   } catch (error) {
     console.error(error);
@@ -113,6 +150,11 @@ router.get('/pending', authMiddleware,async (req, res) => {
 
 router.get('/:id', authMiddleware,async (req, res) => {
   const merchantId = req.params.id;
+
+  // Validate that merchantId is a valid MongoDB ObjectId
+  if (!mongoose.Types.ObjectId.isValid(merchantId)) {
+    return res.status(400).json({ message: 'Invalid merchant ID' });
+  }
 
   try {
     const merchant = await Merchant.findById(merchantId);
@@ -139,8 +181,6 @@ router.put('/approve/:id', authMiddleware,async (req, res) => {
 
     merchant.status = 'APPROVED';
     await merchant.save();
-
-    //  may choose to create a user account here
 
     return res.status(200).json({ message: 'Merchant approved successfully', merchant });
   } catch (error) {
@@ -188,5 +228,32 @@ router.post('/send-email',authMiddleware, async (req, res) => {
     }
   });
 });
+
+router.get('', async (req, res) => {
+  try {
+    const merchants = await Merchant.find();
+    res.json(merchants);
+  } catch (error) {
+    console.error(error);
+    res.status(500).send('Internal Server Error');
+  }
+});
+
+router.get('/:email', async (req, res) => {
+  const { email } = req.params;
+
+  try {
+    const merchant = await Merchant.findOne({ email }, '_id');
+    if (merchant) {
+      res.json({ merchantId: merchant._id });
+    } else {
+      res.status(404).json({ message: 'Merchant not found' });
+    }
+  } catch (error) {
+    console.error(error);
+    res.status(500).send('Internal Server Error');
+  }
+});
+
 
 module.exports = router;
