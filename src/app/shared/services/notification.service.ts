@@ -56,17 +56,6 @@ export class NotificationService {
   }
 
   /**
-   * Display a success message for a successfully created account.
-   */
-  showAccountCreatedMessage = (): void => {
-    Swal.fire({
-      icon: 'success',
-      title: 'Account created!',
-      text: 'Merchant account has been successfully created',
-    });
-  };
-
-  /**
    * Display an error message for a failed account creation.
    *
    * @param {string} message - The error message to be displayed.
@@ -76,17 +65,6 @@ export class NotificationService {
       icon: 'error',
       title: 'Oops...',
       text: message,
-    });
-  };
-
-  /**
-   * Display a success message for a rejected account.
-   */
-  showAccountRejectedMessage = (): void => {
-    Swal.fire({
-      icon: 'success',
-      title: 'Account rejected!',
-      text: 'Merchant account has been successfully rejected',
     });
   };
 
@@ -112,6 +90,4 @@ export class NotificationService {
       showConfirmButton: true,
     });
   };
-
-
 }

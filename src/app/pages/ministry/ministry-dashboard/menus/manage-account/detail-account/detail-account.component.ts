@@ -6,7 +6,6 @@ import {
   MerchantService,
   NotificationService
 } from '../../../../../../shared/services';
-import emailjs from "@emailjs/browser";
 
 @Component({
   selector: 'app-detail-account',
@@ -52,7 +51,7 @@ export class DetailAccountComponent implements OnInit {
     );
   }
 
-   private generateRandomPassword = () => {
+  private generateRandomPassword = () => {
     const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*()_+';
     const passwordLength = 12;
 
@@ -65,16 +64,21 @@ export class DetailAccountComponent implements OnInit {
 
     return randomPassword;
   };
+
   createMerchantAccount(merchant: MerchantModel) {
     const email = merchant.email;
     const defaultPassword = 'PRS*' + this.generateRandomPassword() + '@';
-    console.log(defaultPassword);
-
 
     this.authService.createUser(email, defaultPassword, 'merchant').subscribe(
       () => {
-        this.alert.showSuccessMessage('Merchant account created successfully!');
-        this.router.navigate(['/ministry-dashboard/manage-account']);
+        const templateParams = {
+          merchant_name: merchant.name,
+          role: 'Merchant',
+          contact_number: merchant.contact_number,
+          default_password: defaultPassword,
+          to_email: email,
+        };
+        this.sendEmail(templateParams);
       },
       (error) => {
         if (error.status === 400) {
@@ -84,32 +88,38 @@ export class DetailAccountComponent implements OnInit {
         }
       }
     );
+  }
 
+  sendEmail(templateParams: any) {
+    const to = templateParams.to_email;
+    const subject = 'Your New Merchant Account';
+    const html = `
+    <p>Dear ${templateParams.merchant_name},</p>
+      <p>We are delighted to inform you that your new merchant account has been successfully created. You can now access your account using the following details:</p>
+      <ul>
+        <li>Login Email: ${templateParams.to_email}</li>
+        <li>Default Password: ${templateParams.default_password}</li>
+      </ul>
+      <p>Please make sure to change your default password after your initial login to enhance the security of your account.</p>
+      <p>Here are some important details about your new account:</p>
+      <ul>
+        <li>Account Type: ${templateParams.role}</li>
+        <li>Company Name: ${templateParams.merchant_name}</li>
+        <li>Contact Information: ${templateParams.contact_number}</li>
+      </ul>
+      <p>To access your account, please visit our website and log in using your email address and the provided default password.</p>
+      <p>Best regards,<br>PromoTourism System team</p>
+    `;
 
-    const templateParams = {
-      merchant_name: merchant.name,
-      role: 'Merchant',
-      contact_number: merchant.contact_number,
-      default_password: defaultPassword,
-      to_email: email,
-      email_address: email,
-    };
-
-    emailjs
-      .send(
-        'service_boieepv',
-        'template_eucbozs',
-        templateParams,
-        'gNO_gcVs2TvsZSaJK'
-      )
-      .then(
-        (response) => {
-          this.alert.showAccountCreatedMessage();
-        },
-        (err) => {
-          this.alert.showAccountFailedMessage(err.message);
-        }
-      );
+    this.merchantService.sendEmail(to, subject, html).subscribe(
+      () => {
+        this.alert.showSuccessMessage('Merchant account created successfully!');
+        this.router.navigate(['/ministry-dashboard/manage-account']);
+      },
+      (error) => {
+        this.alert.showAccountFailedMessage(error.message);
+      }
+    );
   }
 
   rejectMerchant(merchant: MerchantModel): void {

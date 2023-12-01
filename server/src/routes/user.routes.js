@@ -21,7 +21,6 @@ router.post('/register', async (req, res) => {
   }
 });
 
-
 router.post('/login', async (req, res) => {
   const { email, password } = req.body;
 
@@ -55,12 +54,11 @@ router.post('/login', async (req, res) => {
   }
 });
 
-
 router.get('/current-user', authMiddleware, (req, res) => {
   res.json(req.user);
 });
 
-router.get('/is-first-login/:email', async (req, res) => {
+router.get('/is-first-login/:email', authMiddleware,async (req, res) => {
   const email = req.params.email;
 
   try {
@@ -73,7 +71,7 @@ router.get('/is-first-login/:email', async (req, res) => {
   }
 });
 
-router.post('/update-password', async (req, res) => {
+router.post('/update-password', authMiddleware,async (req, res) => {
   const { email, newPassword } = req.body;
 
   try {
@@ -90,7 +88,7 @@ router.post('/update-password', async (req, res) => {
   }
 });
 
-router.post('/check-password', async (req, res) => {
+router.post('/check-password', authMiddleware,async (req, res) => {
   const { email, currentPassword } = req.body;
 
   try {

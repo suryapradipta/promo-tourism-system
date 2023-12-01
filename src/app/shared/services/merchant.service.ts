@@ -27,8 +27,7 @@ export class MerchantService {
         contact_number,
         email,
         company_description };
-
-
+    
     return this.http.post(`${this.apiUrl}/register-merchant`, merchantData);
   }
 
@@ -56,5 +55,10 @@ export class MerchantService {
 
   rejectMerchant(merchantId: string): Observable<any> {
     return this.http.put<any>(`${this.apiUrl}/reject/${merchantId}`, {});
+  }
+
+  sendEmail(to: string, subject: string, html: string): Observable<any> {
+    const emailData = { to, subject, html };
+    return this.http.post<any>(`${this.apiUrl}/send-email`, emailData);
   }
 }
