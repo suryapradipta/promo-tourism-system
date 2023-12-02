@@ -76,7 +76,9 @@ export class SignUpComponent implements OnInit {
           this.alert.showSuccessMessage('Register successful!');
         },
         (error) => {
-          if (error.status === 500) {
+          if (error.status === 400) {
+            this.alert.showErrorMessage('Invalid credentials. Please try again');
+          } else if (error.status === 500) {
             this.alert.showEmailInUseMessage();
           } else {
             this.alert.showErrorMessage('Register failed. Please try again later.');

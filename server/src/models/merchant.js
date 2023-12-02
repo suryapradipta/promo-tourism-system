@@ -10,12 +10,6 @@ const merchantSchema = new mongoose.Schema({
     unique: true,
     trim: true,
     lowercase: true,
-    validate: {
-      validator: function (value) {
-        return /\S+@\S+\.\S+/.test(value);
-      },
-      message: 'Invalid email address',
-    },
   },
   company_description: {type: String, required: true},
   documents: [{

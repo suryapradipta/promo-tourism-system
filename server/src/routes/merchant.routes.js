@@ -35,6 +35,10 @@ const transporter = nodemailer.createTransport({
   },
 });
 
+function isValidEmail(email) {
+  return /\S+@\S+\.\S+/.test(email);
+}
+
 router.post('/register-merchant', async (req, res) => {
   try {
     const {
@@ -46,6 +50,9 @@ router.post('/register-merchant', async (req, res) => {
 
     if (!name || !contact_number || !email || !company_description) {
       return res.status(400).json({ message: 'All fields are required' });
+    }
+    if (!isValidEmail(email)) {
+      return res.status(400).json({ message: 'Invalid email address' });
     }
 
     const existingUser = await User.findOne({ email });
@@ -256,6 +263,8 @@ router.get('/:email', async (req, res) => {
 
   if (!email) {
     return res.status(400).json({ message: 'Email is required' });
+  } else if (!isValidEmail(email)) {
+    return res.status(400).json({ message: 'Invalid email address' });
   }
 
   try {

@@ -6,12 +6,18 @@ const authMiddleware = require('../middleware/auth.middleware');
 
 const router = express.Router();
 
-
+function isValidEmail(email) {
+  return /\S+@\S+\.\S+/.test(email);
+}
 router.post('/register', async (req, res) => {
   const { email, password, role, isFirstLogin} = req.body;
 
   if (!email || !password || !role || isFirstLogin === undefined) {
     return res.status(400).json({ message: 'All fields are required' });
+  }
+
+  if (!isValidEmail(email)) {
+    return res.status(400).json({ message: 'Invalid email address' });
   }
 
   try {
