@@ -1,7 +1,13 @@
 const jwt = require('jsonwebtoken');
 
 module.exports = (req, res, next) => {
-  const token = req.headers["authorization"].split(" ")[1];
+  const authorizationHeader = req.headers["authorization"];
+
+  if (!authorizationHeader || !authorizationHeader.startsWith("Bearer ")) {
+    return res.status(401).json({ msg: 'Authorization denied, no valid token provided' });
+  }
+
+  const token = authorizationHeader.split(" ")[1];
 
   if (!token) {
     return res.status(401).json({msg: 'Authorization denied, no token provided'});
@@ -9,10 +15,15 @@ module.exports = (req, res, next) => {
 
   try {
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
+
+    if (decoded.exp < Date.now() / 1000) {
+      return res.status(401).json({ msg: 'Token has expired' });
+    }
+
     req.user = decoded;
-    console.log(decoded)
     next();
   } catch (err) {
+    console.error(err);
     res.status(401).json({msg: 'Token is not valid'});
   }
 };

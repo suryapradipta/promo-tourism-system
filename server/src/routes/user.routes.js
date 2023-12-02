@@ -6,8 +6,28 @@ const authMiddleware = require('../middleware/auth.middleware');
 
 const router = express.Router();
 
+function isValidEmail(email) {
+  return /\S+@\S+\.\S+/.test(email);
+}
+
 router.post('/register', async (req, res) => {
   const { email, password, role, isFirstLogin} = req.body;
+
+  if (!email || !password || !role || isFirstLogin === undefined) {
+    return res.status(400).json({ message: 'All fields are required' });
+  }
+  if (!isValidEmail(email)) {
+    return res.status(400).json({ message: 'Invalid email address' });
+  }
+  if (password.length < 8) {
+    return res.status(400).json({ message: 'Password must be at least 6 characters long' });
+  }
+  if (!['ministry', 'customer', 'merchant'].includes(role)) {
+    return res.status(400).json({ message: 'Invalid user role' });
+  }
+  if (typeof isFirstLogin !== 'boolean') {
+    return res.status(400).json({ message: 'Invalid isFirstLogin value' });
+  }
 
   try {
     const hashedPassword = await bcrypt.hash(password, 10);
@@ -25,6 +45,10 @@ router.post('/login', async (req, res) => {
   const { email, password } = req.body;
 
   try {
+    if (!email || !password) {
+      return res.status(400).json({ msg: 'Email and password are required' });
+    }
+
     let user = await User.findOne({ email });
 
     if (!user) {
@@ -61,6 +85,10 @@ router.get('/current-user', authMiddleware, (req, res) => {
 router.get('/is-first-login/:email', authMiddleware,async (req, res) => {
   const email = req.params.email;
 
+  if (!isValidEmail(email)) {
+    return res.status(400).json({ message: 'Invalid email address' });
+  }
+
   try {
     const user = await User.findOne({ email });
     const isFirstLogin = user && user.isFirstLogin;
@@ -73,6 +101,10 @@ router.get('/is-first-login/:email', authMiddleware,async (req, res) => {
 
 router.post('/update-password', authMiddleware,async (req, res) => {
   const { email, newPassword } = req.body;
+
+  if (!email || !newPassword) {
+    return res.status(400).json({ error: 'Email and newPassword are required' });
+  }
 
   try {
     const hashedPassword = await bcrypt.hash(newPassword, 10);
@@ -93,6 +125,11 @@ router.post('/check-password', authMiddleware,async (req, res) => {
 
   try {
     const user = await User.findOne({ email: email });
+
+    if (!user) {
+      return res.status(404).json({ message: 'User not found' });
+    }
+
     const isValid = user
       ? await bcrypt.compare(currentPassword, user.password)
       : false;

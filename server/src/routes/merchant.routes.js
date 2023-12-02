@@ -173,6 +173,10 @@ router.get('/:id', authMiddleware,async (req, res) => {
 router.put('/approve/:id', authMiddleware,async (req, res) => {
   const merchantId = req.params.id;
 
+  if (!mongoose.Types.ObjectId.isValid(merchantId)) {
+    return res.status(400).json({ message: 'Invalid merchant ID' });
+  }
+
   try {
     const merchant = await Merchant.findById(merchantId);
     if (!merchant) {
@@ -192,6 +196,10 @@ router.put('/approve/:id', authMiddleware,async (req, res) => {
 router.put('/reject/:id', authMiddleware,async (req, res) => {
   const merchantId = req.params.id;
 
+  if (!mongoose.Types.ObjectId.isValid(merchantId)) {
+    return res.status(400).json({ message: 'Invalid merchant ID' });
+  }
+
   try {
     const merchant = await Merchant.findById(merchantId);
     if (!merchant) {
@@ -210,6 +218,10 @@ router.put('/reject/:id', authMiddleware,async (req, res) => {
 
 router.post('/send-email',authMiddleware, async (req, res) => {
   const { to, subject, html } = req.body;
+
+  if (!to || !subject || !html) {
+    return res.status(400).json({ message: 'All fields are required' });
+  }
 
   const mailOptions = {
     from: process.env.GMAIL_USER,
@@ -235,12 +247,23 @@ router.get('', async (req, res) => {
     res.json(merchants);
   } catch (error) {
     console.error(error);
-    res.status(500).send('Internal Server Error');
+    res.status(500).json({ message: 'Internal Server Error' });
   }
 });
 
+function isValidEmail(email) {
+  return /\S+@\S+\.\S+/.test(email);
+}
+
 router.get('/:email', async (req, res) => {
   const { email } = req.params;
+
+  if (!email) {
+    return res.status(400).json({ message: 'Email is required' });
+  } else if (!isValidEmail(email)) {
+    return res.status(400).json({ message: 'Invalid email address' });
+  }
+
 
   try {
     const merchant = await Merchant.findOne({ email }, '_id');
