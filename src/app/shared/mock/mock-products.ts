@@ -1,7 +1,7 @@
 import {ProductModel} from "../models";
 import {v4 as uuidv4} from "uuid";
 
-export const PRODUCTS: ProductModel[] = [
+/*export const PRODUCTS: ProductModel[] = [
   {
     id: uuidv4(),
     name: 'Riverside Retreat in Pitt Meadows',
@@ -144,5 +144,5 @@ export const PRODUCTS: ProductModel[] = [
     ],
     merchantId:'defaultMerchantID2',
   },
-];
+];*/
 

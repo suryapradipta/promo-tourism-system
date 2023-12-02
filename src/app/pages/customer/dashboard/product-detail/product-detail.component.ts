@@ -126,7 +126,7 @@ export class ProductDetailComponent {
    * @returns {number} - Average product rating.
    */
   get averageRating(): number {
-    return this.productService.getAverageRating(this.product.id);
+    return this.productService.getAverageRating(this.product._id);
   }
 
   /**
@@ -237,7 +237,7 @@ export class ProductDetailComponent {
         };
         this.paymentService.savePaymentsData(payment);
 
-        const productID = this.product.id;
+        const productID = this.product._id;
         const paymentID = data.id;
         const { name, address } = data.purchase_units[0].shipping;
         const { full_name: shippingName } = name;

@@ -68,7 +68,7 @@ export class DetailAccountComponent implements OnInit {
   createMerchantAccount(merchant: MerchantModel) {
     const email = merchant.email;
     const defaultPassword = 'PRS*' + this.generateRandomPassword() + '@';
-
+    console.log(defaultPassword);
     this.authService.createUser(email, defaultPassword, 'merchant').subscribe(
       () => {
         const templateParams = {

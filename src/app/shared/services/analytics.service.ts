@@ -43,7 +43,7 @@ export class AnalyticsService {
 
     const productAnalytics = merchantProducts.map((product) => {
       const productOrders = orders.filter(
-        (order) => order.product.id === product.id
+        (order) => order.product._id === product._id
       );
       return {
         product,

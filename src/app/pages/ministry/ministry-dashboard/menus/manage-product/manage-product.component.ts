@@ -1,17 +1,15 @@
-/**
- * This component is responsible for managing products, displaying a list of products
- * associated with the currently logged-in ministry user. It provides functionality
- * to add, edit, and delete products. The product list is retrieved from the ProductListService,
- * and product deletion is confirmed using SweetAlert2.
- */
-import { Component, OnInit } from '@angular/core';
-import { ProductModel } from '../../../../../shared/models';
+import {Component, OnInit} from '@angular/core';
+import {ProductModel} from '../../../../../shared/models';
 import {
   AuthService,
-  ProductListService,
+  MerchantService,
+  NotificationService,
 } from '../../../../../shared/services';
-import { Router } from '@angular/router';
+import {Router} from '@angular/router';
 import Swal from 'sweetalert2';
+import {
+  ProductService
+} from "../../../../../shared/services/product.service";
 
 @Component({
   selector: 'app-manage-product',
@@ -20,52 +18,63 @@ import Swal from 'sweetalert2';
 })
 export class ManageProductComponent implements OnInit {
   products: ProductModel[] = [];
+  merchantId: string | undefined;
 
-  /**
-   * Constructor function for ManageProductComponent.
-   *
-   * @constructor
-   * @param {ProductListService} productService - The service for managing product data.
-   * @param {Router} router - The Angular router service for navigation.
-   * @param {AuthService} authService - The service for managing user authentication.
-   */
   constructor(
-    private productService: ProductListService,
+    private productService: ProductService,
     private router: Router,
-    private authService: AuthService
-  ) {}
-
-  /**
-   * Retrieves the list of products associated with the currently logged-in ministry user.
-   */
-  ngOnInit(): void {
-    this.products = this.productService.getProductsByMerchantId(
-      this.authService.getCurrentUserJson()._id
-    );
+    private authService: AuthService,
+    private merchantService: MerchantService,
+    private alert: NotificationService
+  ) {
   }
-  /**
-   * Navigate to the 'add-product' route for adding a new product.
-   */
+
+  ngOnInit(): void {
+    const email = this.authService.getCurrentUserJson().email;
+    this.merchantService.getMerchantIdByEmail(email)
+      .subscribe((data) => {
+          this.loadProducts(data.merchantId);
+        },
+        (error) => {
+          console.error('Error fetching merchant ID:', error);
+          if (error.status === 500) {
+            this.alert.showErrorMessage('Internal server error. Please try again later.');
+          } else {
+            this.alert.showErrorMessage('An unexpected error occurred. Please try again.');
+          }
+        }
+      );
+  }
+
+  loadProducts(merchantId: string) {
+    this.productService.getProductsByMerchantId(merchantId)
+      .subscribe(
+        (products) => {
+          this.products = products;
+          console.log(this.products)
+        },
+        (error) => {
+          console.error('Error fetching products:', error);
+          if (error.status === 404) {
+            this.alert.showErrorMessage('Merchant not found.');
+          } else if (error.status === 500) {
+            this.alert.showErrorMessage('Internal server error. Please try again later.');
+          } else {
+            this.alert.showErrorMessage('An unexpected error occurred. Please try again.');
+          }
+        }
+      );
+  }
+
   addProduct(): void {
     this.router.navigate(['/ministry-dashboard/add-product']);
   }
 
-  /**
-   * Navigate to the 'edit-product' route for editing the selected product.
-   *
-   * @param {ProductModel} product - The product to be edited.
-   */
   editProduct(product: ProductModel): void {
-    this.router.navigate(['/ministry-dashboard/edit-product', product.id]);
+    this.router.navigate(['/ministry-dashboard/edit-product', product._id]);
   }
 
-  /**
-   * Delete the selected product after confirming the action using SweetAlert2.
-   *
-   * @param {string} productId - The ID of the product to be deleted.
-   * @param {string} merchantId - The ID of the merchant associated with the product.
-   */
-  deleteProduct(productId: string, merchantId: string): void {
+  deleteProduct(productId: string): void {
     Swal.fire({
       title: 'Are you sure you want to delete this product?',
       icon: 'warning',
@@ -80,9 +89,13 @@ export class ManageProductComponent implements OnInit {
           'Product have been successfully deleted.',
           'success'
         );
-        this.productService.deleteProduct(productId, merchantId);
-        this.products = this.productService.getProductsByMerchantId(
-          this.authService.getCurrentUserJson()._id
+        this.productService.deleteProduct(productId).subscribe(
+          (response) => {
+            console.log(response);
+          },
+          (error) => {
+            console.error(error);
+          }
         );
       }
     });

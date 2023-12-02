@@ -36,7 +36,7 @@ export class MerchantService {
   * */
 
   getMerchantIdByEmail(email: string): Observable<any> {
-    return this.http.get<any>( `${this.apiUrl}/${email}`);
+    return this.http.get<any>( `${this.apiUrl}/find-by-email/${email}`);
   }
   /*
   merchantId: string | undefined;
@@ -95,7 +95,7 @@ export class MerchantService {
   }
 
   getMerchantById(id: string): Observable<MerchantModel> {
-    return this.http.get<MerchantModel>(`${this.apiUrl}/${id}`);
+    return this.http.get<MerchantModel>(`${this.apiUrl}/find-by-id/${id}`);
   }
 
   approveMerchant(merchantId: string): Observable<any> {

@@ -5,8 +5,9 @@ const mongoose = require('mongoose');
 const app = express();
 require('dotenv').config();
 
-const userRoutes = require('./src/routes/user.routes');
-const merchantRoutes = require('./src/routes/merchant.routes');
+const userRoutes = require('./src/routes/user.route');
+const merchantRoutes = require('./src/routes/merchant.route');
+const productRoutes = require('./src/routes/product.route');
 
 
 app.use(bodyParser.json());
@@ -22,5 +23,7 @@ mongoose.connect(process.env.MONGO_URI)
 
 app.use('/api/users', userRoutes);
 app.use('/api/merchants', merchantRoutes);
+app.use('/api/products', productRoutes);
+
 
 module.exports = app;

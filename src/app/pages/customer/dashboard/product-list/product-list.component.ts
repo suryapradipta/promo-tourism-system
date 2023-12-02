@@ -1,8 +1,3 @@
-/**
- * This component displays a list of products and handles navigation to individual
- * product details. It checks the authentication status using the AuthService and
- * prompts the user to log in if necessary.
- */
 import { Component, OnInit } from '@angular/core';
 import { ProductModel } from '../../../../shared/models';
 import { AuthService, ProductListService } from '../../../../shared/services';
@@ -17,35 +12,19 @@ import Swal from 'sweetalert2';
 export class ProductListComponent implements OnInit {
   products: ProductModel[] = [];
 
-  /**
-   * @constructor
-   * @param {ProductListService} productListService - The service responsible for managing product data.
-   * @param {Router} router - The Angular router service for navigation.
-   * @param {AuthService} authService - The service responsible for user authentication.
-   */
   constructor(
     private productListService: ProductListService,
     private router: Router,
     private authService: AuthService
   ) {}
 
-  /**
-   * Initializes the product data from the ProductListService.
-   */
   ngOnInit(): void {
     this.products = this.productListService.getProductsData();
   }
 
-  /**
-   * Navigate to the details page of the selected product.
-   * If the user is authenticated, navigate to the product details page and scroll to the top.
-   * If not authenticated, prompt the user to log in before navigating.
-   *
-   * @param {ProductModel} product - The selected product for which details are to be viewed.
-   */
   viewProductDetails(product: ProductModel) {
     if (this.authService.isAuthenticated()) {
-      this.router.navigate(['/product', product.id]);
+      this.router.navigate(['/product', product._id]);
 
       /* [[PROBLEM]] after navigate the scroll position stick on previous page
        [[BUG]] navigate() persists the scroll position of the previous page
@@ -64,12 +43,6 @@ export class ProductListComponent implements OnInit {
     }
   }
 
-  /**
-   * Get the average rating for a given product.
-   *
-   * @param {string} productId - The ID of the product for which the average rating is calculated.
-   * @returns {number} - The average rating of the product.
-   */
   getAverageRating(productId: string): number {
     return this.productListService.getAverageRating(productId);
   }

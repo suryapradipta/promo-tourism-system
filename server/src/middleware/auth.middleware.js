@@ -4,7 +4,7 @@ module.exports = (req, res, next) => {
   const authorizationHeader = req.headers["authorization"];
 
   if (!authorizationHeader || !authorizationHeader.startsWith("Bearer ")) {
-    return res.status(401).json({ msg: 'Authorization denied, no valid token provided' });
+    return res.status(401).json({msg: 'Authorization denied, no valid token provided'});
   }
 
   const token = authorizationHeader.split(" ")[1];
@@ -17,7 +17,7 @@ module.exports = (req, res, next) => {
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
 
     if (decoded.exp < Date.now() / 1000) {
-      return res.status(401).json({ msg: 'Token has expired' });
+      return res.status(401).json({msg: 'Token has expired'});
     }
 
     req.user = decoded;

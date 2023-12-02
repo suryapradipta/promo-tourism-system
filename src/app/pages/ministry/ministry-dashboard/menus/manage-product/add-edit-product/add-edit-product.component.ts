@@ -1,18 +1,15 @@
-/**
- * This component handles the addition and editing of products. It utilizes the ProductService
- * for managing product data, AuthService for obtaining the current user's information, and
- * NotificationService for displaying alerts. It also includes methods for handling image uploads
- * and saving product data.
- */
-import { Component, OnInit } from '@angular/core';
-import { ProductModel } from '../../../../../../shared/models';
-import { ActivatedRoute, Router } from '@angular/router';
+import {Component, OnInit} from '@angular/core';
+import {ProductModel} from '../../../../../../shared/models';
+import {ActivatedRoute, Router} from '@angular/router';
 import {
   AuthService,
+  MerchantService,
   NotificationService,
-  ProductListService,
 } from '../../../../../../shared/services';
-import { NgForm } from '@angular/forms';
+import {NgForm} from '@angular/forms';
+import {
+  ProductService
+} from "../../../../../../shared/services/product.service";
 
 @Component({
   selector: 'app-add-edit-product',
@@ -24,66 +21,72 @@ export class AddEditProductComponent implements OnInit {
   product: ProductModel = {
     category: undefined,
     description: '',
-    id: '',
-    image: '',
+    _id: '',
+    image: null,
     name: '',
     price: 0,
     reviews: [],
     merchantId: '',
   };
+  imageFile: File | null = null;
 
-  /**
-   * Constructor function for AddEditProductComponent.
-   *
-   * @constructor
-   * @param {ActivatedRoute} route - Used to retrieve route parameters.
-   * @param {Router} router - Used for navigation.
-   * @param {ProductListService} productService - Service for managing product data.
-   * @param {NotificationService} alert - Service for displaying notifications.
-   * @param {AuthService} authService - Service for managing user authentication.
-   */
+  previewImage: string | ArrayBuffer | null = null;
+
   constructor(
     private route: ActivatedRoute,
     private router: Router,
-    private productService: ProductListService,
     private alert: NotificationService,
-    private authService: AuthService
-  ) {}
+    private authService: AuthService,
+    private productService: ProductService,
+    private merchantService: MerchantService
+  ) {
+  }
 
-  /**
-   * Retrieves the product ID from the route parameters and loads the corresponding
-   * product data if in edit mode.
-   */
   ngOnInit(): void {
     const productId = this.route.snapshot.paramMap.get('id');
     if (productId) {
-      this.product = this.productService.getProductById(productId);
+      this.productService.getProductById(productId).subscribe(
+        (product) => {
+          this.product = product;
+          this.loadImagePreview();
+        },
+        (error) => {
+          console.error('Error fetching product:', error);
+        }
+      );
     }
+
+    const email = this.authService.getCurrentUserJson().email;
+    this.merchantService.getMerchantIdByEmail(email)
+      .subscribe((data) => {
+          this.product.merchantId = data.merchantId;
+          console.log(this.product.merchantId);
+        },
+        (error) => {
+          console.error('Error fetching merchant ID:', error);
+        }
+      );
+
+
   }
 
-  /**
-   * Method to handle image uploads. It sends the selected image file to the ProductService
-   * for upload and updates the product's image URL upon successful upload.
-   *
-   * @param {any} event - The event containing the selected image file.
-   */
   handleImageUpload(event: any) {
-    const file = event.target.files[0];
+    this.imageFile = event.target.files[0];
+    this.loadImagePreview(this.imageFile);
+  }
+
+  loadImagePreview(file?: File) {
     if (file) {
-      this.productService.uploadImage(file).subscribe((imageUrl) => {
-        this.product.image = imageUrl;
-      });
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        this.previewImage = e.target?.result;
+      };
+      reader.readAsDataURL(file);
+    } else if (this.product.image) {
+      this.previewImage = `http://localhost:3000/api/merchants/server/src/uploads/${this.product.image}`;
     }
   }
 
-  /**
-   * Method to save product data. Validates the form, sets the merchant ID based on the
-   * current user, and either adds a new product or updates an existing one based on the
-   * presence of a product ID.
-   * Navigates to the product management page after successful save.
-   *
-   * @param {NgForm} form - The NgForm containing the product data.
-   */
   saveProduct(form: NgForm): void {
     if (form.invalid) {
       this.alert.showErrorMessage(
@@ -91,17 +94,39 @@ export class AddEditProductComponent implements OnInit {
       );
       return;
     }
-    const merchantId = this.authService.getCurrentUserJson()._id;
-    this.product.merchantId = merchantId;
 
-    if (this.product.id) {
-      this.alert.showSuccessMessage('Update product successful!');
-      this.productService.updateProduct(this.product);
-    } else {
-      this.alert.showSuccessMessage('Add product successful!');
-      this.productService.addProduct(this.product, merchantId);
+    if (!this.imageFile) {
+      this.alert.showErrorMessage(
+        'Image file is required'
+      );
+      return;
     }
 
-    this.router.navigate(['/ministry-dashboard/manage-product']);
+
+    if (this.product._id) {
+      this.alert.showSuccessMessage('Update product successful!');
+      this.productService.editProduct(this.product._id, this.product, this.imageFile).subscribe(
+        (response) => {
+          console.log(response.message);
+          this.router.navigate(['/ministry-dashboard/manage-product'])
+        },
+        (error) => {
+          console.error('Error updating product:', error);
+        }
+      );
+    } else {
+      this.productService.addProduct(this.product, this.imageFile)
+        .subscribe(
+          () => {
+            this.router.navigate(['/ministry-dashboard/manage-product']).then(r =>
+              this.alert.showSuccessMessage('Add product successful!')
+            );
+          },
+          () => {
+            this.alert.showErrorMessage('Add product failed. Please try again later.');
+          }
+        );
+    }
+
   }
 }

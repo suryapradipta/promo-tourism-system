@@ -4,8 +4,8 @@ const fs = require('fs');
 const express = require('express');
 const nodemailer = require('nodemailer');
 
-const Merchant = require('../models/merchant');
-const User = require('../models/user');
+const Merchant = require('../models/merchant.model');
+const User = require('../models/user.model');
 const authMiddleware = require("../middleware/auth.middleware");
 const mongoose = require("mongoose");
 
@@ -14,7 +14,7 @@ const router = express.Router();
 const projectRoot = path.resolve(__dirname, '..');
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
-    cb(null, path.join(projectRoot, 'uploads')); // Define the destination directory
+    cb(null, path.join(projectRoot, 'uploads'));
   },
   filename: function (req, file, cb) {
     const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1e9);
@@ -155,7 +155,7 @@ router.get('/pending', authMiddleware,async (req, res) => {
   }
 });
 
-router.get('/:id', authMiddleware,async (req, res) => {
+router.get('/find-by-id/:id', authMiddleware,async (req, res) => {
   const merchantId = req.params.id;
 
   // Validate that merchantId is a valid MongoDB ObjectId
@@ -248,7 +248,7 @@ router.post('/send-email',authMiddleware, async (req, res) => {
   });
 });
 
-router.get('', async (req, res) => {
+router.get('', authMiddleware, async (req, res) => {
   try {
     const merchants = await Merchant.find();
     res.json(merchants);
@@ -258,7 +258,7 @@ router.get('', async (req, res) => {
   }
 });
 
-router.get('/:email', async (req, res) => {
+router.get('/find-by-email/:email', authMiddleware, async (req, res) => {
   const { email } = req.params;
 
   if (!email) {
