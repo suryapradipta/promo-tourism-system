@@ -251,19 +251,12 @@ router.get('', async (req, res) => {
   }
 });
 
-function isValidEmail(email) {
-  return /\S+@\S+\.\S+/.test(email);
-}
-
 router.get('/:email', async (req, res) => {
   const { email } = req.params;
 
   if (!email) {
     return res.status(400).json({ message: 'Email is required' });
-  } else if (!isValidEmail(email)) {
-    return res.status(400).json({ message: 'Invalid email address' });
   }
-
 
   try {
     const merchant = await Merchant.findOne({ email }, '_id');

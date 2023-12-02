@@ -6,27 +6,12 @@ const authMiddleware = require('../middleware/auth.middleware');
 
 const router = express.Router();
 
-function isValidEmail(email) {
-  return /\S+@\S+\.\S+/.test(email);
-}
 
 router.post('/register', async (req, res) => {
   const { email, password, role, isFirstLogin} = req.body;
 
   if (!email || !password || !role || isFirstLogin === undefined) {
     return res.status(400).json({ message: 'All fields are required' });
-  }
-  if (!isValidEmail(email)) {
-    return res.status(400).json({ message: 'Invalid email address' });
-  }
-  if (password.length < 8) {
-    return res.status(400).json({ message: 'Password must be at least 6 characters long' });
-  }
-  if (!['ministry', 'customer', 'merchant'].includes(role)) {
-    return res.status(400).json({ message: 'Invalid user role' });
-  }
-  if (typeof isFirstLogin !== 'boolean') {
-    return res.status(400).json({ message: 'Invalid isFirstLogin value' });
   }
 
   try {
@@ -85,8 +70,8 @@ router.get('/current-user', authMiddleware, (req, res) => {
 router.get('/is-first-login/:email', authMiddleware,async (req, res) => {
   const email = req.params.email;
 
-  if (!isValidEmail(email)) {
-    return res.status(400).json({ message: 'Invalid email address' });
+  if (!email) {
+    return res.status(400).json({ message: 'Email is required' });
   }
 
   try {
