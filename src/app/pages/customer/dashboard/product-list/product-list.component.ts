@@ -1,6 +1,10 @@
 import { Component, OnInit } from '@angular/core';
 import { ProductModel } from '../../../../shared/models';
-import { AuthService, ProductListService } from '../../../../shared/services';
+import {
+  AuthService,
+  ProductListService,
+  ProductService
+} from '../../../../shared/services';
 import { Router } from '@angular/router';
 import Swal from 'sweetalert2';
 
@@ -15,7 +19,8 @@ export class ProductListComponent implements OnInit {
   constructor(
     private productListService: ProductListService,
     private router: Router,
-    private authService: AuthService
+    private authService: AuthService,
+    private productService: ProductService
   ) {}
 
   ngOnInit(): void {
@@ -25,10 +30,6 @@ export class ProductListComponent implements OnInit {
   viewProductDetails(product: ProductModel) {
     if (this.authService.isAuthenticated()) {
       this.router.navigate(['/product', product._id]);
-
-      /* [[PROBLEM]] after navigate the scroll position stick on previous page
-       [[BUG]] navigate() persists the scroll position of the previous page
-      solution: https://github.com/reach/router/issues/166*/
       window.scrollTo({ top: 0 });
     } else {
       Swal.fire({
