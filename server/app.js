@@ -7,6 +7,8 @@ require('dotenv').config();
 
 const userRoutes = require('./src/routes/user.route');
 const merchantRoutes = require('./src/routes/merchant.route');
+const fileRoutes = require('./src/routes/file.route');
+
 const productRoutes = require('./src/routes/product.route');
 
 
@@ -23,6 +25,7 @@ mongoose.connect(process.env.MONGO_URI)
 
 app.use('/api/users', userRoutes);
 app.use('/api/merchants', merchantRoutes);
+app.use('/api/files', fileRoutes);
 app.use('/api/products', productRoutes);
 
 

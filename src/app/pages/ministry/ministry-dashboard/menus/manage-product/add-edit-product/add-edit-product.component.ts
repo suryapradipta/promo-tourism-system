@@ -77,7 +77,7 @@ export class AddEditProductComponent implements OnInit {
       };
       reader.readAsDataURL(file);
     } else if (this.product.image) {
-      this.previewImage = `http://localhost:3000/api/merchants/server/src/uploads/${this.product.image}`;
+      this.previewImage = `http://localhost:3000/api/files/server/src/uploads/${this.product.image}`;
     }
   }
 

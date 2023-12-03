@@ -1,6 +1,5 @@
 const multer = require('multer');
 const path = require('path');
-const fs = require('fs');
 const express = require('express');
 const nodemailer = require('nodemailer');
 
@@ -25,7 +24,6 @@ const upload = multer({
   storage: storage,
   limits: { fileSize: 1024 * 1024 },
 });
-const uploadDirectory = path.join(__dirname, '..', 'uploads');
 
 const transporter = nodemailer.createTransport({
   service: 'gmail',
@@ -117,23 +115,6 @@ router.post('/:id/upload', upload.array('documents'), async (req, res) => {
     console.error(error);
     res.status(500).json({message: 'Internal server error'});
   }
-});
-
-router.get('/server/src/uploads/:filename',(req, res) => {
-  const filename = req.params.filename;
-  const filePath = path.join(uploadDirectory, filename);
-
-  // Check if the file exists
-  if (!fs.existsSync(filePath)) {
-    return res.status(404).json({ message: 'File not found' });
-  }
-
-  res.download(filePath, (err) => {
-    if (err) {
-      console.error(err);
-      res.status(500).json({ message: 'Internal server error' });
-    }
-  });
 });
 
 router.get('/pending', authMiddleware,async (req, res) => {

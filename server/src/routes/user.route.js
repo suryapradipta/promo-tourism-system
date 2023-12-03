@@ -16,9 +16,9 @@ router.post('/register', async (req, res) => {
     return res.status(400).json({ message: 'All fields are required' });
   }
 
-  /*if (!isValidEmail(email)) {
+  if (!isValidEmail(email)) {
     return res.status(400).json({ message: 'Invalid email address' });
-  }*/
+  }
 
   const existingUser = await User.findOne({ email });
   if (existingUser) {
