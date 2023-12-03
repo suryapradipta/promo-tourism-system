@@ -16,8 +16,13 @@ router.post('/register', async (req, res) => {
     return res.status(400).json({ message: 'All fields are required' });
   }
 
-  if (!isValidEmail(email)) {
+  /*if (!isValidEmail(email)) {
     return res.status(400).json({ message: 'Invalid email address' });
+  }*/
+
+  const existingUser = await User.findOne({ email });
+  if (existingUser) {
+    return res.status(409).json({ message: 'Email is already registered' });
   }
 
   try {
@@ -27,7 +32,7 @@ router.post('/register', async (req, res) => {
     await user.save();
     return res.status(201).json({ message: 'User registered successfully' });
   } catch (error) {
-    console.error(error);
+    console.error('Error during registration:', error);
     res.status(500).json({ message: 'Internal server error' });
   }
 });
@@ -37,19 +42,19 @@ router.post('/login', async (req, res) => {
 
   try {
     if (!email || !password) {
-      return res.status(400).json({ msg: 'Email and password are required' });
+      return res.status(400).json({ message: 'Email and password are required' });
     }
 
     let user = await User.findOne({ email });
 
     if (!user) {
-      return res.status(401).json({ msg: 'Invalid credentials' });
+      return res.status(401).json({ message: 'Invalid email or password' });
     }
 
     const isMatch = await bcrypt.compare(password, user.password);
 
     if (!isMatch) {
-      return res.status(401).json({ msg: 'Invalid credentials' });
+      return res.status(401).json({ message: 'Invalid email or password' });
     }
 
     const payload = {

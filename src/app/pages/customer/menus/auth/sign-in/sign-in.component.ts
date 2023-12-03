@@ -38,23 +38,39 @@ export class SignInComponent implements OnInit {
     return this.loginForm.controls;
   }
 
-  async onLogin(): Promise<void> {
+  onLogin(): void {
     if (this.loginForm.valid) {
-      try {
-        const {email, password} = this.loginForm.value;
-        const response = await this.authService.login(email, password).toPromise();
-        localStorage.setItem('token', response.token);
-
-        const currentUser = await this.authService.getCurrentUser().toPromise();
-        localStorage.setItem('currentUser', JSON.stringify(currentUser));
-
-        this.handleLoginSuccess(currentUser);
-
-      } catch (error) {
-        console.error(error);
-        this.alert.showErrorMessage('Login failed. Please check your credentials.');
-      }
+      const {email, password} = this.loginForm.value;
+      this.authService.login(email, password).subscribe(
+        (response) => {
+          localStorage.setItem('token', response.token);
+          this.getCurrentUser();
+        },
+        (error) => {
+          console.error(error);
+          if (error.status === 401 || error.status === 400) {
+            this.alert.showErrorMessage(error.error.message + '. Please try again.');
+          } else if (error.status === 500) {
+            this.alert.showErrorMessage('Server error. Please try again later.');
+          } else {
+            this.alert.showErrorMessage(error.error.message);
+          }
+        });
     }
+  }
+
+  private getCurrentUser(): void {
+    this.authService.getCurrentUser().subscribe((currentUser) => {
+        localStorage.setItem('currentUser', JSON.stringify(currentUser));
+        this.handleLoginSuccess(currentUser);
+      }, (error) => {
+        console.error('Error fetching current user:', error);
+        if (error.status === 401 && error.error.message === 'Token has expired') {
+          this.router.navigate(['/login']);
+        }
+        this.alert.showErrorMessage(error.error.message);
+      }
+    );
   }
 
   private handleLoginSuccess(currentUser: AuthModel): void {

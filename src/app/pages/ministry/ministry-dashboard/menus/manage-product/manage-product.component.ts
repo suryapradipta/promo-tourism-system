@@ -42,7 +42,13 @@ export class ManageProductComponent implements OnInit {
         },
         (error) => {
           console.error('Error fetching products:', error);
-          this.alert.showErrorMessage(error.error.message);
+          if (error.status === 404) {
+            this.alert.showErrorMessage('Merchant not found.');
+          } else if (error.status === 500) {
+            this.alert.showErrorMessage('Internal server error. Please try again later.');
+          } else {
+            this.alert.showErrorMessage(error.error?.message || 'An unexpected error occurred. Please try again.');
+          }
         }
       );
   }
@@ -75,7 +81,13 @@ export class ManageProductComponent implements OnInit {
             this.loadProducts(this.merchantId);
           },
           (error) => {
-            this.alert.showErrorMessage(error.error.message);
+            if (error.status === 400) {
+              this.alert.showErrorMessage('Invalid product ID');
+            } else if (error.status === 404) {
+              this.alert.showErrorMessage('Product not found');
+            } else {
+              this.alert.showErrorMessage(error.error?.message || 'Failed to delete product');
+            }
           }
         );
       }

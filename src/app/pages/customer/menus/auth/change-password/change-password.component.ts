@@ -60,8 +60,8 @@ export class ChangePasswordComponent implements OnInit {
                   .then(() => this.alert.showSuccessMessage(response.message));
               },
               (error) => {
-                console.error(error);
-                this.alert.showErrorMessage(error.error.message);
+                console.error('Error updating password:', error);
+                this.alert.showErrorMessage(error.error?.message || 'An unexpected error occurred');
               });
           } else {
             this.alert.showErrorMessage('Incorrect current password.');

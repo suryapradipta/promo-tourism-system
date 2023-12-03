@@ -12,7 +12,7 @@ export class AuthService {
 
   constructor(private http: HttpClient) {}
 
-  createUser(email: string, password: string, role: string) {
+  createUser(email: string, password: string, role: string): Observable<any> {
     const authData: AuthModel = {
       _id: null,
       email: email,

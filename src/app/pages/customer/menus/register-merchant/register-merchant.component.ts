@@ -43,9 +43,10 @@ export class RegisterMerchantComponent{
       (error) => {
         console.error(error);
         if (error.status === 500 || error.status === 409) {
-          this.alert.showErrorMessage('Email is already registered');
+          this.alert.showEmailInUseMessage();
         } else {
-          this.alert.showErrorMessage(error.error.message);
+          this.alert.showErrorMessage(error.error?.message ||
+            'Registration failed. Please try again.');
         }
       }
     );
@@ -71,7 +72,8 @@ export class RegisterMerchantComponent{
       },
       (error) => {
         console.error(error);
-        this.alert.showErrorMessage(error.error.message);
+        this.alert.showErrorMessage(error.error?.message ||
+        'Error uploading documents.');
       }
     );
   }

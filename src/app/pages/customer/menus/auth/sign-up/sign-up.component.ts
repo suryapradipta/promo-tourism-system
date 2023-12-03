@@ -73,14 +73,16 @@ export class SignUpComponent implements OnInit {
       ).subscribe(
         (response) => {
           this.router.navigate(['/sign-in']).then(() =>
-            this.alert.showSuccessMessage('Register successful!')
+            this.alert.showSuccessMessage(response.message)
           );
         },
         (error) => {
-          if (error.status === 500) {
+          if (error.status === 400 || error.status === 422) {
+            this.alert.showErrorMessage(error.error.message);
+          } else if (error.status === 409) {
             this.alert.showEmailInUseMessage();
           } else {
-            this.alert.showErrorMessage(error.error.message);
+            this.alert.showErrorMessage('User account creation failed. Please try again later.');
           }
         }
       );

@@ -45,8 +45,15 @@ export class DetailAccountComponent implements OnInit {
         this.createMerchantAccount(merchant);
       },
       (error) => {
-        this.alert.showErrorMessage(error.error.message);
-        console.error(error);
+        console.error('Error while approving merchant:', error);
+        if (error.status === 400) {
+          this.alert.showErrorMessage('Invalid merchant ID');
+        } else if (error.status === 404) {
+          this.alert.showErrorMessage('Merchant not found');
+        } else {
+          const errorMessage = error.error?.message || 'Failed to approve merchant';
+          this.alert.showErrorMessage(errorMessage);
+        }
       }
     );
   }
@@ -69,6 +76,7 @@ export class DetailAccountComponent implements OnInit {
     const email = merchant.email;
     const defaultPassword = 'PRS*' + this.generateRandomPassword() + '@';
     console.log(defaultPassword);
+
     this.authService.createUser(email, defaultPassword, 'merchant').subscribe(
       () => {
         const templateParams = {
@@ -81,7 +89,9 @@ export class DetailAccountComponent implements OnInit {
         this.sendEmail(templateParams);
       },
       (error) => {
-        if (error.status === 400) {
+        if (error.status === 400 || error.status === 422) {
+          this.alert.showErrorMessage(error.error.message);
+        } else if (error.status === 409) {
           this.alert.showEmailInUseMessage();
         } else {
           this.alert.showErrorMessage('Merchant account creation failed. Please try again later.');
@@ -111,13 +121,17 @@ export class DetailAccountComponent implements OnInit {
       <p>Best regards,<br>PromoTourism System team</p>
     `;
 
-    this.merchantService.sendEmail(to, subject, html).subscribe(
+    this.merchantService.
+    sendEmail(to, subject, html).subscribe(
       () => {
-        this.alert.showSuccessMessage('Merchant account created successfully!');
-        this.router.navigate(['/ministry-dashboard/manage-account']);
+
+        this.router.navigate(['/ministry-dashboard/manage-account']).then(() =>
+          this.alert.showSuccessMessage('Merchant account created successfully!')
+        );
       },
       (error) => {
-        this.alert.showAccountFailedMessage(error.message);
+        this.alert.showAccountFailedMessage(error.error?.message ||
+          'An unexpected error occurred');
       }
     );
   }
@@ -129,8 +143,16 @@ export class DetailAccountComponent implements OnInit {
           .then(() => this.alert.showSuccessMessage(response.message));
       },
       (error) => {
-        this.alert.showErrorMessage(error.error.message);
-        console.error(error);
+        console.error('Error while rejecting merchant:', error);
+
+        if (error.status === 400) {
+          this.alert.showErrorMessage('Invalid merchant ID');
+        } else if (error.status === 404) {
+          this.alert.showErrorMessage('Merchant not found');
+        } else {
+          this.alert.showErrorMessage(error.error?.message ||
+            'Failed to reject merchant');
+        }
       }
     );
   }
