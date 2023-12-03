@@ -38,7 +38,7 @@ export class SignInComponent implements OnInit {
     return this.loginForm.controls;
   }
 
-  async onLogin() {
+  async onLogin(): Promise<void> {
     if (this.loginForm.valid) {
       try {
         const {email, password} = this.loginForm.value;

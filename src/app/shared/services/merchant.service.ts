@@ -38,27 +38,6 @@ export class MerchantService {
   getMerchantIdByEmail(email: string): Observable<any> {
     return this.http.get<any>( `${this.apiUrl}/find-by-email/${email}`);
   }
-  /*
-  merchantId: string | undefined;
-
-  constructor(private merchantService: MerchantService) {}
-
-  ngOnInit(): void {
-    const merchantEmail = 'merchant@example.com'; // Replace with the actual email
-    this.getMerchantIdByEmail(merchantEmail);
-  }
-
-  getMerchantIdByEmail(email: string) {
-    this.merchantService.getMerchantIdByEmail(email).subscribe(
-      (data) => {
-        this.merchantId = data.merchantId;
-      },
-      (error) => {
-        console.error('Error fetching merchant ID:', error);
-      }
-    );
-  }
- */
 
   registerMerchant(
     name: string,

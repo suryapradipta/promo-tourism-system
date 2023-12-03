@@ -94,17 +94,17 @@ router.post('/update-password', authMiddleware,async (req, res) => {
   const { email, newPassword } = req.body;
 
   if (!email || !newPassword) {
-    return res.status(400).json({ error: 'Email and newPassword are required' });
+    return res.status(400).json({ error: 'Email and new password are required' });
   }
 
   try {
     const hashedPassword = await bcrypt.hash(newPassword, 10);
-    const user = await User.findOneAndUpdate(
+    await User.findOneAndUpdate(
       { email: email },
       { password: hashedPassword, isFirstLogin: false },
       { new: true }
     );
-    res.json(user);
+    res.status(201).json({ message: 'Password changed successfully' });
   } catch (error) {
     console.error(error);
     res.status(500).json({ error: 'Internal Server Error' });

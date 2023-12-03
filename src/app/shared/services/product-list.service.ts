@@ -13,17 +13,8 @@ export class ProductListService {
     return this.products;
   }
 
-
   getProductById(id: string): ProductModel | undefined {
     return this.products.find((product) => product._id === id);
-  }
-
-
-  deleteProduct(productId: string, merchantId: string): void {
-    this.products = this.products.filter(
-      (p) => p._id !== productId || p.merchantId !== merchantId
-    );
-    localStorage.setItem('products', JSON.stringify(this.products));
   }
 
   addReviewToProduct(productId: string, review: ReviewModel): void {

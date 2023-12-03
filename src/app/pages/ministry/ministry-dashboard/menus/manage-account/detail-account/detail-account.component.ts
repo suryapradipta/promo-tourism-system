@@ -45,7 +45,7 @@ export class DetailAccountComponent implements OnInit {
         this.createMerchantAccount(merchant);
       },
       (error) => {
-        this.alert.showErrorMessage('Failed to approve merchant');
+        this.alert.showErrorMessage(error.error.message);
         console.error(error);
       }
     );
@@ -124,13 +124,12 @@ export class DetailAccountComponent implements OnInit {
 
   rejectMerchant(merchant: MerchantModel): void {
     this.merchantService.rejectMerchant(merchant._id).subscribe(
-      () => {
-        this.router.navigate(['/ministry-dashboard/manage-account']).then(r =>
-          this.alert.showSuccessMessage('Merchant rejected successfully!')
-        );
+      (response) => {
+        this.router.navigate(['/ministry-dashboard/manage-account'])
+          .then(() => this.alert.showSuccessMessage(response.message));
       },
       (error) => {
-        this.alert.showErrorMessage('Failed to reject merchant');
+        this.alert.showErrorMessage(error.error.message);
         console.error(error);
       }
     );

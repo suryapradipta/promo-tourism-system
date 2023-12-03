@@ -4,12 +4,10 @@ import {
   AuthService,
   MerchantService,
   NotificationService,
+  ProductService,
 } from '../../../../../shared/services';
 import {Router} from '@angular/router';
 import Swal from 'sweetalert2';
-import {
-  ProductService
-} from "../../../../../shared/services/product.service";
 
 @Component({
   selector: 'app-manage-product',
@@ -29,21 +27,11 @@ export class ManageProductComponent implements OnInit {
   ) {
   }
 
-  ngOnInit(): void {
+  async ngOnInit(): Promise<void> {
     const email = this.authService.getCurrentUserJson().email;
-    this.merchantService.getMerchantIdByEmail(email)
-      .subscribe((data) => {
-          this.loadProducts(data.merchantId);
-        },
-        (error) => {
-          console.error('Error fetching merchant ID:', error);
-          if (error.status === 500) {
-            this.alert.showErrorMessage('Internal server error. Please try again later.');
-          } else {
-            this.alert.showErrorMessage('An unexpected error occurred. Please try again.');
-          }
-        }
-      );
+    const response = await this.merchantService.getMerchantIdByEmail(email).toPromise()
+    this.merchantId = response.merchantId;
+    this.loadProducts(this.merchantId);
   }
 
   loadProducts(merchantId: string) {
@@ -51,17 +39,10 @@ export class ManageProductComponent implements OnInit {
       .subscribe(
         (products) => {
           this.products = products;
-          console.log(this.products)
         },
         (error) => {
           console.error('Error fetching products:', error);
-          if (error.status === 404) {
-            this.alert.showErrorMessage('Merchant not found.');
-          } else if (error.status === 500) {
-            this.alert.showErrorMessage('Internal server error. Please try again later.');
-          } else {
-            this.alert.showErrorMessage('An unexpected error occurred. Please try again.');
-          }
+          this.alert.showErrorMessage(error.error.message);
         }
       );
   }
@@ -90,11 +71,11 @@ export class ManageProductComponent implements OnInit {
           'success'
         );
         this.productService.deleteProduct(productId).subscribe(
-          (response) => {
-            console.log(response);
+          () => {
+            this.loadProducts(this.merchantId);
           },
           (error) => {
-            console.error(error);
+            this.alert.showErrorMessage(error.error.message);
           }
         );
       }

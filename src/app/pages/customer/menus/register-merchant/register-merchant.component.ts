@@ -37,7 +37,7 @@ export class RegisterMerchantComponent{
     ).subscribe(
       (response) => {
         this.submitted = true;
-        this.alert.showSuccessMessage('Merchant registered successfully!');
+        this.alert.showSuccessMessage(response.message);
         this.merchantId = response.id;
       },
       (error) => {
@@ -45,7 +45,7 @@ export class RegisterMerchantComponent{
         if (error.status === 500 || error.status === 409) {
           this.alert.showErrorMessage('Email is already registered');
         } else {
-          this.alert.showErrorMessage('Registration failed. Please try again.');
+          this.alert.showErrorMessage(error.error.message);
         }
       }
     );
@@ -65,13 +65,13 @@ export class RegisterMerchantComponent{
       this.files,
       form.value.file_description
     ).subscribe(
-      () => {
+      (response) => {
         this.submitted = true;
-        this.alert.showApplicationSuccessMessage();
+        this.alert.showSuccessMessage(response.message);
       },
       (error) => {
         console.error(error);
-        this.alert.showErrorMessage('Error uploading documents.');
+        this.alert.showErrorMessage(error.error.message);
       }
     );
   }

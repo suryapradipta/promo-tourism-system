@@ -90,7 +90,7 @@ router.post('/:id/upload', upload.array('documents'), async (req, res) => {
     }
 
     const files = req.files.map((file) => ({
-      filename: file.filename, // Use the filename provided by multer
+      filename: file.filename,
     }));
 
     if (!files || files.length === 0) {
@@ -140,7 +140,7 @@ router.get('/pending', authMiddleware,async (req, res) => {
   try {
     // Parse query parameters for pagination
     const page = parseInt(req.query.page) || 1;
-    const limit = parseInt(req.query.limit) || 5; // Default limit is 10
+    const limit = parseInt(req.query.limit) || 5;
 
     // Calculate the skip value based on the page and limit
     const skip = (page - 1) * limit;
@@ -158,7 +158,6 @@ router.get('/pending', authMiddleware,async (req, res) => {
 router.get('/find-by-id/:id', authMiddleware,async (req, res) => {
   const merchantId = req.params.id;
 
-  // Validate that merchantId is a valid MongoDB ObjectId
   if (!mongoose.Types.ObjectId.isValid(merchantId)) {
     return res.status(400).json({ message: 'Invalid merchant ID' });
   }
@@ -279,6 +278,5 @@ router.get('/find-by-email/:email', authMiddleware, async (req, res) => {
     res.status(500).send('Internal Server Error');
   }
 });
-
 
 module.exports = router;

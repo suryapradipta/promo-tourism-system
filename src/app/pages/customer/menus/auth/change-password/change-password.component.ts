@@ -53,15 +53,15 @@ export class ChangePasswordComponent implements OnInit {
         (isValid) => {
           if (isValid) {
             this.authService.updatePassword(userEmail, newPassword).subscribe(
-              () => {
+              (response) => {
                 this.passwordMismatch = false;
                 this.changePasswordForm.reset();
                 this.router.navigate(['/ministry-dashboard'])
-                  .then(() => this.alert.showSuccessMessage('Password successfully changed!'));
+                  .then(() => this.alert.showSuccessMessage(response.message));
               },
               (error) => {
                 console.error(error);
-                this.alert.showErrorMessage('Error updating password.');
+                this.alert.showErrorMessage(error.error.message);
               });
           } else {
             this.alert.showErrorMessage('Incorrect current password.');

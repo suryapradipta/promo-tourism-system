@@ -71,17 +71,16 @@ export class SignUpComponent implements OnInit {
         this.registerForm.value.password,
         'customer'
       ).subscribe(
-        () => {
-          this.router.navigate(['/sign-in']);
-          this.alert.showSuccessMessage('Register successful!');
+        (response) => {
+          this.router.navigate(['/sign-in']).then(() =>
+            this.alert.showSuccessMessage('Register successful!')
+          );
         },
         (error) => {
-          if (error.status === 400) {
-            this.alert.showErrorMessage('Invalid credentials. Please try again');
-          } else if (error.status === 500) {
+          if (error.status === 500) {
             this.alert.showEmailInUseMessage();
           } else {
-            this.alert.showErrorMessage('Register failed. Please try again later.');
+            this.alert.showErrorMessage(error.error.message);
           }
         }
       );

@@ -5,11 +5,9 @@ import {
   AuthService,
   MerchantService,
   NotificationService,
+  ProductService,
 } from '../../../../../../shared/services';
 import {NgForm} from '@angular/forms';
-import {
-  ProductService
-} from "../../../../../../shared/services/product.service";
 
 @Component({
   selector: 'app-add-edit-product',
@@ -17,7 +15,6 @@ import {
   styleUrls: ['./add-edit-product.component.css'],
 })
 export class AddEditProductComponent implements OnInit {
-  // Object to hold product data
   product: ProductModel = {
     category: undefined,
     description: '',
@@ -29,7 +26,6 @@ export class AddEditProductComponent implements OnInit {
     merchantId: '',
   };
   imageFile: File | null = null;
-
   previewImage: string | ArrayBuffer | null = null;
 
   constructor(
@@ -66,8 +62,6 @@ export class AddEditProductComponent implements OnInit {
           console.error('Error fetching merchant ID:', error);
         }
       );
-
-
   }
 
   handleImageUpload(event: any) {
@@ -96,37 +90,31 @@ export class AddEditProductComponent implements OnInit {
     }
 
     if (!this.imageFile) {
-      this.alert.showErrorMessage(
-        'Image file is required'
-      );
+      this.alert.showErrorMessage('Image file is required');
       return;
     }
 
-
     if (this.product._id) {
-      this.alert.showSuccessMessage('Update product successful!');
       this.productService.editProduct(this.product._id, this.product, this.imageFile).subscribe(
         (response) => {
-          console.log(response.message);
           this.router.navigate(['/ministry-dashboard/manage-product'])
+            .then(() => this.alert.showSuccessMessage(response.message))
         },
         (error) => {
-          console.error('Error updating product:', error);
+          this.alert.showErrorMessage(error.error.message);
         }
       );
     } else {
       this.productService.addProduct(this.product, this.imageFile)
         .subscribe(
-          () => {
-            this.router.navigate(['/ministry-dashboard/manage-product']).then(r =>
-              this.alert.showSuccessMessage('Add product successful!')
-            );
+          (response) => {
+            this.router.navigate(['/ministry-dashboard/manage-product'])
+              .then(() => this.alert.showSuccessMessage(response.message));
           },
-          () => {
-            this.alert.showErrorMessage('Add product failed. Please try again later.');
+          (error) => {
+            this.alert.showErrorMessage(error.error.message);
           }
         );
     }
-
   }
 }

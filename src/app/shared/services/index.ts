@@ -9,3 +9,4 @@ export {ReviewService} from './review.service';
 export {AnalyticsService} from './analytics.service';
 export {AuthInterceptor} from './auth-interceptor';
 export {MerchantService} from './merchant.service';
+export {ProductService} from './product.service';
