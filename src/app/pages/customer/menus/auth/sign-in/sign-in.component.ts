@@ -84,7 +84,7 @@ export class SignInComponent implements OnInit {
           switch (currentUser.role) {
             case 'ministry':
             case 'merchant':
-              this.router.navigate(['/ministry-dashboard']);
+              this.router.navigate(['/ministry-dashboard/home']);
               break;
             case 'customer':
               this.router.navigate(['/']);
