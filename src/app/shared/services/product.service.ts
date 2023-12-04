@@ -39,10 +39,15 @@ export class ProductService {
   }
 
   getProductsByMerchantId(merchantId: string): Observable<ProductModel[]> {
-    return this.http.get<ProductModel[]>(`${this.apiUrl}/find/merchantId/${merchantId}`);
+    return this.http.get<ProductModel[]>(`${this.apiUrl}/by-merchant/${merchantId}`);
   }
 
   getProductById(productId: string): Observable<ProductModel> {
-    return this.http.get<ProductModel>(`${this.apiUrl}/find/id/${productId}`);
+    return this.http.get<ProductModel>(`${this.apiUrl}/${productId}`);
   }
+
+  getAllProducts(): Observable<ProductModel[]> {
+    return this.http.get<ProductModel[]>(this.apiUrl);
+  }
+
 }

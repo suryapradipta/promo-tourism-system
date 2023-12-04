@@ -1,7 +1,5 @@
-import { Injectable } from '@angular/core';
-import { ProductModel, ReviewModel } from '../models';
-import { v4 as uuidv4 } from 'uuid';
-import { Observable } from 'rxjs';
+import {Injectable} from '@angular/core';
+import {ProductModel, ReviewModel} from '../models';
 
 @Injectable({
   providedIn: 'root',

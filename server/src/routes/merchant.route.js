@@ -136,7 +136,7 @@ router.get('/pending', authMiddleware,async (req, res) => {
   }
 });
 
-router.get('/find-by-id/:id', authMiddleware,async (req, res) => {
+router.get('/by-id/:id', authMiddleware,async (req, res) => {
   const merchantId = req.params.id;
 
   if (!mongoose.Types.ObjectId.isValid(merchantId)) {
@@ -228,7 +228,7 @@ router.post('/send-email',authMiddleware, async (req, res) => {
   });
 });
 
-router.get('', authMiddleware, async (req, res) => {
+router.get('/', authMiddleware, async (req, res) => {
   try {
     const merchants = await Merchant.find();
     res.json(merchants);
@@ -238,7 +238,7 @@ router.get('', authMiddleware, async (req, res) => {
   }
 });
 
-router.get('/find-by-email/:email', authMiddleware, async (req, res) => {
+router.get('/by-email/:email', authMiddleware, async (req, res) => {
   const { email } = req.params;
 
   if (!email) {

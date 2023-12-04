@@ -114,7 +114,7 @@ router.delete('/delete-product/:id', authMiddleware, async (req, res) => {
   }
 });
 
-router.get('/find/merchantId/:merchantId', authMiddleware, async (req, res) => {
+router.get('/by-merchant/:merchantId', authMiddleware, async (req, res) => {
   const merchantId = req.params.merchantId;
 
   if (!mongoose.Types.ObjectId.isValid(merchantId)) {
@@ -131,7 +131,7 @@ router.get('/find/merchantId/:merchantId', authMiddleware, async (req, res) => {
   }
 });
 
-router.get('/find/id/:productId', authMiddleware, async (req, res) => {
+router.get('/:productId', authMiddleware, async (req, res) => {
   const productId = req.params.productId;
 
   if (!mongoose.Types.ObjectId.isValid(productId)) {
@@ -151,5 +151,17 @@ router.get('/find/id/:productId', authMiddleware, async (req, res) => {
     res.status(500).json({message: 'Internal server error'});
   }
 });
+
+router.get('/', async (req, res) => {
+  try {
+    const products = await Product.find();
+
+    res.status(200).json(products);
+  } catch (error) {
+    console.error('Error fetching products:', error);
+    res.status(500).json({ message: 'Internal server error' });
+  }
+});
+
 
 module.exports = router;

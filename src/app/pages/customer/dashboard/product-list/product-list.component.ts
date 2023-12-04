@@ -24,8 +24,16 @@ export class ProductListComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    this.products = this.productListService.getProductsData();
+    this.productService.getAllProducts().subscribe(
+      (products) => {
+        this.products = products;
+      },
+      (error) => {
+        console.error(error);
+      }
+    );
   }
+
 
   viewProductDetails(product: ProductModel) {
     if (this.authService.isAuthenticated()) {
