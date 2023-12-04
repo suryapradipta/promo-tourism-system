@@ -10,6 +10,7 @@ const merchantRoutes = require('./src/routes/merchant.route');
 const fileRoutes = require('./src/routes/file.route');
 
 const productRoutes = require('./src/routes/product.route');
+const paymentRoutes = require('./src/routes/payment.route');
 
 
 app.use(bodyParser.json());
@@ -27,6 +28,7 @@ app.use('/api/users', userRoutes);
 app.use('/api/merchants', merchantRoutes);
 app.use('/api/files', fileRoutes);
 app.use('/api/products', productRoutes);
+app.use('/api/payments', paymentRoutes);
 
 
 module.exports = app;

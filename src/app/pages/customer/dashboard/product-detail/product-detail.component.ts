@@ -112,7 +112,7 @@ export class ProductDetailComponent {
     }
   }
 
-  private initConfig(): void {
+  private initConfig1(): void {
     this.payPalConfig = {
       currency: 'USD',
       clientId:
@@ -235,6 +235,49 @@ export class ProductDetailComponent {
       onClick: (data, actions) => {
         console.log('onClick', data, actions);
         // this.resetStatus();
+      },
+    };
+  }
+
+  private initConfig(): void {
+    this.payPalConfig = {
+      clientId:  'AXbp6-Ojon_2I2t6ACCq9gipRPGN9LjAOtYgZjDewvuI97s0DmoWTXLFrHgyzDXK-owvAgm4ptEBLIEQ',
+      createOrderOnServer: (data) => {
+        return fetch('http://localhost:3000/api/payments/create-paypal-transaction', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            product: this.product,
+            itemTotal: this.itemTotal.toFixed(2),
+            itemTotalValue: this.subtotal.toFixed(2),
+            taxTotalValue: this.taxTotal.toFixed(2),
+            quantity: this.productForm.value.quantity.toString(),
+          }),
+        })
+          .then((res) => res.json())
+          .then((order) => order.orderID);
+      },
+      onApprove: (data, actions) => {
+        console.log('onApprove - transaction was approved, but not authorized', data, actions);
+        actions.order.get().then(details => {
+          console.log('onApprove - you can get full order details inside onApprove: ', details);
+        });
+
+      },
+      onClientAuthorization: (data) => {
+        console.log('onClientAuthorization - you should probably inform your server about completed transaction at this point', data);
+      },
+      onCancel: (data, actions) => {
+        console.log('OnCancel', data, actions);
+
+      },
+      onError: err => {
+        console.log('OnError', err);
+      },
+      onClick: (data, actions) => {
+        console.log('onClick', data, actions);
       },
     };
   }

@@ -59,7 +59,7 @@ router.post('/login', async (req, res) => {
 
     const payload = {
       email: user.email,
-      userId: user._id,
+      _id: user._id,
       role: user.role,
       isFirstLogin: user.isFirstLogin
     };
