@@ -65,8 +65,8 @@ export class SignInComponent implements OnInit {
         this.handleLoginSuccess(currentUser);
       }, (error) => {
         console.error('Error fetching current user:', error);
-        if (error.status === 401) {
-          this.router.navigate(['/']);
+        if (error.status === 401 && error.error.message === 'Token has expired') {
+          this.router.navigate(['/login']);
         }
         this.alert.showErrorMessage(error.error.message);
       }

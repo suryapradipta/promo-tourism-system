@@ -17,8 +17,6 @@ module.exports = (req, res, next) => {
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
 
     if (decoded.exp < Date.now() / 1000) {
-      clearLocalStorage();
-
       return res.status(401).json({message: 'Token has expired'});
     }
 
@@ -26,12 +24,6 @@ module.exports = (req, res, next) => {
     next();
   } catch (err) {
     console.error(err);
-    clearLocalStorage();
     res.status(401).json({message: 'Token is not valid'});
   }
 };
-function clearLocalStorage() {
-  localStorage.removeItem('currentUser');
-  localStorage.removeItem('token');
-  window.location.href = '/';
-}
