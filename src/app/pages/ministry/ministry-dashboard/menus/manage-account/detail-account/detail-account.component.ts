@@ -130,7 +130,7 @@ export class DetailAccountComponent implements OnInit {
         );
       },
       (error) => {
-        this.alert.showAccountFailedMessage(error.error?.message ||
+        this.alert.showErrorMessage(error.error?.message ||
           'An unexpected error occurred');
       }
     );

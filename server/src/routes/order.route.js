@@ -1,9 +1,24 @@
 const express = require('express');
 const router = express.Router();
 const Order = require('../models/order.model');
+const authMiddleware = require("../middleware/auth.middleware");
 
-router.post('/create', async (req, res) => {
+router.post('/create', authMiddleware, async (req, res) => {
   try {
+    const { product, quantity, totalAmount, email, phoneNumber, customerID, merchantID } = req.body;
+
+    if (!product || !quantity || !totalAmount || !email || !phoneNumber || !customerID || !merchantID) {
+      return res.status(400).json({ message: 'All fields are required' });
+    }
+
+    if (!Number.isInteger(quantity) || quantity < 1) {
+      return res.status(400).json({ message: 'Quantity must be a positive integer' });
+    }
+
+    if (typeof totalAmount !== 'number' || totalAmount < 0.01) {
+      return res.status(400).json({ message: 'Total amount must be a positive number' });
+    }
+
     const latestOrder = await Order.findOne().sort({ orderNumber: -1 });
     let orderCounter = 1;
 
@@ -11,15 +26,17 @@ router.post('/create', async (req, res) => {
       orderCounter = parseInt(latestOrder.orderNumber.substr(7), 10) + 1;
     }
 
+    const orderNumber = `PRS${new Date().getFullYear()}${orderCounter.toString().padStart(5, '0')}`;
+
     const order = new Order({
-      orderNumber: `PRS${new Date().getFullYear()}${orderCounter.toString().padStart(5, '0')}`,
-      product: req.body.product,
-      quantity: req.body.quantity,
-      totalAmount: req.body.totalAmount,
-      email: req.body.email,
-      phoneNumber: req.body.phoneNumber,
-      customerID: req.body.customerID,
-      merchantID: req.body.merchantID,
+      orderNumber,
+      product,
+      quantity,
+      totalAmount,
+      email,
+      phoneNumber,
+      customerID,
+      merchantID,
     });
 
     const savedOrder = await order.save();
@@ -30,7 +47,7 @@ router.post('/create', async (req, res) => {
   }
 });
 
-router.get('/by-id/:id', async (req, res) => {
+router.get('/by-id/:id', authMiddleware, async (req, res) => {
   try {
     const order = await Order.findById(req.params.id);
     if (!order) {

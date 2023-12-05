@@ -11,10 +11,6 @@ export class ProductListService {
     return this.products;
   }
 
-  getProductById(id: string): ProductModel | undefined {
-    return this.products.find((product) => product._id === id);
-  }
-
   addReviewToProduct(productId: string, review: ReviewModel): void {
     const product = this.products.find((p) => p._id === productId);
 

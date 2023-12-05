@@ -11,7 +11,7 @@ const productSchema = new mongoose.Schema({
   },
   reviews: [{type: mongoose.Schema.Types.ObjectId, ref: 'Review'}],
   merchantId: { type: mongoose.Schema.Types.ObjectId, ref: 'Merchant', required: true },
-});
+}, {timestamps: true});
 
 
 module.exports = mongoose.model('Product', productSchema);

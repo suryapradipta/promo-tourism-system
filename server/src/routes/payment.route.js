@@ -2,6 +2,7 @@ const express = require('express');
 const router = express.Router();
 const paypal = require('@paypal/checkout-server-sdk');
 const Payment = require("../models/payment.model");
+const authMiddleware = require("../middleware/auth.middleware");
 
 const clientId = process.env.CLIENT_ID;
 const clientSecret = process.env.CLIENT_SECRET;
@@ -11,6 +12,10 @@ const client = new paypal.core.PayPalHttpClient(environment);
 router.post('/create-paypal-transaction', async (req, res) => {
   try {
     const { product, itemTotal, itemTotalValue, taxTotalValue, quantity } = req.body;
+
+    if (!product || !itemTotal || !itemTotalValue || !taxTotalValue || !quantity) {
+      return res.status(400).json({ error: 'Missing required fields' });
+    }
 
     const request = new paypal.orders.OrdersCreateRequest();
     request.prefer("return=representation");
@@ -55,7 +60,7 @@ router.post('/create-paypal-transaction', async (req, res) => {
   }
 });
 
-router.post('/save-payment', async (req, res) => {
+router.post('/save-payment', authMiddleware, async (req, res) => {
   try {
     const payment = new Payment(req.body);
     await payment.save();
@@ -66,9 +71,14 @@ router.post('/save-payment', async (req, res) => {
   }
 });
 
-router.get('/get-by-paypal-id/:paypalId', async (req, res) => {
+router.get('/get-by-paypal-id/:paypalId', authMiddleware, async (req, res) => {
   try {
     const paypalId = req.params.paypalId;
+
+    if (typeof paypalId !== 'string' || paypalId.trim() === '') {
+      return res.status(400).json({ message: 'Invalid paypalId parameter' });
+    }
+
     const payment = await Payment.findOne({ paypalId: paypalId }).populate('orderId');
 
     if (!payment) {

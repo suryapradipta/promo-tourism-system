@@ -37,31 +37,33 @@ export class ReceiptComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    try {
-      this.route.queryParams.subscribe(async (params) => {
-        const productID = params['productID'];
-        const paymentID = params['paymentID'];
-        const orderID = params['orderID'];
+    this.route.queryParams.subscribe(async (params) => {
+      try {
+        await this.loadData(params);
+      } catch (error) {
+        console.error("Error during loading data:", error);
+      }
+    });
+  }
 
-        this.product = await this.productService.getProductById(productID).toPromise();
-        this.payment = await this.paymentService.getPaymentByPaypalId(paymentID).toPromise();
-        this.order = await this.orderService.getOrderById(orderID).toPromise();
+  private async loadData(params: any): Promise<void> {
+    const productID = params['productID'];
+    const paymentID = params['paymentID'];
+    const orderID = params['orderID'];
 
+    this.product = await this.productService.getProductById(productID).toPromise();
+    this.payment = await this.paymentService.getPaymentByPaypalId(paymentID).toPromise();
+    this.order = await this.orderService.getOrderById(orderID).toPromise();
 
-        // Format the order date for display
-        this.orderDate = new Date(this.payment.update_time).toLocaleDateString(
-          'en-US',
-          {
-            year: 'numeric',
-            month: 'long',
-            day: 'numeric',
-          }
-        );
-      });
-    } catch (error) {
-      console.error("Error during booking:", error);
-      throw error;
-    }
+    this.orderDate = ReceiptComponent.formatOrderDate(this.payment.update_time);
+  }
+
+  private static formatOrderDate(date: string): string {
+    return new Date(date).toLocaleDateString('en-US', {
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric',
+    });
   }
 
   exportToPdf(): void {

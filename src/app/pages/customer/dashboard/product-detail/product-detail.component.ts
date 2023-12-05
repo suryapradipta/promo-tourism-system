@@ -26,7 +26,6 @@ export class ProductDetailComponent {
   productForm: FormGroup;
   orderResponse;
 
-
   // PayPal's configuration for payment processing
   public payPalConfig?: IPayPalConfig;
 
@@ -44,27 +43,33 @@ export class ProductDetailComponent {
   }
 
   ngOnInit(): void {
-    const productId = this.route.snapshot.paramMap.get('id');
+    this.initializeProductForm();
+    this.fetchProductDetails();
+  }
 
-    if (productId) {
-      this.productService.getProductById(productId).subscribe(
-        (product) => {
-          this.product = product;
-        },
-        (error) => {
-          console.error('Error fetching product:', error);
-        }
-      );
-    }
+  ngAfterViewInit(): void {
+    // Initialize PayPal configuration
+    this.initConfig();
+  }
 
+  private initializeProductForm(): void {
     this.productForm = this.formBuilder.group({
       quantity: [1, [Validators.required, Validators.min(1)]],
       email: ['', [Validators.required, Validators.email]],
       phoneNumber: ['', [Validators.required, Validators.pattern(/^\d{12}$/)]],
     });
+  }
 
-    // Initialize PayPal configuration
-    this.initConfig();
+  private fetchProductDetails(): void {
+    const productId = this.route.snapshot.paramMap.get('id');
+
+    if (productId) {
+      this.productService.getProductById(productId)
+        .subscribe(
+          (product) => this.product = product,
+          (error) => console.error('Error fetching product:', error)
+        );
+    }
   }
 
   get formControl() {
@@ -102,7 +107,7 @@ export class ProductDetailComponent {
 
 
   async onBooking(): Promise<void> {
-    try{
+    try {
       if (this.productForm.valid) {
 
         const order: OrderModel = {
@@ -120,10 +125,7 @@ export class ProductDetailComponent {
         this.orderResponse = await this.orderService.createOrder(order).toPromise();
       }
     } catch (error) {
-      // Handle the error here
       console.error("Error during booking:", error);
-      // Optionally, you can rethrow the error to propagate it to the calling code
-      throw error;
     }
   }
 
@@ -159,28 +161,28 @@ export class ProductDetailComponent {
         console.log('onClientAuthorization - inform your server about completed transaction at this point', data);
         this.onBooking()
           .then(() => {
-          console.log("Booking successful. Response:", this.orderResponse);
             const productID = this.product._id;
             const paymentID = data.id;
             const orderID = this.orderResponse.orderId;
 
-            const {name, address} = data.purchase_units[0].shipping;
-            const {full_name: shippingName} = name;
             const {
-              address_line_1: addressLine,
-              admin_area_2,
-              admin_area_1,
-              postal_code,
-            } = address;
+              name: {full_name: shippingName},
+              address: {
+                address_line_1: addressLine,
+                admin_area_2,
+                admin_area_1,
+                postal_code,
+              },
+            } = data.purchase_units[0].shipping;
 
 
             const payment: PaymentModel = {
               _id: null,
               orderId: orderID,
               paypalId: paymentID,
-              amount: Number(data.purchase_units[0].amount.value),
-              subTotal: Number(this.subtotal.toFixed(2)),
-              taxTotal: Number(this.taxTotal.toFixed(2)),
+              amount: +data.purchase_units[0].amount.value,
+              subTotal: +this.subtotal.toFixed(2),
+              taxTotal: +this.taxTotal.toFixed(2),
               currency_code: data.purchase_units[0].amount.currency_code,
               paymentMethod: 'PayPal',
               status: data.status,
@@ -192,31 +194,45 @@ export class ProductDetailComponent {
               admin_area_1,
               postal_code
             };
-
             this.alert.showSuccessMessage(this.orderResponse.message);
+
             this.paymentService.savePayment(payment).subscribe(
               (savedPayment) => {
                 console.log('Payment saved:', savedPayment);
               },
               (error) => {
                 console.error('Error saving payment:', error);
+                if (error.status === 400) {
+                  this.alert.showErrorMessage('Invalid payment data. Please check your input.');
+                } else if (error.status === 500) {
+                  this.alert.showErrorMessage('Internal server error. Please try again later.');
+                } else {
+                  const errorMessage = error.error?.message || 'Failed to save payment.';
+                  this.alert.showErrorMessage(errorMessage);
+                }
               }
             );
 
             this.router.navigate(
               ['/receipt'],
-              {queryParams: { productID, paymentID, orderID }}
+              {queryParams: {productID, paymentID, orderID}}
             );
 
           })
           .catch((error) => {
             console.error("Booking failed. Error:", error);
+            if (error.status === 400) {
+              this.alert.showErrorMessage('Validation error. Please check your input.');
+            } else if (error.status === 500) {
+              this.alert.showErrorMessage('Server error. Please try again later.');
+            } else {
+              this.alert.showErrorMessage(error.error?.message || 'An unexpected error occurred during booking.');
+            }
           });
       },
       onCancel: (data, actions) => {
         console.log('OnCancel', data, actions);
         this.alert.showWarningMessage('Transaction canceled!');
-
       },
       onError: err => {
         console.log('OnError', err);

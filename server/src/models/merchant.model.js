@@ -21,7 +21,7 @@ const merchantSchema = new mongoose.Schema({
     type: String, required: true, default: 'PENDING',
     enum: ['PENDING', 'APPROVED', 'REJECTED']
   },
-});
+}, {timestamps: true});
 
 merchantSchema.plugin(uniqueValidator);
 

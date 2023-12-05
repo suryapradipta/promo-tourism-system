@@ -16,7 +16,7 @@ const userSchema = new mongoose.Schema({
     enum: ['ministry', 'merchant', 'customer'],
   },
   isFirstLogin: {type: Boolean, default: false},
-});
+}, {timestamps: true});
 
 userSchema.plugin(uniqueValidator);
 
