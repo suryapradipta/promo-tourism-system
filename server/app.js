@@ -8,9 +8,9 @@ require('dotenv').config();
 const userRoutes = require('./src/routes/user.route');
 const merchantRoutes = require('./src/routes/merchant.route');
 const fileRoutes = require('./src/routes/file.route');
-
 const productRoutes = require('./src/routes/product.route');
 const paymentRoutes = require('./src/routes/payment.route');
+const orderRoutes = require('./src/routes/order.route');
 
 
 app.use(bodyParser.json());
@@ -29,6 +29,7 @@ app.use('/api/merchants', merchantRoutes);
 app.use('/api/files', fileRoutes);
 app.use('/api/products', productRoutes);
 app.use('/api/payments', paymentRoutes);
+app.use('/api/orders', orderRoutes);
 
 
 module.exports = app;

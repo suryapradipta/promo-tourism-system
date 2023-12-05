@@ -6,12 +6,12 @@ import {
 } from '../../../../shared/models';
 import {ActivatedRoute, Router} from '@angular/router';
 import {
-  GenerateReceiptService,
   NotificationService,
   OrderService,
   PaymentService,
   ProductService,
 } from '../../../../shared/services';
+import {ReceiptService} from "../../../../shared/services/receipt.service";
 
 @Component({
   selector: 'app-receipt',
@@ -28,7 +28,7 @@ export class ReceiptComponent implements OnInit {
   constructor(
     private paymentService: PaymentService,
     private orderService: OrderService,
-    private receiptService: GenerateReceiptService,
+    private receiptService: ReceiptService,
     private productService: ProductService,
     private route: ActivatedRoute,
     private router: Router,
@@ -37,7 +37,7 @@ export class ReceiptComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    try{
+    try {
       this.route.queryParams.subscribe(async (params) => {
         const productID = params['productID'];
         const paymentID = params['paymentID'];
@@ -58,7 +58,7 @@ export class ReceiptComponent implements OnInit {
           }
         );
       });
-    }catch (error) {
+    } catch (error) {
       console.error("Error during booking:", error);
       throw error;
     }
@@ -66,9 +66,8 @@ export class ReceiptComponent implements OnInit {
 
   exportToPdf(): void {
     this.receiptService.exportToPdf('receipt_container', 'receipt');
-    this.router.navigate(['/']);
-    this.alert.showSuccessMessage(
-      'Official Receipt Successfully Saved'
+    this.router.navigate(['/']).then(() =>
+      this.alert.showSuccessMessage('Official Receipt Successfully Saved')
     );
   }
 }

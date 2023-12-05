@@ -1,27 +1,13 @@
-/**
- * This service provides functionality to export the content of an HTML element
- * as a PDF document using html2canvas and jspdf libraries. It allows hiding
- * specific elements with the class 'hide-in-pdf' before capturing the HTML content.
- *
- * @author I Nyoman Surya Pradipta (E1900344)
- */
-
 import { Injectable } from '@angular/core';
 import html2canvas from 'html2canvas';
 import jsPDF from 'jspdf';
-
 @Injectable({
-  providedIn: 'root',
+  providedIn: 'root'
 })
-export class GenerateReceiptService {
-  constructor() {}
+export class ReceiptService {
 
-  /**
-   * Export the content of an HTML element as a PDF document.
-   *
-   * @param {string} elementId - The ID of the HTML element to be exported.
-   * @param {string} fileName - The desired file name for the exported PDF.
-   */
+  constructor() { }
+
   exportToPdf(elementId: string, fileName: string): void {
     // Get the HTML element by its ID
     const element = document.getElementById(elementId) as HTMLElement;
@@ -38,7 +24,9 @@ export class GenerateReceiptService {
 
     if (element) {
       // Use html2canvas to capture the HTML content and convert it to a canvas
-      html2canvas(element).then((canvas) => {
+      html2canvas(element, {
+        useCORS: true
+      }).then((canvas) => {
         // Convert the canvas into a base64 string URL
         const imgData = canvas.toDataURL('image/png');
 
@@ -59,4 +47,7 @@ export class GenerateReceiptService {
       console.error(`Element with id ${elementId} not found.`);
     }
   }
+
+
+
 }
