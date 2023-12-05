@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const paypal = require('@paypal/checkout-server-sdk');
+const Payment = require("../models/payment.model");
 
 const clientId = process.env.CLIENT_ID;
 const clientSecret = process.env.CLIENT_SECRET;
@@ -54,5 +55,31 @@ router.post('/create-paypal-transaction', async (req, res) => {
   }
 });
 
+router.post('/save-payment', async (req, res) => {
+  try {
+    const payment = new Payment(req.body);
+    await payment.save();
+    res.status(201).json(payment);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: 'Internal server error' });
+  }
+});
+
+router.get('/get-by-paypal-id/:paypalId', async (req, res) => {
+  try {
+    const paypalId = req.params.paypalId;
+    const payment = await Payment.findOne({ paypalId: paypalId }).populate('orderId');
+
+    if (!payment) {
+      return res.status(404).json({ message: 'Payment not found' });
+    }
+
+    res.status(200).json(payment);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: 'Internal server error' });
+  }
+});
 
 module.exports = router;

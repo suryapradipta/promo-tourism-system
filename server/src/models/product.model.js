@@ -10,7 +10,7 @@ const productSchema = new mongoose.Schema({
     enum: ['Diving', 'Cruise', 'Honeymoon', 'Homestay', 'Shopping'],
   },
   reviews: [{type: mongoose.Schema.Types.ObjectId, ref: 'Review'}],
-  merchantId: {type: String, required: true},
+  merchantId: { type: mongoose.Schema.Types.ObjectId, ref: 'Merchant', required: true },
 });
 
 

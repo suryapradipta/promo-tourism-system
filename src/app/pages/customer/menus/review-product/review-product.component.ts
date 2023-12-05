@@ -1,10 +1,3 @@
-/**
- * This component handles the review functionality for products. It retrieves a list of
- * unreviewed orders for the currently logged-in customer, allowing them to submit reviews
- * for products they have purchased. The component utilizes the ReviewService, AuthService,
- * ProductListService, FormBuilder, and NotificationService for managing reviews, user authentication,
- * product data, form creation, and notifications respectively.
- */
 import { Component } from '@angular/core';
 import { OrderModel } from '../../../../shared/models';
 import {
@@ -26,14 +19,6 @@ export class ReviewProductComponent {
   reviewForm: FormGroup;
   selectedOrderID: string;
 
-  /**
-   * @constructor
-   * @param {ReviewService} reviewService - Service for managing product reviews.
-   * @param {AuthService} authService - Service for user authentication.
-   * @param {ProductListService} productService - Service for managing product data.
-   * @param {FormBuilder} formBuilder - FormBuilder for creating and handling form controls.
-   * @param {NotificationService} notificationService - Service for displaying notifications.
-   */
   constructor(
     private reviewService: ReviewService,
     private authService: AuthService,
@@ -42,17 +27,11 @@ export class ReviewProductComponent {
     private notificationService: NotificationService
   ) {}
 
-  /**
-   * Initialize component properties and load unreviewed orders on component initialization.
-   */
   ngOnInit() {
     this.loadUnreviewedOrders();
     this.initReviewForm();
   }
 
-  /**
-   * Getter function to access form controls in a convenient way.
-   */
   get formControl() {
     return this.reviewForm.controls;
   }

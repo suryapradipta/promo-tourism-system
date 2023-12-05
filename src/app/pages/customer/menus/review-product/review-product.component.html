@@ -44,7 +44,7 @@
                 class="lg:col-span-2 lg:flex lg:items-center lg:justify-end lg:space-x-4"
               >
                 <button
-                  (click)="openReviewForm(order.orderID)"
+                  (click)="openReviewForm(order._id)"
                   class="flex items-center justify-center rounded-md border border-gray-300 bg-white py-2 px-2.5 text-sm font-medium text-gray-700 shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
                 >
                   <span>Review</span>
@@ -81,7 +81,7 @@
 
                 <!-- Review Form -->
                 <div
-                  *ngIf="showReviewForm && selectedOrderID === order.orderID"
+                  *ngIf="showReviewForm && selectedOrderID === order._id"
                 >
                   <form
                     [formGroup]="reviewForm"
