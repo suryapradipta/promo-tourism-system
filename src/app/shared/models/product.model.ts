@@ -9,4 +9,5 @@ export interface ProductModel {
   category: "Diving" | "Cruise" | "Honeymoon" | "Homestay" | "Shopping";
   reviews: ReviewModel[];
   merchantId: string;
+  averageRating?: number;
 }

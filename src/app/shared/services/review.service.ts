@@ -2,49 +2,27 @@
  * This service manages the handling of customer reviews, including adding new reviews,
  * retrieving unreviewed orders for a customer, and loading/saving review data from/to local storage.
  */
-import { Injectable } from '@angular/core';
-import { OrderModel, ReviewModel } from '../models';
-import { v4 as uuidv4 } from 'uuid';
-import { OrderService } from './order.service';
+import {Injectable} from '@angular/core';
+import {OrderModel} from '../models';
+import {HttpClient} from "@angular/common/http";
+import {Observable} from "rxjs";
 
 @Injectable({
   providedIn: 'root',
 })
 export class ReviewService {
-  private reviews: ReviewModel[] = [];
 
-  constructor(private orderService: OrderService) {
-    this.loadReviewsData();
+  private apiUrl = 'http://localhost:3000/api/reviews';
+
+  constructor(private http: HttpClient) {
   }
 
-  private loadReviewsData() {
-    this.reviews = JSON.parse(localStorage.getItem('reviews')) || [];
+  getUnreviewedOrders(customerId: string): Observable<OrderModel[]> {
+    return this.http.get<OrderModel[]>(`${this.apiUrl}/unreviewed-orders/${customerId}`);
   }
 
-  private saveReviewsData(review: ReviewModel) {
-    this.reviews.push(review);
-    localStorage.setItem('reviews', JSON.stringify(this.reviews));
-  }
-
-  addReview(orderID: string, rating: number, comment: string): ReviewModel {
-    const review: ReviewModel = {
-      id: uuidv4(),
-      orderID: orderID,
-      rating: rating,
-      comment: comment,
-    };
-
-    this.saveReviewsData(review);
-    return review;
-  }
-
-  getUnreviewedOrders(customerID: string): OrderModel[] {
-    const customerOrders = this.orderService.getOrdersByCustomer(customerID);
-
-    // Filter out orders that already have reviews
-    return customerOrders.filter(
-      (order) =>
-        !this.reviews.some((review) => review.orderID === order._id)
-    );
+  submitReview(orderId: string, rating: number, comment: string): Observable<any> {
+    const reviewData = {orderId, rating, comment};
+    return this.http.post(`${this.apiUrl}//submit-review`, reviewData);
   }
 }

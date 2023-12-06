@@ -11,14 +11,6 @@ export class ProductListService {
     return this.products;
   }
 
-  addReviewToProduct(productId: string, review: ReviewModel): void {
-    const product = this.products.find((p) => p._id === productId);
-
-    if (product) {
-      product.reviews.push(review);
-      localStorage.setItem('products', JSON.stringify(this.products));
-    }
-  }
 
   getAverageRating(productId: string): number {
     const product = this.products.find((p) => p._id === productId);

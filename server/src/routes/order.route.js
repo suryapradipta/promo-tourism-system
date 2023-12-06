@@ -5,9 +5,9 @@ const authMiddleware = require("../middleware/auth.middleware");
 
 router.post('/create', authMiddleware, async (req, res) => {
   try {
-    const { product, quantity, totalAmount, email, phoneNumber, customerID, merchantID } = req.body;
+    const { product, quantity, totalAmount, email, phoneNumber, customerId, merchantId } = req.body;
 
-    if (!product || !quantity || !totalAmount || !email || !phoneNumber || !customerID || !merchantID) {
+    if (!product || !quantity || !totalAmount || !email || !phoneNumber || !customerId || !merchantId) {
       return res.status(400).json({ message: 'All fields are required' });
     }
 
@@ -35,8 +35,8 @@ router.post('/create', authMiddleware, async (req, res) => {
       totalAmount,
       email,
       phoneNumber,
-      customerID,
-      merchantID,
+      customerId,
+      merchantId,
     });
 
     const savedOrder = await order.save();

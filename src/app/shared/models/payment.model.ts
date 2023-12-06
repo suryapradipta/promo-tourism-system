@@ -8,11 +8,11 @@ export interface PaymentModel {
   currency_code: string;
   paymentMethod: string;
   status: string;
-  create_time: string;
-  update_time: string;
   shippingName: string;
   addressLine: string;
   admin_area_2: string;
   admin_area_1: string;
   postal_code: string;
+  createdAt: string;
+  updatedAt: string;
 }

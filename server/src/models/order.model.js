@@ -8,8 +8,8 @@ const orderSchema = new mongoose.Schema({
   totalAmount: { type: Number, required: true, min: 0},
   email: { type: String, required: true },
   phoneNumber: { type: Number, required: true },
-  customerID: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
-  merchantID: { type: mongoose.Schema.Types.ObjectId, ref: 'Merchant', required: true },
+  customerId: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
+  merchantId: { type: mongoose.Schema.Types.ObjectId, ref: 'Merchant', required: true },
 }, {timestamps: true});
 
 orderSchema.plugin(uniqueValidator);

@@ -1,12 +1,12 @@
-import { Component } from '@angular/core';
-import { OrderModel } from '../../../../shared/models';
+import {Component} from '@angular/core';
+import {OrderModel} from '../../../../shared/models';
 import {
   AuthService,
   NotificationService,
   ProductListService,
   ReviewService,
 } from '../../../../shared/services';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 
 @Component({
   selector: 'app-review-product',
@@ -17,15 +17,17 @@ export class ReviewProductComponent {
   unreviewedOrders: OrderModel[] = [];
   showReviewForm = false;
   reviewForm: FormGroup;
-  selectedOrderID: string;
+  selectedOrderId: string;
+
 
   constructor(
+    private formBuilder: FormBuilder,
+    private alert: NotificationService,
     private reviewService: ReviewService,
     private authService: AuthService,
     private productService: ProductListService,
-    private formBuilder: FormBuilder,
-    private notificationService: NotificationService
-  ) {}
+  ) {
+  }
 
   ngOnInit() {
     this.loadUnreviewedOrders();
@@ -36,21 +38,30 @@ export class ReviewProductComponent {
     return this.reviewForm.controls;
   }
 
-  /**
-   * Load unreviewed orders for the currently logged-in customer.
-   */
   private loadUnreviewedOrders() {
-    const loggedInCustomer = this.authService.getCurrentUserJson();
-    if (loggedInCustomer) {
-      this.unreviewedOrders = this.reviewService.getUnreviewedOrders(
-        loggedInCustomer._id
-      );
+    const user = this.authService.getCurrentUserJson();
+
+    if (user) {
+      this.reviewService.getUnreviewedOrders(user._id)
+        .subscribe(
+          (response) => {
+            this.unreviewedOrders = response;
+            console.log('Unreviewed orders retrieved successfully:', response);
+          },
+          (error) => {
+            console.error(error);
+          }
+        );
     }
   }
+  formatOrderDate(date: string): string {
+    return new Date(date).toLocaleDateString('en-US', {
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric',
+    });
+  }
 
-  /**
-   * Initialize the review form with form controls for rating and comments.
-   */
   private initReviewForm() {
     this.reviewForm = this.formBuilder.group({
       rating: [
@@ -61,37 +72,41 @@ export class ReviewProductComponent {
     });
   }
 
-  /**
-   * Open the review form for the selected order.
-   *
-   * @param {string} orderID - ID of the selected order.
-   */
-  openReviewForm(orderID: string) {
+  openReviewForm(orderId: string) {
     this.showReviewForm = true;
-    this.selectedOrderID = orderID;
+    this.selectedOrderId = orderId;
   }
 
-  /**
-   * Submit a product review if the form is valid.
-   *
-   * @param {string} productID - ID of the product being reviewed.
-   */
-  submitReview(productID: string) {
+  closeReviewForm() {
+    this.showReviewForm = false;
+    this.selectedOrderId = null;
+  }
+
+
+  submitReview() {
     if (this.reviewForm.valid) {
-      const orderID = this.selectedOrderID;
+      const orderId = this.selectedOrderId;
 
       const rating = this.reviewForm.value.rating;
       const comment = this.reviewForm.value.comment;
 
-      const review = this.reviewService.addReview(orderID, +rating, comment);
-      this.productService.addReviewToProduct(productID, review);
-      console.log('Review submitted:', review);
 
-      this.reviewForm.reset();
-      this.showReviewForm = false;
-      this.notificationService.showSuccessMessage('Review successful!');
+      this.reviewService.submitReview(orderId, +rating, comment).subscribe(
+        (response) => {
+          console.log('Review submitted successfully');
+          this.reviewForm.reset();
+          this.showReviewForm = false;
+          this.loadUnreviewedOrders();
+        },
+        (error) => {
+          // Handle error
+          console.error(error);
+        }
+      );
 
-      this.loadUnreviewedOrders();
+
+
+
     }
   }
 }

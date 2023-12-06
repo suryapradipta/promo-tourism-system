@@ -2,7 +2,7 @@ import {Component} from '@angular/core';
 import {
   OrderModel,
   PaymentModel,
-  ProductModel
+  ProductModel, ReviewModel
 } from '../../../../shared/models';
 import {ActivatedRoute, Router} from '@angular/router';
 import {
@@ -10,7 +10,6 @@ import {
   NotificationService,
   OrderService,
   PaymentService,
-  ProductListService,
   ProductService,
 } from '../../../../shared/services';
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
@@ -24,7 +23,9 @@ import {IPayPalConfig} from 'ngx-paypal';
 export class ProductDetailComponent {
   product: ProductModel | undefined;
   productForm: FormGroup;
-  orderResponse;
+  orderResponse: any;
+  averageRating: number;
+  reviews: ReviewModel[];
 
   // PayPal's configuration for payment processing
   public payPalConfig?: IPayPalConfig;
@@ -37,7 +38,6 @@ export class ProductDetailComponent {
     private alert: NotificationService,
     private paymentService: PaymentService,
     private authService: AuthService,
-    private productListService: ProductListService,
     private productService: ProductService,
   ) {
   }
@@ -66,7 +66,20 @@ export class ProductDetailComponent {
     if (productId) {
       this.productService.getProductById(productId)
         .subscribe(
-          (product) => this.product = product,
+          (product) => {
+            this.product = product;
+
+            this.productService.getAverageRating(this.product._id)
+              .subscribe(
+                (response) => {
+                  console.log(response.averageRating)
+                  this.averageRating = response.averageRating;
+                },
+                (error) => {
+                  console.error(error);
+                }
+              );
+          },
           (error) => console.error('Error fetching product:', error)
         );
     }
@@ -101,11 +114,6 @@ export class ProductDetailComponent {
     return this.subtotal + this.taxTotal;
   }
 
-  get averageRating(): number {
-    return this.productListService.getAverageRating(this.product._id);
-  }
-
-
   async onBooking(): Promise<void> {
     try {
       if (this.productForm.valid) {
@@ -118,8 +126,10 @@ export class ProductDetailComponent {
           totalAmount: this.itemTotal,
           email: this.productForm.value.email,
           phoneNumber: this.productForm.value.phoneNumber,
-          customerID: this.authService.getCurrentUserJson()._id,
-          merchantID: this.product.merchantId
+          customerId: this.authService.getCurrentUserJson()._id,
+          merchantId: this.product.merchantId,
+          createdAt: null,
+          updatedAt: null
         };
 
         this.orderResponse = await this.orderService.createOrder(order).toPromise();
@@ -186,13 +196,13 @@ export class ProductDetailComponent {
               currency_code: data.purchase_units[0].amount.currency_code,
               paymentMethod: 'PayPal',
               status: data.status,
-              create_time: data.create_time,
-              update_time: data.update_time,
               shippingName,
               addressLine,
               admin_area_2,
               admin_area_1,
-              postal_code
+              postal_code,
+              createdAt: null,
+              updatedAt: null
             };
             this.alert.showSuccessMessage(this.orderResponse.message);
 

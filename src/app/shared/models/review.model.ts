@@ -1,6 +1,8 @@
 export interface ReviewModel {
-  id: string;
-  orderID: string;
+  _id: string;
+  orderId: string;
   rating: number;
   comment: string;
+  createdAt: string;
+  updatedAt: string;
 }

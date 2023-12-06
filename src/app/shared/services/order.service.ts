@@ -22,27 +22,11 @@ export class OrderService {
   }
 
 
-
-
-
-
-
-
   private orders: OrderModel[] = [];
 
 
 
-
-
-
-
-
-
-  getOrdersByCustomer(customerID: string): OrderModel[] {
-    return this.orders.filter((order) => order.customerID === customerID);
-  }
-
-  getOrdersByMerchant(merchantID: string): OrderModel[] {
-    return this.orders.filter((order) => order.merchantID === merchantID);
+  getOrdersByMerchant(merchantId: string): OrderModel[] {
+    return this.orders.filter((order) => order.merchantId === merchantId);
   }
 }

@@ -13,14 +13,12 @@ const paymentSchema = new mongoose.Schema({
   currency_code: {type: String, required: true, trim: true},
   paymentMethod: {type: String, required: true, trim: true},
   status: {type: String, required: true,},
-  create_time: {type: Date, default: Date.now},
-  update_time: {type: Date, default: Date.now},
   shippingName: {type: String, trim: true},
   addressLine: {type: String, trim: true},
   admin_area_2: {type: String, trim: true},
   admin_area_1: {type: String, trim: true},
   postal_code: {type: String, trim: true},
-});
+}, {timestamps: true});
 
 const Payment = mongoose.model('Payment', paymentSchema);
 

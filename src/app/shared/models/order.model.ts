@@ -8,6 +8,8 @@ export interface OrderModel {
   totalAmount: number;
   email: string;
   phoneNumber: number;
-  customerID: string;
-  merchantID: string;
+  customerId: string;
+  merchantId: string;
+  createdAt: string;
+  updatedAt: string;
 }

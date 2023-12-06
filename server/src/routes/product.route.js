@@ -6,6 +6,7 @@ const path = require('path');
 const multer = require('multer');
 const mongoose = require("mongoose");
 const fs = require('fs').promises;
+const Review = require('../models/review.model');
 
 
 const projectRoot = path.resolve(__dirname, '..');
@@ -162,6 +163,29 @@ router.get('/', async (req, res) => {
     res.status(500).json({ message: 'Internal server error' });
   }
 });
+
+router.get('/average-rating/:productId', async (req, res) => {
+  try {
+    const productId = req.params.productId;
+
+    const product = await Product.findById(productId).populate('reviews');
+    if (!product) {
+      return res.status(404).json({ message: 'Product not found' });
+    }
+
+    if (product.reviews.length > 0) {
+      const totalRating = product.reviews.reduce((sum, review) => sum + review.rating, 0);
+      const averageRating = totalRating / product.reviews.length;
+      return res.status(200).json({ averageRating });
+    }
+
+    res.status(200).json({ averageRating: 0 });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: 'Internal server error' });
+  }
+});
+
 
 
 module.exports = router;
