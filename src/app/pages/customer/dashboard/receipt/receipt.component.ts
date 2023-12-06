@@ -55,7 +55,7 @@ export class ReceiptComponent implements OnInit {
     this.payment = await this.paymentService.getPaymentByPaypalId(paymentID).toPromise();
     this.order = await this.orderService.getOrderById(orderID).toPromise();
 
-    this.orderDate = ReceiptComponent.formatOrderDate(this.payment.updatedAt);
+    this.orderDate = ReceiptComponent.formatOrderDate(this.payment.createdAt);
   }
 
   private static formatOrderDate(date: string): string {

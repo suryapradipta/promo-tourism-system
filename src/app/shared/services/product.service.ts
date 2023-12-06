@@ -54,4 +54,9 @@ export class ProductService {
     return this.http.get(`${this.apiUrl}/average-rating/${productId}`);
   }
 
+  getReviewsForProduct(productId: string): Observable<any[]> {
+    const url = `${this.apiUrl}/products/${productId}/reviews`;
+    return this.http.get<any[]>(url);
+  }
+
 }

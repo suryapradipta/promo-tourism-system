@@ -24,10 +24,10 @@ router.get('/unreviewed-orders/:customerId', async (req, res) => {
 
 router.post('/submit-review', async (req, res) => {
   try {
-    const { orderId, rating, comment } = req.body;
+    const { orderId, rating, comment, userId } = req.body;
 
     // Save the review
-    const review = new Review({ orderId, rating, comment });
+    const review = new Review({ orderId, rating, comment, userId });
     await review.save();
 
     // Update the product with the new review

@@ -186,6 +186,28 @@ router.get('/average-rating/:productId', async (req, res) => {
   }
 });
 
+router.get('/products/:productId/reviews', async (req, res) => {
+  try {
+    const productId = req.params.productId;
 
+    const product = await Product.findById(productId).populate({
+      path: 'reviews',
+      populate: {
+        path: 'userId',
+        select: 'email',
+      },
+    });
+
+    if (!product) {
+      return res.status(404).json({ message: 'Product not found' });
+    }
+
+    // Return the reviews
+    res.json(product.reviews);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: 'Internal Server Error' });
+  }
+});
 
 module.exports = router;

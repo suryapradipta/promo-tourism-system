@@ -21,8 +21,8 @@ export class ReviewService {
     return this.http.get<OrderModel[]>(`${this.apiUrl}/unreviewed-orders/${customerId}`);
   }
 
-  submitReview(orderId: string, rating: number, comment: string): Observable<any> {
-    const reviewData = {orderId, rating, comment};
+  submitReview(orderId: string, rating: number, comment: string, userId: string): Observable<any> {
+    const reviewData = {orderId, rating, comment, userId};
     return this.http.post(`${this.apiUrl}//submit-review`, reviewData);
   }
 }

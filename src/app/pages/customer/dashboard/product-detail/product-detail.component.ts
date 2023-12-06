@@ -2,7 +2,8 @@ import {Component} from '@angular/core';
 import {
   OrderModel,
   PaymentModel,
-  ProductModel, ReviewModel
+  ProductModel,
+  ReviewModel
 } from '../../../../shared/models';
 import {ActivatedRoute, Router} from '@angular/router';
 import {
@@ -72,7 +73,6 @@ export class ProductDetailComponent {
             this.productService.getAverageRating(this.product._id)
               .subscribe(
                 (response) => {
-                  console.log(response.averageRating)
                   this.averageRating = response.averageRating;
                 },
                 (error) => {
@@ -82,7 +82,30 @@ export class ProductDetailComponent {
           },
           (error) => console.error('Error fetching product:', error)
         );
+
+      this.fetchReviews(productId);
+
     }
+  }
+
+  private fetchReviews(productId: string): void {
+    this.productService.getReviewsForProduct(productId).subscribe(
+      reviews => {
+        console.log(reviews);
+        this.reviews = reviews;
+
+      },
+      error => {
+        console.error(error);
+      }
+    );
+  }
+  formatOrderDate(date: string): string {
+    return new Date(date).toLocaleDateString('en-US', {
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric',
+    });
   }
 
   get formControl() {

@@ -25,7 +25,6 @@ export class ReviewProductComponent {
     private alert: NotificationService,
     private reviewService: ReviewService,
     private authService: AuthService,
-    private productService: ProductListService,
   ) {
   }
 
@@ -86,12 +85,13 @@ export class ReviewProductComponent {
   submitReview() {
     if (this.reviewForm.valid) {
       const orderId = this.selectedOrderId;
+      const userId = this.authService.getCurrentUserJson()._id;
 
       const rating = this.reviewForm.value.rating;
       const comment = this.reviewForm.value.comment;
 
 
-      this.reviewService.submitReview(orderId, +rating, comment).subscribe(
+      this.reviewService.submitReview(orderId, +rating, comment, userId).subscribe(
         (response) => {
           console.log('Review submitted successfully');
           this.reviewForm.reset();

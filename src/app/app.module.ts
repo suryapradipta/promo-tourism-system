@@ -20,7 +20,6 @@ import { ManageAccountComponent } from './pages/ministry/ministry-dashboard/menu
 import { DetailAccountComponent } from './pages/ministry/ministry-dashboard/menus/manage-account/detail-account/detail-account.component';
 import { ProductListComponent } from './pages/customer/dashboard/product-list/product-list.component';
 import { ProductDetailComponent } from './pages/customer/dashboard/product-detail/product-detail.component';
-import { ReviewsComponent } from './pages/customer/dashboard/product-detail/reviews/reviews.component';
 import { NgxPayPalModule } from 'ngx-paypal';
 import { ReceiptComponent } from './pages/customer/dashboard/receipt/receipt.component';
 import { MobileMenuComponent } from './pages/customer/dashboard/header/mobile-menu/mobile-menu.component';
@@ -52,7 +51,6 @@ import { HomeComponent } from './pages/ministry/ministry-dashboard/home/home.com
     DetailAccountComponent,
     ProductListComponent,
     ProductDetailComponent,
-    ReviewsComponent,
     ReceiptComponent,
     MobileMenuComponent,
     HeroComponent,
