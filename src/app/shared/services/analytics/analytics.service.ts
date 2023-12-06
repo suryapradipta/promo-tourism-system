@@ -3,10 +3,10 @@
  * customer purchasing power for merchants and all merchants in the system.
  */
 import { Injectable } from '@angular/core';
-import { ProductListService } from './product-list.service';
-import { OrderService } from './order.service';
-import { RegisterMerchantsService } from './register-merchants.service';
-import { AuthService } from './auth.service';
+import { ProductListService } from '../product-list.service';
+import { OrderService } from '../order/order.service';
+import { RegisterMerchantsService } from '../register-merchants.service';
+import { AuthService } from '../auth/auth.service';
 
 @Injectable({
   providedIn: 'root',

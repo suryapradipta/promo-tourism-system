@@ -1,5 +1,5 @@
 import {Injectable} from '@angular/core';
-import {AuthModel} from '../models';
+import {AuthModel} from '../../models';
 import {HttpClient} from "@angular/common/http";
 import {Observable} from "rxjs";
 

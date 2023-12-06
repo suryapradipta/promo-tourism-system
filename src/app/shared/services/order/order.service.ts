@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { OrderModel, ProductModel } from '../models';
+import { OrderModel, ProductModel } from '../../models';
 import { v4 as uuidv4 } from 'uuid';
 import {HttpClient} from "@angular/common/http";
 import {Observable} from "rxjs";

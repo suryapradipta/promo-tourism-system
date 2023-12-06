@@ -11,7 +11,7 @@ import {
   PaymentService,
   ProductService,
 } from '../../../../shared/services';
-import {ReceiptService} from "../../../../shared/services/receipt.service";
+import {ReceiptService} from "../../../../shared/services/receipt/receipt.service";
 
 @Component({
   selector: 'app-receipt',

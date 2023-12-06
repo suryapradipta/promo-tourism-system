@@ -1,6 +1,6 @@
-import { Injectable } from '@angular/core';
+import {Injectable} from '@angular/core';
 import {HttpClient} from "@angular/common/http";
-import {ProductModel, ReviewModel} from "../models";
+import {ProductModel} from "../../models";
 import {Observable} from "rxjs";
 
 @Injectable({
@@ -9,7 +9,8 @@ import {Observable} from "rxjs";
 export class ProductService {
   private apiUrl = 'http://localhost:3000/api/products';
 
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient) {
+  }
 
   addProduct(product: ProductModel, imageFile: File): Observable<any> {
     const formData = new FormData();

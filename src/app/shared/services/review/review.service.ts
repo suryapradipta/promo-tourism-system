@@ -3,7 +3,7 @@
  * retrieving unreviewed orders for a customer, and loading/saving review data from/to local storage.
  */
 import {Injectable} from '@angular/core';
-import {OrderModel} from '../models';
+import {OrderModel} from '../../models';
 import {HttpClient} from "@angular/common/http";
 import {Observable} from "rxjs";
 
