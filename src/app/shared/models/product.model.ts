@@ -10,4 +10,6 @@ export interface ProductModel {
   reviews: ReviewModel[];
   merchantId: string;
   averageRating?: number;
+  createdAt?: string;
+  updatedAt?: string;
 }

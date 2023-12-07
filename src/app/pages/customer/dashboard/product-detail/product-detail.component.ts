@@ -151,8 +151,6 @@ export class ProductDetailComponent {
           phoneNumber: this.productForm.value.phoneNumber,
           customerId: this.authService.getCurrentUserJson()._id,
           merchantId: this.product.merchantId,
-          createdAt: null,
-          updatedAt: null
         };
 
         this.orderResponse = await this.orderService.createOrder(order).toPromise();
@@ -224,8 +222,6 @@ export class ProductDetailComponent {
               admin_area_2,
               admin_area_1,
               postal_code,
-              createdAt: null,
-              updatedAt: null
             };
             this.alert.showSuccessMessage(this.orderResponse.message);
 

@@ -10,6 +10,6 @@ export interface OrderModel {
   phoneNumber: number;
   customerId: string;
   merchantId: string;
-  createdAt: string;
-  updatedAt: string;
+  createdAt?: string;
+  updatedAt?: string;
 }

@@ -3,7 +3,6 @@ import {OrderModel} from '../../../../shared/models';
 import {
   AuthService,
   NotificationService,
-  ProductListService,
   ReviewService,
 } from '../../../../shared/services';
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
@@ -53,6 +52,7 @@ export class ReviewProductComponent {
         );
     }
   }
+
   formatOrderDate(date: string): string {
     return new Date(date).toLocaleDateString('en-US', {
       year: 'numeric',
@@ -103,8 +103,6 @@ export class ReviewProductComponent {
           console.error(error);
         }
       );
-
-
 
 
     }

@@ -6,6 +6,6 @@ export interface ReviewModel {
   rating: number;
   comment: string;
   userId: AuthModel;
-  createdAt: string;
-  updatedAt: string;
+  createdAt?: string;
+  updatedAt?: string;
 }

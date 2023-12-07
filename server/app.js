@@ -12,6 +12,7 @@ const productRoutes = require('./src/routes/product.route');
 const paymentRoutes = require('./src/routes/payment.route');
 const orderRoutes = require('./src/routes/order.route');
 const reviewRoutes = require('./src/routes/review.route');
+const analyticsRoutes = require('./src/routes/analytics.route');
 
 
 app.use(bodyParser.json());
@@ -32,6 +33,7 @@ app.use('/api/products', productRoutes);
 app.use('/api/payments', paymentRoutes);
 app.use('/api/orders', orderRoutes);
 app.use('/api/reviews', reviewRoutes);
+app.use('/api/analytics', analyticsRoutes);
 
 
 module.exports = app;

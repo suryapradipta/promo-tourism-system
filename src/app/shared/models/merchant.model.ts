@@ -7,4 +7,6 @@ export interface MerchantModel {
   documents: any;
   document_description: string;
   status: string;
+  createdAt?: string;
+  updatedAt?: string;
 }

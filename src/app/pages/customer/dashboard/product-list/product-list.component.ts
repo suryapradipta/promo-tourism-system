@@ -2,7 +2,6 @@ import {Component, OnInit} from '@angular/core';
 import {ProductModel} from '../../../../shared/models';
 import {
   AuthService,
-  ProductListService,
   ProductService
 } from '../../../../shared/services';
 import {Router} from '@angular/router';
@@ -18,7 +17,6 @@ export class ProductListComponent implements OnInit {
 
 
   constructor(
-    private productListService: ProductListService,
     private router: Router,
     private authService: AuthService,
     private productService: ProductService

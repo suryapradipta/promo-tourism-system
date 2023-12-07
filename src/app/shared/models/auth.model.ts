@@ -4,4 +4,6 @@ export interface AuthModel {
   password?: string;
   role: string;
   isFirstLogin: boolean;
+  createdAt?: string;
+  updatedAt?: string;
 }

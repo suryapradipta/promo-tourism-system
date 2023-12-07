@@ -13,6 +13,6 @@ export interface PaymentModel {
   admin_area_2: string;
   admin_area_1: string;
   postal_code: string;
-  createdAt: string;
-  updatedAt: string;
+  createdAt?: string;
+  updatedAt?: string;
 }
