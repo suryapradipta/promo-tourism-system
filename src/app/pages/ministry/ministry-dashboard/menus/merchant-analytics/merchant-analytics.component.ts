@@ -5,10 +5,7 @@ import {
   MerchantService
 } from '../../../../../shared/services';
 import {Chart, registerables} from 'chart.js';
-import {
-  CustomerPurchasingPower,
-  ProductSold
-} from "../../../../../shared/models";
+import {CustomerPurchasingPower} from "../../../../../shared/models";
 
 Chart.register(...registerables);
 
@@ -18,7 +15,7 @@ Chart.register(...registerables);
   styleUrls: ['./merchant-analytics.component.css'],
 })
 export class MerchantAnalyticsComponent implements OnInit {
-  productAnalytics;
+  productAnalytics: any[];
   customerPurchasingPower: CustomerPurchasingPower[];
   showProductSold = true;
   showPurchasingPower = false;
@@ -31,9 +28,8 @@ export class MerchantAnalyticsComponent implements OnInit {
   }
 
   async ngOnInit(): Promise<void> {
-    const email = this.authService.getCurrentUserJson().email;
+    const email: string = this.authService.getCurrentUserJson().email;
     const response = await this.merchantService.getMerchantIdByEmail(email).toPromise()
-    console.log("MERCHANT ID", response)
 
     this.analyticsService
       .getMerchantProductAnalytics(response.merchantId)

@@ -53,7 +53,7 @@ export class SignInComponent implements OnInit {
           } else if (error.status === 500) {
             this.alert.showErrorMessage('Server error. Please try again later.');
           } else {
-            this.alert.showErrorMessage(error.error.message);
+            this.alert.showErrorMessage(error.error?.message || 'An unexpected error occurred. Please try again.');
           }
         });
     }
@@ -68,7 +68,7 @@ export class SignInComponent implements OnInit {
         if (error.status === 401 && error.error.message === 'Token has expired') {
           this.router.navigate(['/login']);
         }
-        this.alert.showErrorMessage(error.error.message);
+        this.alert.showErrorMessage(error.error?.message || 'An unexpected error occurred. Please try again.');
       }
     );
   }

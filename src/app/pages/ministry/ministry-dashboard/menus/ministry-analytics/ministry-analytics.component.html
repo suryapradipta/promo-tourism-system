@@ -22,8 +22,8 @@
         <option value="" disabled>Select a merchant</option>
         <option value="">All</option>
         <option
-          *ngFor="let merchant of allMerchantAnalytics"
-          [value]="merchant.merchant.id"
+          *ngFor="let merchant of allAnalytics"
+          [value]="merchant.merchant._id"
         >
           {{ merchant.merchant.name }}
         </option>
@@ -93,38 +93,37 @@
 
     <!-- Display analytics data for the selected merchant -->
     <div *ngIf="selectedMerchantId">
-      <div *ngIf="selectedProductSold">
+      <div *ngIf="isSelectedProductSold">
         <canvas id="selectedProductSoldChart"></canvas>
       </div>
 
       <!-- Total Spent Chart -->
-      <div *ngIf="selectedPurchasingPower">
+      <div *ngIf="isSelectedPurchasingPower">
         <canvas id="selectedPurchasingPowerChart"></canvas>
       </div>
     </div>
 
     <!-- Display analytics data for all merchants -->
     <div *ngIf="!selectedMerchantId">
-      <div *ngIf="allMerchantProductSold">
+      <div *ngIf="isAllProductSold">
         <canvas id="allProductSoldChart"></canvas>
       </div>
 
       <!-- Total Spent Chart -->
-      <div *ngIf="allMerchantPurchasingPower">
+      <div *ngIf="isAllPurchasingPower">
         <canvas id="allPurchasingPowerChart"></canvas>
       </div>
     </div>
   </div>
 </div>
 
-
-<!--<div *ngFor="let merchantAnalytics of allMerchantAnalytics">
+<div *ngFor="let merchantAnalytics of allAnalytics">
   <h2>{{ merchantAnalytics.merchant.name }} Analytics</h2>
   <h3>Product Analytics</h3>
-  &lt;!&ndash; Display product analytics data for the specific merchant here &ndash;&gt;
+  <!-- Display product analytics data for the specific merchant here -->
   <pre>{{ merchantAnalytics.productAnalytics | json }}</pre>
 
   <h3>Purchasing Power Analytics</h3>
-  &lt;!&ndash; Display purchasing power analytics data for the specific merchant here &ndash;&gt;
+  <!-- &lt;!&ndash; Display purchasing power analytics data for the specific merchant here &ndash;&gt; -->
   <pre>{{ merchantAnalytics.purchasingPowerAnalytics | json }}</pre>
-</div>-->
+</div>

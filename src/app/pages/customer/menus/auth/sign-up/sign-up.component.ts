@@ -1,4 +1,4 @@
-import {Component, OnInit} from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import {
   AbstractControl,
   FormBuilder,
@@ -6,12 +6,12 @@ import {
   ValidatorFn,
   Validators,
 } from '@angular/forms';
-import {Router} from '@angular/router';
+import { Router } from '@angular/router';
 import {
   AuthService,
   NotificationService,
 } from '../../../../../shared/services';
-import {AuthModel} from '../../../../../shared/models';
+import { AuthModel } from '../../../../../shared/models';
 
 @Component({
   selector: 'app-sign-up',
@@ -28,9 +28,8 @@ export class SignUpComponent implements OnInit {
     private formBuilder: FormBuilder,
     private router: Router,
     private alert: NotificationService,
-    private authService: AuthService,
-  ) {
-  }
+    private authService: AuthService
+  ) {}
 
   ngOnInit(): void {
     // Custom password validator function
@@ -46,7 +45,7 @@ export class SignUpComponent implements OnInit {
         const isValid =
           hasUppercase && hasLowercase && hasNumber && hasSpecialChar;
 
-        return isValid ? null : {invalidPassword: true};
+        return isValid ? null : { invalidPassword: true };
       };
     }
 
@@ -54,7 +53,7 @@ export class SignUpComponent implements OnInit {
       email: ['', [Validators.required, Validators.email]],
       password: [
         '',
-        [Validators.required, Validators.minLength(8),],
+        [Validators.required, Validators.minLength(8), passwordValidator()],
       ],
     });
   }
@@ -66,26 +65,30 @@ export class SignUpComponent implements OnInit {
   onRegister(): void {
     this.submitted = true;
     if (this.registerForm.valid) {
-      this.authService.createUser(
-        this.registerForm.value.email,
-        this.registerForm.value.password,
-        'customer'
-      ).subscribe(
-        (response) => {
-          this.router.navigate(['/sign-in']).then(() =>
-            this.alert.showSuccessMessage(response.message)
-          );
-        },
-        (error) => {
-          if (error.status === 400 || error.status === 422) {
-            this.alert.showErrorMessage(error.error.message);
-          } else if (error.status === 409) {
-            this.alert.showEmailInUseMessage();
-          } else {
-            this.alert.showErrorMessage('User account creation failed. Please try again later.');
+      this.authService
+        .createUser(
+          this.registerForm.value.email,
+          this.registerForm.value.password,
+          'customer'
+        )
+        .subscribe(
+          (response) => {
+            this.router
+              .navigate(['/sign-in'])
+              .then(() => this.alert.showSuccessMessage(response.message));
+          },
+          (error) => {
+            if (error.status === 400 || error.status === 422) {
+              this.alert.showErrorMessage(error.error.message);
+            } else if (error.status === 409) {
+              this.alert.showEmailInUseMessage();
+            } else {
+              this.alert.showErrorMessage(
+                'User account creation failed. Please try again later.'
+              );
+            }
           }
-        }
-      );
+        );
     } else {
       this.alert.showErrorMessage(
         'Register failed. Please check your credentials.'

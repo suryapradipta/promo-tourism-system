@@ -1,8 +1,8 @@
-import { Component, OnInit } from '@angular/core';
-import { AnalyticsService } from '../../../../../shared/services';
-import { Chart } from 'chart.js';
-import { ChartConfiguration } from 'chart.js/auto';
-import {CustomerPurchasingPower} from "../../../../../shared/models";
+import {Component, OnInit} from '@angular/core';
+import {AnalyticsService} from '../../../../../shared/services';
+import {Chart} from 'chart.js';
+import {ChartConfiguration} from 'chart.js/auto';
+import {CustomerPurchasingPower} from '../../../../../shared/models';
 
 @Component({
   selector: 'app-ministry-analytics',
@@ -10,66 +10,65 @@ import {CustomerPurchasingPower} from "../../../../../shared/models";
   styleUrls: ['./ministry-analytics.component.css'],
 })
 export class MinistryAnalyticsComponent implements OnInit {
-  allMerchantAnalytics: any;
+  allAnalytics: any;
   //all analytics
   selectedMerchantId: string | null = null;
 
   // Flags to control the visibility of different charts
-  allMerchantProductSold = true;
-  allMerchantPurchasingPower = false;
-  selectedProductSold = true;
-  selectedPurchasingPower = false;
+  isAllProductSold: boolean = true;
+  isAllPurchasingPower: boolean = false;
+  isSelectedProductSold: boolean = true;
+  isSelectedPurchasingPower: boolean = false;
 
   // Chart instances for Product Sold and Purchasing Power
   productSoldChart: Chart;
   purchasingPowerChart: Chart;
 
-  constructor(private analyticsService: AnalyticsService) {}
+  constructor(private analyticsService: AnalyticsService) {
+  }
 
   ngOnInit(): void {
     this.analyticsService.getAllMerchantAnalytics().subscribe((data) => {
-      this.allMerchantAnalytics = data;
-      console.log(this.allMerchantAnalytics);
+      this.allAnalytics = data;
+      this.showProductSoldChart();
     });
-
-    this.showProductSoldChart();
   }
 
   showProductSoldChart(): void {
-    this.allMerchantProductSold = true;
-    this.allMerchantPurchasingPower = false;
+    this.isAllProductSold = true;
+    this.isAllPurchasingPower = false;
     this.selectedMerchantId = null;
-    setTimeout(() => this.AllProductSoldChart(), 0);
+    setTimeout(() => this.productSoldAnalytics(), 0);
   }
 
   showPurchasingPowerChart(): void {
-    this.allMerchantProductSold = false;
-    this.allMerchantPurchasingPower = true;
+    this.isAllProductSold = false;
+    this.isAllPurchasingPower = true;
     this.selectedMerchantId = null;
-    setTimeout(() => this.AllPurchasingPowerChart(), 0);
+    setTimeout(() => this.purchasingPowerAnalytics(), 0);
   }
 
   showSelectedProductSold(): void {
-    this.selectedProductSold = true;
-    this.selectedPurchasingPower = false;
-    this.allMerchantProductSold = false;
-    this.allMerchantPurchasingPower = false;
+    this.isSelectedProductSold = true;
+    this.isSelectedPurchasingPower = false;
+    this.isAllProductSold = false;
+    this.isAllPurchasingPower = false;
     setTimeout(() => this.selectedProductSoldChart(), 0);
   }
 
   showSelectedPurchasingPower(): void {
-    this.selectedProductSold = false;
-    this.selectedPurchasingPower = true;
-    this.allMerchantProductSold = false;
-    this.allMerchantPurchasingPower = false;
+    this.isSelectedProductSold = false;
+    this.isSelectedPurchasingPower = true;
+    this.isAllProductSold = false;
+    this.isAllPurchasingPower = false;
     setTimeout(() => this.selectedPurchasingPowerChart(), 0);
   }
 
   onSelectMerchant(merchantId: string) {
     this.selectedMerchantId = merchantId;
     this.refreshAnalytics();
-    this.allMerchantProductSold = false;
-    this.allMerchantPurchasingPower = false;
+    this.isAllProductSold = false;
+    this.isAllPurchasingPower = false;
     if (this.selectedMerchantId === '') {
       this.showProductSoldChart();
     }
@@ -77,38 +76,48 @@ export class MinistryAnalyticsComponent implements OnInit {
 
   refreshAnalytics() {
     if (this.selectedMerchantId) {
-      const selectedMerchantAnalytics =
-        this.analyticsService.getMerchantProductAnalytics(this.selectedMerchantId);
-
-      const selectedMerchantPurchasingPowerAnalytics =
-        this.analyticsService.getMerchantPurchasingPowerAnalytics(this.selectedMerchantId);
-
-      const index = this.allMerchantAnalytics.findIndex((item) => item.merchant.id === this.selectedMerchantId);
+      const index = this.allAnalytics.findIndex(
+        (item) => item.merchant._id === this.selectedMerchantId
+      );
 
       if (index !== -1) {
-        this.allMerchantAnalytics[index].productAnalytics = selectedMerchantAnalytics;
+        this.analyticsService
+          .getMerchantProductAnalytics(this.selectedMerchantId)
+          .subscribe((data) => {
+            this.allAnalytics[index].productAnalytics = data;
+            setTimeout(() => this.selectedProductSoldChart(), 0);
+          });
 
-        this.allMerchantAnalytics[index].purchasingPowerAnalytics = selectedMerchantPurchasingPowerAnalytics;
+        this.analyticsService
+          .getMerchantPurchasingPowerAnalytics(this.selectedMerchantId)
+          .subscribe(
+            (data: CustomerPurchasingPower[]) => {
+              this.allAnalytics[index].purchasingPowerAnalytics = data;
+              setTimeout(() => this.selectedPurchasingPowerChart(), 0);
+            },
+            (error) => {
+              console.error('Error fetching purchasing power analytics:', error);
+            }
+          );
+
       }
-      setTimeout(() => this.selectedProductSoldChart(), 0);
-      setTimeout(() => this.selectedPurchasingPowerChart(), 0);
     }
   }
 
   private selectedProductSoldChart() {
-    const canvas = <HTMLCanvasElement>(
+    const canvas: HTMLCanvasElement = <HTMLCanvasElement>(
       document.getElementById('selectedProductSoldChart')
     );
-    const context = canvas.getContext('2d');
+    const context: CanvasRenderingContext2D = canvas.getContext('2d');
 
     if (this.productSoldChart) {
       this.productSoldChart.destroy();
     }
 
-    const productAnalytics = this.allMerchantAnalytics.find(
-      (item) => item.merchant.id === this.selectedMerchantId
+    const productAnalytics = this.allAnalytics.find(
+      (item) => item.merchant._id === this.selectedMerchantId
     ).productAnalytics;
-    const labels = productAnalytics.map((item) => item.product.name);
+    const labels = productAnalytics.map((item) => item.name);
     const data = productAnalytics.map((item) => item.totalSold);
 
     const chartConfig: ChartConfiguration = {
@@ -138,21 +147,22 @@ export class MinistryAnalyticsComponent implements OnInit {
   }
 
   private selectedPurchasingPowerChart() {
-    /*const canvas = <HTMLCanvasElement>(
+    const canvas: HTMLCanvasElement = <HTMLCanvasElement>(
       document.getElementById('selectedPurchasingPowerChart')
     );
-    const context = canvas?.getContext('2d');
+    const context: CanvasRenderingContext2D = canvas?.getContext('2d');
 
     if (this.purchasingPowerChart) {
       this.purchasingPowerChart.destroy();
     }
 
-    const productAnalytics = this.allMerchantAnalytics.find(
-      (item) => item.merchant.id === this.selectedMerchantId
+    const productAnalytics: CustomerPurchasingPower[] = this.allAnalytics.find(
+      (item) => item.merchant._id === this.selectedMerchantId
     ).purchasingPowerAnalytics;
+    console.log('productAnalytics', productAnalytics);
 
-    const labels =productAnalytics.email;
-    const data = Object.values(productAnalytics).map(
+    const labels = productAnalytics.map((customer) => customer.email);
+    const data: number[] = Object.values(productAnalytics).map(
       (customer) => customer.totalSpent
     );
 
@@ -175,22 +185,40 @@ export class MinistryAnalyticsComponent implements OnInit {
         scales: { y: { beginAtZero: true } },
       },
     };
-    this.purchasingPowerChart = new Chart(context, chartConfig);*/
+    this.purchasingPowerChart = new Chart(context, chartConfig);
   }
 
-  private AllProductSoldChart() {
-    const canvas = <HTMLCanvasElement>(
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  private productSoldAnalytics() {
+    const canvas: HTMLCanvasElement = <HTMLCanvasElement>(
       document.getElementById('allProductSoldChart')
     );
-    const context = canvas.getContext('2d');
+    const context: CanvasRenderingContext2D = canvas.getContext('2d');
 
     if (this.productSoldChart) {
       this.productSoldChart.destroy();
     }
-    const labels = this.allMerchantAnalytics.map((item) => item.merchant.name);
-    const data = this.allMerchantAnalytics.map((item) =>
-      item.productAnalytics.reduce((sum, product) => sum + product.totalSold, 0)
-    );
+    const labels = this.allAnalytics.map((item) => item.merchant.name);
+    const data = this.allAnalytics.map((item) => item.productAnalytics.totalSold);
     const chartConfig: ChartConfiguration = {
       type: 'bar',
       data: {
@@ -220,31 +248,20 @@ export class MinistryAnalyticsComponent implements OnInit {
     this.productSoldChart = new Chart(context, chartConfig);
   }
 
-  private AllPurchasingPowerChart() {
-    const canvas = <HTMLCanvasElement>(
+  private purchasingPowerAnalytics() {
+    const canvas: HTMLCanvasElement = <HTMLCanvasElement>(
       document.getElementById('allPurchasingPowerChart')
     );
-    const context = canvas.getContext('2d');
+    const context: CanvasRenderingContext2D = canvas.getContext('2d');
 
     if (this.purchasingPowerChart) {
       this.purchasingPowerChart.destroy();
     }
 
-    const labels = this.allMerchantAnalytics.map((item) => item.merchant.name);
-    const purchasingPower = this.allMerchantAnalytics.map(
-      (item) => item.purchasingPowerAnalytics
-    );
+    const labels = this.allAnalytics.map((item) => item.merchant.name);
+    const data = this.allAnalytics.map((item) => item.purchasingPowerAnalytics.totalSpent);
 
-    const data = [];
 
-    // Iterate through each merchant's analytics
-    purchasingPower.forEach((merchantAnalytics) => {
-      // Iterate through each customer's analytics for the current merchant
-      Object.keys(merchantAnalytics).forEach((customerEmail) => {
-        const totalSpent = merchantAnalytics[customerEmail].totalSpent;
-        data.push(totalSpent);
-      });
-    });
 
     const chartConfig: ChartConfiguration = {
       type: 'bar',
@@ -252,7 +269,7 @@ export class MinistryAnalyticsComponent implements OnInit {
         labels,
         datasets: [
           {
-            label: 'Total Spent, Total Orders',
+            label: 'Total Spent',
             data,
             backgroundColor: 'rgba(75, 192, 192, 0.2)',
             borderColor: 'rgba(75, 192, 192, 1)',
