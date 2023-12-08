@@ -1,6 +1,4 @@
 import {Injectable} from '@angular/core';
-import {OrderService} from '../order/order.service';
-import {RegisterMerchantsService} from '../register-merchants.service';
 import {HttpClient} from "@angular/common/http";
 import {Observable} from "rxjs";
 
@@ -14,9 +12,6 @@ export class AnalyticsService {
 
   constructor(
     private http: HttpClient,
-
-    private orderService: OrderService,
-    private merchantsService: RegisterMerchantsService,
   ) {
   }
 
@@ -28,26 +23,16 @@ export class AnalyticsService {
     return this.http.get<any>(`${this.apiUrl}/purchasing-power-analytics/${merchantId}`);
   }
 
-
-
   getAllMerchantAnalytics(): Observable<any[]> {
     return this.http.get<any[]>(`${this.apiUrl}/all-merchant-analytics`);
   }
 
-  /*getAllMerchantAnalytics() {
-    const allMerchants = this.merchantsService.getMerchantsData();
-    const allAnalytics = allMerchants.map((merchant) => {
-      const productAnalytics = this.getMerchantProductAnalytics(merchant._id);
-      const purchasingPowerAnalytics = this.getMerchantPurchasingPowerAnalytics(
-        merchant._id
-      );
-      return {
-        merchant,
-        productAnalytics,
-        purchasingPowerAnalytics,
-      };
-    });
+  getProductAnalyticsAndStats(merchantId: string): Observable<any> {
+    return this.http.get<any>(`${this.apiUrl}/product-analytics-and-stats/${merchantId}`);
+  }
 
-    return allAnalytics;
-  }*/
+  getPurchasingPowerAnalyticsAndStats(merchantId: string): Observable<any> {
+    return this.http.get<any>(`${this.apiUrl}/purchasing-power-analytics-and-stats/${merchantId}`);
+  }
+
 }

@@ -1,19 +1,16 @@
-
-import { Component, OnInit } from '@angular/core';
-import { NgForm } from '@angular/forms';
+import {Component, OnInit} from '@angular/core';
+import {NgForm} from '@angular/forms';
 import {
   MerchantService,
   NotificationService,
-  RegisterMerchantsService,
 } from '../../../../shared/services';
-import { MerchantModel } from '../../../../shared/models';
 
 @Component({
   selector: 'app-register-merchant',
   templateUrl: './register-merchant.component.html',
   styleUrls: ['./register-merchant.component.css'],
 })
-export class RegisterMerchantComponent{
+export class RegisterMerchantComponent {
   public submitted = false;
   private merchantId: string;
   files: any;
@@ -21,7 +18,8 @@ export class RegisterMerchantComponent{
   constructor(
     private merchantService: MerchantService,
     private alert: NotificationService
-  ) {}
+  ) {
+  }
 
 
   onRegisterMerchant(form: NgForm) {
@@ -73,7 +71,7 @@ export class RegisterMerchantComponent{
       (error) => {
         console.error(error);
         this.alert.showErrorMessage(error.error?.message ||
-        'Error uploading documents.');
+          'Error uploading documents.');
       }
     );
   }

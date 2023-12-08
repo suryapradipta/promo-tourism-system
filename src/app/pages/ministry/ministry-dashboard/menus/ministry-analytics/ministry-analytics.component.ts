@@ -82,7 +82,7 @@ export class MinistryAnalyticsComponent implements OnInit {
 
       if (index !== -1) {
         this.analyticsService
-          .getMerchantProductAnalytics(this.selectedMerchantId)
+          .getProductAnalyticsAndStats(this.selectedMerchantId)
           .subscribe((data) => {
             this.allAnalytics[index].productAnalytics = data;
             setTimeout(() => this.selectedProductSoldChart(), 0);
@@ -101,6 +101,12 @@ export class MinistryAnalyticsComponent implements OnInit {
           );
 
       }
+    }
+    else {
+      this.analyticsService.getAllMerchantAnalytics().subscribe((data) => {
+        this.allAnalytics = data;
+        this.showProductSoldChart();
+      });
     }
   }
 

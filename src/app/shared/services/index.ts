@@ -1,6 +1,5 @@
 export {AuthService} from './auth/auth.service';
 export {NotificationService} from './notification/notification.service';
-export {RegisterMerchantsService} from './register-merchants.service';
 export {OrderService} from './order/order.service';
 export {PaymentService} from './payment/payment.service';
 export {ReviewService} from './review/review.service';

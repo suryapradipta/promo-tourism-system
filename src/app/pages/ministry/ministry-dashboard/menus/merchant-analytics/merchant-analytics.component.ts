@@ -19,6 +19,8 @@ export class MerchantAnalyticsComponent implements OnInit {
   customerPurchasingPower: CustomerPurchasingPower[];
   showProductSold = true;
   showPurchasingPower = false;
+  productSoldStats: any = {};
+  purchasingPowerStats: any = {};
 
   constructor(
     private analyticsService: AnalyticsService,
@@ -32,7 +34,7 @@ export class MerchantAnalyticsComponent implements OnInit {
     const response = await this.merchantService.getMerchantIdByEmail(email).toPromise()
 
     this.analyticsService
-      .getMerchantProductAnalytics(response.merchantId)
+      .getProductAnalyticsAndStats(response.merchantId)
       .subscribe((data) => {
         this.productAnalytics = data;
         this.productSoldChart()
@@ -53,6 +55,22 @@ export class MerchantAnalyticsComponent implements OnInit {
           // Handle error: Display a user-friendly error message
         }
       );
+
+    this.analyticsService
+      .getProductAnalyticsAndStats(response.merchantId)
+      .subscribe((data) => {
+        this.productAnalytics = data.productAnalytics;
+        this.productSoldStats = data.stats;
+        console.log(this.productSoldStats);
+      });
+
+    this.analyticsService
+      .getPurchasingPowerAnalyticsAndStats(response.merchantId)
+      .subscribe((data) => {
+        this.customerPurchasingPower = data.customerPurchasingPower;
+        this.purchasingPowerStats = data.stats;
+        console.log(this.purchasingPowerStats);
+      });
 
 
   }
