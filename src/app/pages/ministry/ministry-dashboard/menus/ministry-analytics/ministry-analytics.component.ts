@@ -1,8 +1,11 @@
 import {Component, OnInit} from '@angular/core';
 import {AnalyticsService} from '../../../../../shared/services';
-import {Chart} from 'chart.js';
+import {Chart, ChartDataset} from 'chart.js';
 import {ChartConfiguration} from 'chart.js/auto';
 import {CustomerPurchasingPower} from '../../../../../shared/models';
+import _default from "chart.js/dist/plugins/plugin.legend";
+import labels = _default.defaults.labels;
+import {data} from "autoprefixer";
 
 @Component({
   selector: 'app-ministry-analytics',
@@ -31,12 +34,14 @@ export class MinistryAnalyticsComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.analyticsService.getAllMerchantAnalyticsAndStats().subscribe((data) => {
-      this.allAnalytics = data.allAnalytics;
-      this.allMerchantStats = data.stats;
-      console.log(this.allMerchantStats);
-      this.showProductSoldChart();
-    });
+    this.analyticsService
+      .getAllMerchantAnalyticsAndStats()
+      .subscribe((data) => {
+        this.allAnalytics = data.allAnalytics;
+        this.allMerchantStats = data.stats;
+        console.log(this.allMerchantStats);
+        this.showProductSoldChart();
+      });
   }
 
   showProductSoldChart(): void {
@@ -99,25 +104,28 @@ export class MinistryAnalyticsComponent implements OnInit {
           .getPurchasingPowerAnalyticsAndStats(this.selectedMerchantId)
           .subscribe(
             (data) => {
-              this.allAnalytics[index].purchasingPowerAnalytics = data.customerPurchasingPower;
+              this.allAnalytics[index].purchasingPowerAnalytics =
+                data.customerPurchasingPower;
               this.purchasingPowerStats = data.stats;
 
-              console.log("PURCHASING POWER", this.allAnalytics[index].purchasingPowerAnalytics);
               setTimeout(() => this.selectedPurchasingPowerChart(), 0);
             },
             (error) => {
-              console.error('Error fetching purchasing power analytics:', error);
+              console.error(
+                'Error fetching purchasing power analytics:',
+                error
+              );
             }
           );
-
       }
-    }
-    else {
-      this.analyticsService.getAllMerchantAnalyticsAndStats().subscribe((data) => {
-        this.allAnalytics = data.allAnalytics;
-        this.allMerchantStats = data.stats;
-        this.showProductSoldChart();
-      });
+    } else {
+      this.analyticsService
+        .getAllMerchantAnalyticsAndStats()
+        .subscribe((data) => {
+          this.allAnalytics = data.allAnalytics;
+          this.allMerchantStats = data.stats;
+          this.showProductSoldChart();
+        });
     }
   }
 
@@ -137,6 +145,7 @@ export class MinistryAnalyticsComponent implements OnInit {
     const labels = productAnalytics.map((item) => item.name);
     const data = productAnalytics.map((item) => item.totalSold);
 
+
     const chartConfig: ChartConfiguration = {
       type: 'bar',
       data: {
@@ -145,21 +154,57 @@ export class MinistryAnalyticsComponent implements OnInit {
           {
             label: 'Total Sold',
             data,
-            backgroundColor: 'rgba(75, 192, 192, 0.2)',
-            borderColor: 'rgba(75, 192, 192, 1)',
+            backgroundColor: 'rgba(153, 102, 255, 0.2)',
+            hoverBackgroundColor: 'rgba(153, 102, 255, 0.4)',
+            borderColor: 'rgb(153, 102, 255)',
             borderWidth: 1,
+            barPercentage: 0.5,
+            borderRadius: 10,
           },
         ],
       },
       options: {
         indexAxis: 'y',
+        animation: {
+          duration: 1000,
+          easing: 'easeInOutQuart',
+        },
+        plugins: {
+          title: {
+            display: true,
+            text: 'Products Sold Analytics',
+            font: {
+              size: 16,
+            },
+          },
+        },
+        interaction: {
+          mode: 'index',
+          intersect: false,
+        },
+        aspectRatio: 1.8,
         scales: {
           y: {
             beginAtZero: true,
+            title: {
+              display: true,
+              text: 'Products Name',
+            },
+          },
+          x: {
+            beginAtZero: true,
+            title: {
+              display: true,
+              text: 'Number of Product Sold',
+            },
+            ticks: {
+              stepSize: 1,
+            },
+
           },
         },
       },
-    };
+    }
     this.productSoldChart = new Chart(context, chartConfig);
   }
 
@@ -175,11 +220,15 @@ export class MinistryAnalyticsComponent implements OnInit {
 
     const productAnalytics: CustomerPurchasingPower[] = this.allAnalytics.find(
       (item) => item.merchant._id === this.selectedMerchantId
-        ).purchasingPowerAnalytics;
+    ).purchasingPowerAnalytics;
 
     const labels: string[] = productAnalytics.map((customer) => customer.email);
-    const data: number[] = Object.values(productAnalytics).map(
+    const totalSpent: number[] = Object.values(productAnalytics).map(
       (customer: CustomerPurchasingPower) => customer.totalSpent
+    );
+
+    const totalOrders: number[] = Object.values(productAnalytics).map(
+      (customer: CustomerPurchasingPower) => customer.totalOrders
     );
 
     const chartConfig: ChartConfiguration = {
@@ -189,16 +238,76 @@ export class MinistryAnalyticsComponent implements OnInit {
         datasets: [
           {
             label: 'Total Spent',
-            data,
-            backgroundColor: 'rgba(75, 192, 192, 0.2)',
-            borderColor: 'rgba(75, 192, 192, 1)',
+            data: totalSpent,
+            backgroundColor: 'rgba(153, 102, 255, 0.2)',
+            hoverBackgroundColor: 'rgba(153, 102, 255, 0.4)',
+            borderColor: 'rgb(153, 102, 255)',
             borderWidth: 1,
+            barPercentage: 0.5,
+            borderRadius: 10,
           },
+          {
+            label: 'Total Orders',
+            data: totalOrders ,
+            backgroundColor: 'rgba(54, 162, 235, 0.2)',
+            hoverBackgroundColor: 'rgba(54, 162, 235, 0.4)',
+            borderColor: 'rgb(54, 162, 235)',
+            borderWidth: 1,
+            barPercentage: 0.5,
+            borderRadius: 10,
+            yAxisID: 'secondary',
+          }
         ],
       },
       options: {
-        indexAxis: 'y',
-        scales: { y: { beginAtZero: true } },
+        scales: {
+          x: {
+            beginAtZero: true,
+            title: {
+              display: true,
+              text: 'Customers Email',
+            },
+          },
+          y: {
+            beginAtZero: true,
+            title: {
+              display: true,
+              text: 'Amount Spent ($)',
+            },
+            ticks: {
+              stepSize: 2000,
+            },
+          },
+          secondary: {
+            title: {
+              display: true,
+              text: 'Number of Orders',
+            },
+            beginAtZero: true,
+            position: 'right',
+            ticks: {
+              stepSize: 1,
+            },
+          },
+        },
+        animation: {
+          duration: 1000,
+          easing: 'easeInOutQuart',
+        },
+        plugins: {
+          title: {
+            display: true,
+            text: 'Customer Purchasing Power Analytics',
+            font: {
+              size: 16,
+            },
+          },
+        },
+        interaction: {
+          mode: 'index',
+          intersect: false,
+        },
+        aspectRatio: 1.8,
       },
     };
     this.purchasingPowerChart = new Chart(context, chartConfig);
@@ -206,21 +315,106 @@ export class MinistryAnalyticsComponent implements OnInit {
 
 
 
+  private purchasingPowerAnalytics() {
+    const canvas: HTMLCanvasElement = <HTMLCanvasElement>(
+      document.getElementById('allPurchasingPowerChart')
+    );
+    const context: CanvasRenderingContext2D = canvas.getContext('2d');
 
+    if (this.purchasingPowerChart) {
+      this.purchasingPowerChart.destroy();
+    }
 
+    const labels = this.allAnalytics.map((item) => item.merchant.name);
+    const totalSpent = this.allAnalytics.map(
+      (item) => item.purchasingPowerAnalytics.totalSpent
+    );
+    const totalOrders = this.allAnalytics.map(
+      (item) => item.purchasingPowerAnalytics.totalOrders
+    );
 
+    const chartConfig: ChartConfiguration = {
+      type: 'bar',
+      data: {
+        labels,
+        datasets: [
+          {
+            label: 'Total Spent',
+            data: totalSpent,
+            backgroundColor: 'rgba(153, 102, 255, 0.2)',
+            hoverBackgroundColor: 'rgba(153, 102, 255, 0.4)',
+            borderColor: 'rgb(153, 102, 255)',
+            borderWidth: 1,
+            barPercentage: 0.5,
+            borderRadius: 10,
+          },
+          {
+            label: 'Total Orders',
+            data: totalOrders ,
+            backgroundColor: 'rgba(54, 162, 235, 0.2)',
+            hoverBackgroundColor: 'rgba(54, 162, 235, 0.4)',
+            borderColor: 'rgb(54, 162, 235)',
+            borderWidth: 1,
+            barPercentage: 0.5,
+            borderRadius: 10,
+            yAxisID: 'secondary',
+          }
+        ],
+      },
+      options: {
+        scales: {
+          x: {
+            beginAtZero: true,
+            title: {
+              display: true,
+              text: 'Products Name',
+            },
+          },
+          y: {
+            beginAtZero: true,
+            title: {
+              display: true,
+              text: 'Amount Spent ($)',
+            },
+            ticks: {
+              stepSize: 2000,
+            },
+          },
+          secondary: {
+            title: {
+              display: true,
+              text: 'Number of Orders',
+            },
+            beginAtZero: true,
+            position: 'right',
+            ticks: {
+              stepSize: 1,
+            },
+          },
+        },
+        animation: {
+          duration: 1000,
+          easing: 'easeInOutQuart',
+        },
+        plugins: {
+          title: {
+            display: true,
+            text: 'Customer Purchasing Power Analytics',
+            font: {
+              size: 16,
+            },
+          },
+        },
+        interaction: {
+          mode: 'index',
+          intersect: false,
+        },
+        aspectRatio: 1.8,
+      },
+    };
 
-
-
-
-
-
-
-
-
-
-
-
+    this.purchasingPowerChart = new Chart(context, chartConfig);
+  }
 
 
 
@@ -234,7 +428,9 @@ export class MinistryAnalyticsComponent implements OnInit {
       this.productSoldChart.destroy();
     }
     const labels = this.allAnalytics.map((item) => item.merchant.name);
-    const data = this.allAnalytics.map((item) => item.productAnalytics.totalSold);
+    const data = this.allAnalytics.map(
+      (item) => item.productAnalytics.totalSold
+    );
     const chartConfig: ChartConfiguration = {
       type: 'bar',
       data: {
@@ -243,85 +439,58 @@ export class MinistryAnalyticsComponent implements OnInit {
           {
             label: 'Total Sold',
             data,
-            backgroundColor: 'rgba(75, 192, 192, 0.2)',
-            borderColor: 'rgba(75, 192, 192, 1)',
+            backgroundColor: 'rgba(153, 102, 255, 0.2)',
+            hoverBackgroundColor: 'rgba(153, 102, 255, 0.4)',
+            borderColor: 'rgb(153, 102, 255)',
             borderWidth: 1,
-          },
+            barPercentage: 0.5,
+            borderRadius: 10,
+          }
         ],
       },
       options: {
-        responsive: true,
+        animation: {
+          duration: 1000,
+          easing: 'easeInOutQuart',
+        },
+        plugins: {
+          title: {
+            display: true,
+            text: 'Products Sold Analytics',
+            font: {
+              size: 16,
+            },
+          },
+        },
+        interaction: {
+          mode: 'index',
+          intersect: false,
+        },
+        aspectRatio: 1.8,
         scales: {
           x: {
             beginAtZero: true,
+            title: {
+              display: true,
+              text: 'Merchants Name',
+            },
           },
           y: {
             beginAtZero: true,
+            title: {
+              display: true,
+              text: 'Number of Product Sold',
+            },
+            ticks: {
+              stepSize: 1,
+            },
+
           },
         },
       },
     };
     this.productSoldChart = new Chart(context, chartConfig);
   }
-
-  private purchasingPowerAnalytics() {
-    const canvas: HTMLCanvasElement = <HTMLCanvasElement>(
-      document.getElementById('allPurchasingPowerChart')
-    );
-    const context: CanvasRenderingContext2D = canvas.getContext('2d');
-
-    if (this.purchasingPowerChart) {
-      this.purchasingPowerChart.destroy();
-    }
-
-    const labels = this.allAnalytics.map((item) => item.merchant.name);
-    const data = this.allAnalytics.map((item) => item.purchasingPowerAnalytics.totalSpent);
-
-
-    let delayed;
-    const chartConfig: ChartConfiguration = {
-      type: 'bar',
-      data: {
-        labels,
-        datasets: [
-          {
-            label: 'Total Spent',
-            data,
-            backgroundColor: 'rgba(75, 192, 192, 0.2)',
-            borderColor: 'rgba(75, 192, 192, 1)',
-            borderWidth: 1,
-          },
-        ],
-      },
-      options: {
-        animation: {
-          onComplete: () => {
-            delayed = true;
-          },
-          delay: (context) => {
-            let delay = 0;
-            if (context.type === 'data' && context.mode === 'default' && !delayed) {
-              delay = context.dataIndex * 300 + context.datasetIndex * 100;
-            }
-            return delay;
-          },
-        },
-        scales: {
-          y: {
-            beginAtZero: true,
-          },
-        },
-        plugins: {
-          legend: {
-            position: 'top',
-          },
-          title: {
-            display: true,
-            text: 'Customer Purchasing Power Analytics'
-          }
-        }
-      },
-    };
-    this.purchasingPowerChart = new Chart(context, chartConfig);
-  }
 }
+
+
