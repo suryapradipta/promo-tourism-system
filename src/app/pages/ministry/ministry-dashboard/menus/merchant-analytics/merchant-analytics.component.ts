@@ -1,11 +1,12 @@
 import {Component, OnInit} from '@angular/core';
 import {
   AnalyticsService,
-  AuthService,
+  AuthService, CreateChartService,
   MerchantService
 } from '../../../../../shared/services';
 import {Chart, registerables} from 'chart.js';
 import {CustomerPurchasingPower} from "../../../../../shared/models";
+import {ChartConfiguration} from "chart.js/auto";
 
 Chart.register(...registerables);
 
@@ -22,10 +23,12 @@ export class MerchantAnalyticsComponent implements OnInit {
   productSoldStats: any = {};
   purchasingPowerStats: any = {};
 
+
   constructor(
     private analyticsService: AnalyticsService,
     private authService: AuthService,
-    private merchantService: MerchantService
+    private merchantService: MerchantService,
+    private createChartService: CreateChartService
   ) {
   }
 
@@ -38,28 +41,28 @@ export class MerchantAnalyticsComponent implements OnInit {
       .subscribe((data) => {
         this.productAnalytics = data.productAnalytics;
         this.productSoldStats = data.stats;
-        setTimeout(() => this.productSoldChart(), 0);
-
-
-        console.log(this.productSoldStats);
-      });
+        this.productSoldChart();
+      },
+        (error) => {
+          console.error(
+            'Error  :',
+            error
+          );
+        });
 
     this.analyticsService
       .getPurchasingPowerAnalyticsAndStats(response.merchantId)
       .subscribe((data) => {
         this.customerPurchasingPower = data.customerPurchasingPower;
         this.purchasingPowerStats = data.stats;
-        setTimeout(() => this.purchasingPowerChart(), 0);
-
-
-        console.log(this.purchasingPowerStats);
-      });
-
-
-  }
-
-  ngAfterViewInit(): void {
-    this.showProductSoldChart();
+        this.purchasingPowerChart();
+      },
+        (error) => {
+          console.error(
+            'Error :',
+            error
+          );
+        });
   }
 
   showProductSoldChart(): void {
@@ -74,58 +77,51 @@ export class MerchantAnalyticsComponent implements OnInit {
     setTimeout(() => this.purchasingPowerChart(), 0);
   }
 
-  private productSoldChart() {
-    const labels = this.productAnalytics.map((item) => item.name);
-    const data = this.productAnalytics.map((item) => item.totalSold);
+  private productSoldChart = (): void => {
+    const labels: any[] = this.productAnalytics.map((item) => item.name);
+    const data: number[] = this.productAnalytics.map((item) => item.totalSold);
 
-    const myChart = new Chart('productSoldChart', {
+    const chartConfig: ChartConfiguration = {
       type: 'bar',
-      data: {
-        labels,
-        datasets: [
-          {
-            label: 'Total Sold',
-            data,
-            backgroundColor: 'rgba(75, 192, 192, 0.2)',
-            borderColor: 'rgba(75, 192, 192, 1)',
-            borderWidth: 1,
-          },
-        ],
-      },
-      options: {
-        indexAxis: 'y',
-        scales: {
-          y: {beginAtZero: true},
-        },
-      },
-    });
-  }
+      data: this.createChartService.createChartData(labels, data, 'Total Sold'),
+      options: this.createChartService.createChartOptions(
+        'Products Sold Analytics',
+        'Number of Product Sold',
+        'Products Name',
+        'y'
+      ),
+    };
+    this.createChartService.createChart('productSoldChart', chartConfig);
+  };
 
-  private purchasingPowerChart() {
-    const labels = this.customerPurchasingPower.map((customer) => customer.email);
-    const data = Object.values(this.customerPurchasingPower).map(
-      (customer) => [customer.totalSpent, customer.totalOrders]
+  private purchasingPowerChart = (): void => {
+    const labels: string[] = this.customerPurchasingPower.map((customer) => customer.email);
+    const totalSpent: number[] = Object.values(this.customerPurchasingPower).map(
+      (customer: CustomerPurchasingPower) => customer.totalSpent
+    );
+    const totalOrders: number[] = Object.values(this.customerPurchasingPower).map(
+      (customer: CustomerPurchasingPower) => customer.totalOrders
     );
 
-    const myChart = new Chart('purchasingPowerChart', {
+
+    const chartConfig: ChartConfiguration = {
       type: 'bar',
-      data: {
+      data: this.createChartService.createMultiChartData(
         labels,
-        datasets: [
-          {
-            label: 'Total Spent, Total Orders',
-            data,
-            backgroundColor: 'rgba(75, 192, 192, 0.2)',
-            borderColor: 'rgba(75, 192, 192, 1)',
-            borderWidth: 1,
-          },
-        ],
-      },
-      options: {
-        scales: {
-          y: {beginAtZero: true},
-        },
-      },
-    });
-  }
+        'Total Spent',
+        totalSpent,
+        'Total Orders',
+        totalOrders,
+        'secondary'
+      ),
+      options: this.createChartService.createMultiChartOptions(
+        'Customers Email',
+        'Amount Spent ($)',
+        'Customer Purchasing Power Analytics',
+        'Number of Orders',
+      )
+    };
+    this.createChartService.createChart('purchasingPowerChart', chartConfig);
+
+  };
 }

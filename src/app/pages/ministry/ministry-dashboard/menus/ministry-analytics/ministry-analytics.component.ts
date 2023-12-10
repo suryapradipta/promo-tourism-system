@@ -1,11 +1,10 @@
 import {Component, OnInit} from '@angular/core';
-import {AnalyticsService} from '../../../../../shared/services';
-import {Chart, ChartDataset} from 'chart.js';
+import {
+  AnalyticsService,
+  CreateChartService
+} from '../../../../../shared/services';
 import {ChartConfiguration} from 'chart.js/auto';
 import {CustomerPurchasingPower} from '../../../../../shared/models';
-import _default from "chart.js/dist/plugins/plugin.legend";
-import labels = _default.defaults.labels;
-import {data} from "autoprefixer";
 
 @Component({
   selector: 'app-ministry-analytics',
@@ -27,10 +26,9 @@ export class MinistryAnalyticsComponent implements OnInit {
   isSelectedPurchasingPower: boolean = false;
 
   // Chart instances for Product Sold and Purchasing Power
-  productSoldChart: Chart;
-  purchasingPowerChart: Chart;
 
-  constructor(private analyticsService: AnalyticsService) {
+  constructor(private analyticsService: AnalyticsService,
+              private createChartService: CreateChartService) {
   }
 
   ngOnInit(): void {
@@ -39,7 +37,6 @@ export class MinistryAnalyticsComponent implements OnInit {
       .subscribe((data) => {
         this.allAnalytics = data.allAnalytics;
         this.allMerchantStats = data.stats;
-        console.log(this.allMerchantStats);
         this.showProductSoldChart();
       });
   }
@@ -129,95 +126,29 @@ export class MinistryAnalyticsComponent implements OnInit {
     }
   }
 
-  private selectedProductSoldChart() {
-    const canvas: HTMLCanvasElement = <HTMLCanvasElement>(
-      document.getElementById('selectedProductSoldChart')
-    );
-    const context: CanvasRenderingContext2D = canvas.getContext('2d');
 
-    if (this.productSoldChart) {
-      this.productSoldChart.destroy();
-    }
-
+  private selectedProductSoldChart(): void {
     const productAnalytics = this.allAnalytics.find(
       (item) => item.merchant._id === this.selectedMerchantId
     ).productAnalytics;
     const labels = productAnalytics.map((item) => item.name);
     const data = productAnalytics.map((item) => item.totalSold);
 
-
     const chartConfig: ChartConfiguration = {
       type: 'bar',
-      data: {
-        labels,
-        datasets: [
-          {
-            label: 'Total Sold',
-            data,
-            backgroundColor: 'rgba(153, 102, 255, 0.2)',
-            hoverBackgroundColor: 'rgba(153, 102, 255, 0.4)',
-            borderColor: 'rgb(153, 102, 255)',
-            borderWidth: 1,
-            barPercentage: 0.5,
-            borderRadius: 10,
-          },
-        ],
-      },
-      options: {
-        indexAxis: 'y',
-        animation: {
-          duration: 1000,
-          easing: 'easeInOutQuart',
-        },
-        plugins: {
-          title: {
-            display: true,
-            text: 'Products Sold Analytics',
-            font: {
-              size: 16,
-            },
-          },
-        },
-        interaction: {
-          mode: 'index',
-          intersect: false,
-        },
-        aspectRatio: 1.8,
-        scales: {
-          y: {
-            beginAtZero: true,
-            title: {
-              display: true,
-              text: 'Products Name',
-            },
-          },
-          x: {
-            beginAtZero: true,
-            title: {
-              display: true,
-              text: 'Number of Product Sold',
-            },
-            ticks: {
-              stepSize: 1,
-            },
-
-          },
-        },
-      },
+      data: this.createChartService.createChartData(labels, data, 'Total Sold'),
+      options: this.createChartService.createChartOptions(
+        'Products Sold Analytics',
+        'Number of Product Sold',
+        'Products Name',
+        'y'
+      ),
     }
-    this.productSoldChart = new Chart(context, chartConfig);
+
+    this.createChartService.createChart('selectedProductSoldChart', chartConfig);
   }
 
   private selectedPurchasingPowerChart() {
-    const canvas: HTMLCanvasElement = <HTMLCanvasElement>(
-      document.getElementById('selectedPurchasingPowerChart')
-    );
-    const context: CanvasRenderingContext2D = canvas?.getContext('2d');
-
-    if (this.purchasingPowerChart) {
-      this.purchasingPowerChart.destroy();
-    }
-
     const productAnalytics: CustomerPurchasingPower[] = this.allAnalytics.find(
       (item) => item.merchant._id === this.selectedMerchantId
     ).purchasingPowerAnalytics;
@@ -226,105 +157,33 @@ export class MinistryAnalyticsComponent implements OnInit {
     const totalSpent: number[] = Object.values(productAnalytics).map(
       (customer: CustomerPurchasingPower) => customer.totalSpent
     );
-
     const totalOrders: number[] = Object.values(productAnalytics).map(
       (customer: CustomerPurchasingPower) => customer.totalOrders
     );
 
     const chartConfig: ChartConfiguration = {
       type: 'bar',
-      data: {
+      data: this.createChartService.createMultiChartData(
         labels,
-        datasets: [
-          {
-            label: 'Total Spent',
-            data: totalSpent,
-            backgroundColor: 'rgba(153, 102, 255, 0.2)',
-            hoverBackgroundColor: 'rgba(153, 102, 255, 0.4)',
-            borderColor: 'rgb(153, 102, 255)',
-            borderWidth: 1,
-            barPercentage: 0.5,
-            borderRadius: 10,
-          },
-          {
-            label: 'Total Orders',
-            data: totalOrders ,
-            backgroundColor: 'rgba(54, 162, 235, 0.2)',
-            hoverBackgroundColor: 'rgba(54, 162, 235, 0.4)',
-            borderColor: 'rgb(54, 162, 235)',
-            borderWidth: 1,
-            barPercentage: 0.5,
-            borderRadius: 10,
-            yAxisID: 'secondary',
-          }
-        ],
-      },
-      options: {
-        scales: {
-          x: {
-            beginAtZero: true,
-            title: {
-              display: true,
-              text: 'Customers Email',
-            },
-          },
-          y: {
-            beginAtZero: true,
-            title: {
-              display: true,
-              text: 'Amount Spent ($)',
-            },
-            ticks: {
-              stepSize: 2000,
-            },
-          },
-          secondary: {
-            title: {
-              display: true,
-              text: 'Number of Orders',
-            },
-            beginAtZero: true,
-            position: 'right',
-            ticks: {
-              stepSize: 1,
-            },
-          },
-        },
-        animation: {
-          duration: 1000,
-          easing: 'easeInOutQuart',
-        },
-        plugins: {
-          title: {
-            display: true,
-            text: 'Customer Purchasing Power Analytics',
-            font: {
-              size: 16,
-            },
-          },
-        },
-        interaction: {
-          mode: 'index',
-          intersect: false,
-        },
-        aspectRatio: 1.8,
-      },
+        'Total Spent',
+        totalSpent,
+        'Total Orders',
+        totalOrders,
+        'secondary'
+      ),
+
+      options: this.createChartService.createMultiChartOptions(
+        'Customers Email',
+        'Amount Spent ($)',
+        'Customer Purchasing Power Analytics',
+        'Number of Orders',
+      )
     };
-    this.purchasingPowerChart = new Chart(context, chartConfig);
+    this.createChartService.createChart('selectedPurchasingPowerChart', chartConfig);
   }
 
 
-
   private purchasingPowerAnalytics() {
-    const canvas: HTMLCanvasElement = <HTMLCanvasElement>(
-      document.getElementById('allPurchasingPowerChart')
-    );
-    const context: CanvasRenderingContext2D = canvas.getContext('2d');
-
-    if (this.purchasingPowerChart) {
-      this.purchasingPowerChart.destroy();
-    }
-
     const labels = this.allAnalytics.map((item) => item.merchant.name);
     const totalSpent = this.allAnalytics.map(
       (item) => item.purchasingPowerAnalytics.totalSpent
@@ -335,161 +194,37 @@ export class MinistryAnalyticsComponent implements OnInit {
 
     const chartConfig: ChartConfiguration = {
       type: 'bar',
-      data: {
+      data: this.createChartService.createMultiChartData(
         labels,
-        datasets: [
-          {
-            label: 'Total Spent',
-            data: totalSpent,
-            backgroundColor: 'rgba(153, 102, 255, 0.2)',
-            hoverBackgroundColor: 'rgba(153, 102, 255, 0.4)',
-            borderColor: 'rgb(153, 102, 255)',
-            borderWidth: 1,
-            barPercentage: 0.5,
-            borderRadius: 10,
-          },
-          {
-            label: 'Total Orders',
-            data: totalOrders ,
-            backgroundColor: 'rgba(54, 162, 235, 0.2)',
-            hoverBackgroundColor: 'rgba(54, 162, 235, 0.4)',
-            borderColor: 'rgb(54, 162, 235)',
-            borderWidth: 1,
-            barPercentage: 0.5,
-            borderRadius: 10,
-            yAxisID: 'secondary',
-          }
-        ],
-      },
-      options: {
-        scales: {
-          x: {
-            beginAtZero: true,
-            title: {
-              display: true,
-              text: 'Products Name',
-            },
-          },
-          y: {
-            beginAtZero: true,
-            title: {
-              display: true,
-              text: 'Amount Spent ($)',
-            },
-            ticks: {
-              stepSize: 2000,
-            },
-          },
-          secondary: {
-            title: {
-              display: true,
-              text: 'Number of Orders',
-            },
-            beginAtZero: true,
-            position: 'right',
-            ticks: {
-              stepSize: 1,
-            },
-          },
-        },
-        animation: {
-          duration: 1000,
-          easing: 'easeInOutQuart',
-        },
-        plugins: {
-          title: {
-            display: true,
-            text: 'Customer Purchasing Power Analytics',
-            font: {
-              size: 16,
-            },
-          },
-        },
-        interaction: {
-          mode: 'index',
-          intersect: false,
-        },
-        aspectRatio: 1.8,
-      },
+        'Total Spent',
+        totalSpent,
+        'Total Orders',
+        totalOrders,
+        'secondary',
+      ),
+      options: this.createChartService.createMultiChartOptions(
+        'Products Name',
+        'Amount Spent ($)',
+        'Customer Purchasing Power Analytics',
+        'Number of Orders',
+      )
     };
-
-    this.purchasingPowerChart = new Chart(context, chartConfig);
+    this.createChartService.createChart('allPurchasingPowerChart', chartConfig);
   }
 
 
-
   private productSoldAnalytics() {
-    const canvas: HTMLCanvasElement = <HTMLCanvasElement>(
-      document.getElementById('allProductSoldChart')
-    );
-    const context: CanvasRenderingContext2D = canvas.getContext('2d');
-
-    if (this.productSoldChart) {
-      this.productSoldChart.destroy();
-    }
     const labels = this.allAnalytics.map((item) => item.merchant.name);
     const data = this.allAnalytics.map(
       (item) => item.productAnalytics.totalSold
     );
     const chartConfig: ChartConfiguration = {
       type: 'bar',
-      data: {
-        labels,
-        datasets: [
-          {
-            label: 'Total Sold',
-            data,
-            backgroundColor: 'rgba(153, 102, 255, 0.2)',
-            hoverBackgroundColor: 'rgba(153, 102, 255, 0.4)',
-            borderColor: 'rgb(153, 102, 255)',
-            borderWidth: 1,
-            barPercentage: 0.5,
-            borderRadius: 10,
-          }
-        ],
-      },
-      options: {
-        animation: {
-          duration: 1000,
-          easing: 'easeInOutQuart',
-        },
-        plugins: {
-          title: {
-            display: true,
-            text: 'Products Sold Analytics',
-            font: {
-              size: 16,
-            },
-          },
-        },
-        interaction: {
-          mode: 'index',
-          intersect: false,
-        },
-        aspectRatio: 1.8,
-        scales: {
-          x: {
-            beginAtZero: true,
-            title: {
-              display: true,
-              text: 'Merchants Name',
-            },
-          },
-          y: {
-            beginAtZero: true,
-            title: {
-              display: true,
-              text: 'Number of Product Sold',
-            },
-            ticks: {
-              stepSize: 1,
-            },
-
-          },
-        },
-      },
+      data: this.createChartService.createChartData(labels, data, 'Total Sold'),
+      options: this.createChartService.createChartOptions('Products Sold Analytics',
+        'Merchants Name', 'Number of Product Sold')
     };
-    this.productSoldChart = new Chart(context, chartConfig);
+    this.createChartService.createChart('allProductSoldChart', chartConfig);
   }
 }
 
