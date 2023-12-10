@@ -13,6 +13,9 @@ export class MinistryAnalyticsComponent implements OnInit {
   allAnalytics: any;
   //all analytics
   selectedMerchantId: string | null = null;
+  allMerchantStats: any = {};
+  productSoldStats: any = {};
+  purchasingPowerStats: any = {};
 
   // Flags to control the visibility of different charts
   isAllProductSold: boolean = true;
@@ -28,8 +31,10 @@ export class MinistryAnalyticsComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.analyticsService.getAllMerchantAnalytics().subscribe((data) => {
-      this.allAnalytics = data;
+    this.analyticsService.getAllMerchantAnalyticsAndStats().subscribe((data) => {
+      this.allAnalytics = data.allAnalytics;
+      this.allMerchantStats = data.stats;
+      console.log(this.allMerchantStats);
       this.showProductSoldChart();
     });
   }
@@ -84,15 +89,20 @@ export class MinistryAnalyticsComponent implements OnInit {
         this.analyticsService
           .getProductAnalyticsAndStats(this.selectedMerchantId)
           .subscribe((data) => {
-            this.allAnalytics[index].productAnalytics = data;
+            this.allAnalytics[index].productAnalytics = data.productAnalytics;
+            this.productSoldStats = data.stats;
+
             setTimeout(() => this.selectedProductSoldChart(), 0);
           });
 
         this.analyticsService
-          .getMerchantPurchasingPowerAnalytics(this.selectedMerchantId)
+          .getPurchasingPowerAnalyticsAndStats(this.selectedMerchantId)
           .subscribe(
-            (data: CustomerPurchasingPower[]) => {
-              this.allAnalytics[index].purchasingPowerAnalytics = data;
+            (data) => {
+              this.allAnalytics[index].purchasingPowerAnalytics = data.customerPurchasingPower;
+              this.purchasingPowerStats = data.stats;
+
+              console.log("PURCHASING POWER", this.allAnalytics[index].purchasingPowerAnalytics);
               setTimeout(() => this.selectedPurchasingPowerChart(), 0);
             },
             (error) => {
@@ -103,8 +113,9 @@ export class MinistryAnalyticsComponent implements OnInit {
       }
     }
     else {
-      this.analyticsService.getAllMerchantAnalytics().subscribe((data) => {
-        this.allAnalytics = data;
+      this.analyticsService.getAllMerchantAnalyticsAndStats().subscribe((data) => {
+        this.allAnalytics = data.allAnalytics;
+        this.allMerchantStats = data.stats;
         this.showProductSoldChart();
       });
     }
@@ -164,12 +175,11 @@ export class MinistryAnalyticsComponent implements OnInit {
 
     const productAnalytics: CustomerPurchasingPower[] = this.allAnalytics.find(
       (item) => item.merchant._id === this.selectedMerchantId
-    ).purchasingPowerAnalytics;
-    console.log('productAnalytics', productAnalytics);
+        ).purchasingPowerAnalytics;
 
-    const labels = productAnalytics.map((customer) => customer.email);
+    const labels: string[] = productAnalytics.map((customer) => customer.email);
     const data: number[] = Object.values(productAnalytics).map(
-      (customer) => customer.totalSpent
+      (customer: CustomerPurchasingPower) => customer.totalSpent
     );
 
     const chartConfig: ChartConfiguration = {
@@ -268,7 +278,7 @@ export class MinistryAnalyticsComponent implements OnInit {
     const data = this.allAnalytics.map((item) => item.purchasingPowerAnalytics.totalSpent);
 
 
-
+    let delayed;
     const chartConfig: ChartConfiguration = {
       type: 'bar',
       data: {
@@ -284,11 +294,32 @@ export class MinistryAnalyticsComponent implements OnInit {
         ],
       },
       options: {
+        animation: {
+          onComplete: () => {
+            delayed = true;
+          },
+          delay: (context) => {
+            let delay = 0;
+            if (context.type === 'data' && context.mode === 'default' && !delayed) {
+              delay = context.dataIndex * 300 + context.datasetIndex * 100;
+            }
+            return delay;
+          },
+        },
         scales: {
           y: {
             beginAtZero: true,
           },
         },
+        plugins: {
+          legend: {
+            position: 'top',
+          },
+          title: {
+            display: true,
+            text: 'Customer Purchasing Power Analytics'
+          }
+        }
       },
     };
     this.purchasingPowerChart = new Chart(context, chartConfig);

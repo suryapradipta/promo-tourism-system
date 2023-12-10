@@ -14,6 +14,7 @@ const orderRoutes = require('./src/routes/order.route');
 const reviewRoutes = require('./src/routes/review.route');
 const analyticsRoutes = require('./src/routes/analytics.route');
 const Product = require("./src/models/product.model");
+const Order = require("./src/models/order.model");
 
 
 app.use(bodyParser.json());

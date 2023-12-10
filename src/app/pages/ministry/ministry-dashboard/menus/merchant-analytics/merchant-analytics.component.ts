@@ -36,31 +36,11 @@ export class MerchantAnalyticsComponent implements OnInit {
     this.analyticsService
       .getProductAnalyticsAndStats(response.merchantId)
       .subscribe((data) => {
-        this.productAnalytics = data;
-        this.productSoldChart()
-      });
-
-
-    this.analyticsService
-      .getMerchantPurchasingPowerAnalytics(response.merchantId)
-      .subscribe(
-        (data: CustomerPurchasingPower[]) => {
-          this.customerPurchasingPower = data;
-          console.log(this.customerPurchasingPower);
-          this.purchasingPowerChart()
-
-        },
-        (error) => {
-          console.error('Error fetching purchasing power analytics:', error);
-          // Handle error: Display a user-friendly error message
-        }
-      );
-
-    this.analyticsService
-      .getProductAnalyticsAndStats(response.merchantId)
-      .subscribe((data) => {
         this.productAnalytics = data.productAnalytics;
         this.productSoldStats = data.stats;
+        setTimeout(() => this.productSoldChart(), 0);
+
+
         console.log(this.productSoldStats);
       });
 
@@ -69,6 +49,9 @@ export class MerchantAnalyticsComponent implements OnInit {
       .subscribe((data) => {
         this.customerPurchasingPower = data.customerPurchasingPower;
         this.purchasingPowerStats = data.stats;
+        setTimeout(() => this.purchasingPowerChart(), 0);
+
+
         console.log(this.purchasingPowerStats);
       });
 

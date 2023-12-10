@@ -10,22 +10,7 @@ export class AnalyticsService {
   private apiUrl = 'http://localhost:3000/api/analytics';
 
 
-  constructor(
-    private http: HttpClient,
-  ) {
-  }
-
-  getMerchantProductAnalytics(merchantId: string): Observable<any[]> {
-    return this.http.get<any[]>(`${this.apiUrl}/product-analytics/${merchantId}`);
-  }
-
-  getMerchantPurchasingPowerAnalytics(merchantId: string): Observable<any> {
-    return this.http.get<any>(`${this.apiUrl}/purchasing-power-analytics/${merchantId}`);
-  }
-
-  getAllMerchantAnalytics(): Observable<any[]> {
-    return this.http.get<any[]>(`${this.apiUrl}/all-merchant-analytics`);
-  }
+  constructor(private http: HttpClient) {}
 
   getProductAnalyticsAndStats(merchantId: string): Observable<any> {
     return this.http.get<any>(`${this.apiUrl}/product-analytics-and-stats/${merchantId}`);
@@ -33,6 +18,10 @@ export class AnalyticsService {
 
   getPurchasingPowerAnalyticsAndStats(merchantId: string): Observable<any> {
     return this.http.get<any>(`${this.apiUrl}/purchasing-power-analytics-and-stats/${merchantId}`);
+  }
+
+  getAllMerchantAnalyticsAndStats(): Observable<any> {
+    return this.http.get<any>(`${this.apiUrl}/all-merchant-analytics-and-stats`);
   }
 
 }
