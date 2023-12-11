@@ -3,7 +3,7 @@ import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 import {Router} from '@angular/router';
 
 import {
-  AuthService,
+  AuthService, LoadingService,
   NotificationService
 } from '../../../../../shared/services';
 import {AuthModel} from '../../../../../shared/models';
@@ -22,7 +22,8 @@ export class SignInComponent implements OnInit {
     private formBuilder: FormBuilder,
     private router: Router,
     private authService: AuthService,
-    private alert: NotificationService
+    private alert: NotificationService,
+    private loading: LoadingService
   ) {
   }
 
@@ -41,6 +42,7 @@ export class SignInComponent implements OnInit {
   onLogin(): void {
     if (this.loginForm.valid) {
       const {email, password} = this.loginForm.value;
+      this.loading.show();
       this.authService.login(email, password).subscribe(
         (response: { token: string }) => {
           localStorage.setItem('token', response.token);
@@ -55,6 +57,7 @@ export class SignInComponent implements OnInit {
           } else {
             this.alert.showErrorMessage(error.error?.message || 'An unexpected error occurred. Please try again.');
           }
+          this.loading.hide();
         });
     }
   }
@@ -62,6 +65,7 @@ export class SignInComponent implements OnInit {
   private getCurrentUser(): void {
     this.authService.getCurrentUser().subscribe((currentUser) => {
         localStorage.setItem('currentUser', JSON.stringify(currentUser));
+      this.loading.hide();
         this.handleLoginSuccess(currentUser);
       }, (error) => {
         console.error('Error fetching current user:', error);
@@ -69,13 +73,16 @@ export class SignInComponent implements OnInit {
           this.router.navigate(['/login']);
         }
         this.alert.showErrorMessage(error.error?.message || 'An unexpected error occurred. Please try again.');
+      this.loading.hide();
       }
     );
   }
 
   private handleLoginSuccess(currentUser: AuthModel): void {
+    this.loading.show();
     this.authService.isFirstLogin(currentUser.email).subscribe(
       (isFirstLogin: boolean) => {
+        this.loading.hide();
         if (isFirstLogin) {
           this.router.navigate(['/change-password']).then(() =>
             this.alert.showSuccessMessage('Login successful!')
@@ -94,6 +101,7 @@ export class SignInComponent implements OnInit {
         }
       },
       (error) => {
+        this.loading.hide();
         console.error('Error checking first login status:', error);
         if (error.status === 500) {
           this.alert.showErrorMessage(

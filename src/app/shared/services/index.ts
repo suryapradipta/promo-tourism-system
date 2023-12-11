@@ -8,4 +8,5 @@ export {AuthInterceptor} from './auth/auth-interceptor';
 export {MerchantService} from './merchant/merchant.service';
 export {ProductService} from './product/product.service';
 export {CreateChartService} from './analytics/create-chart.service';
+export {LoadingService} from './loading/loading.service';
 
