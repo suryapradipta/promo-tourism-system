@@ -1,7 +1,7 @@
 import {Component, OnInit} from '@angular/core';
 import {
   AnalyticsService,
-  CreateChartService
+  CreateChartService, NotificationService
 } from '../../../../../shared/services';
 import {ChartConfiguration} from 'chart.js/auto';
 import {CustomerPurchasingPower} from '../../../../../shared/models';
@@ -28,7 +28,8 @@ export class MinistryAnalyticsComponent implements OnInit {
   // Chart instances for Product Sold and Purchasing Power
 
   constructor(private analyticsService: AnalyticsService,
-              private createChartService: CreateChartService) {
+              private createChartService: CreateChartService,
+              private alert: NotificationService) {
   }
 
   ngOnInit(): void {
@@ -38,7 +39,18 @@ export class MinistryAnalyticsComponent implements OnInit {
         this.allAnalytics = data.allAnalytics;
         this.allMerchantStats = data.stats;
         this.showProductSoldChart();
-      });
+      },
+        (error) => {
+          console.error('Error fetching analytics:', error);
+
+          if (error.status === 500) {
+            this.alert.showErrorMessage('Internal Server Error');
+          } else {
+            const errorMessage = error.error?.message || 'Failed to fetch analytics';
+            this.alert.showErrorMessage(errorMessage);
+          }
+        }
+      );
   }
 
   showProductSoldChart(): void {
@@ -122,7 +134,17 @@ export class MinistryAnalyticsComponent implements OnInit {
           this.allAnalytics = data.allAnalytics;
           this.allMerchantStats = data.stats;
           this.showProductSoldChart();
-        });
+        },
+          (error) => {
+            console.error('Error fetching analytics:', error);
+
+            if (error.status === 500) {
+              this.alert.showErrorMessage('Internal Server Error');
+            } else {
+              const errorMessage = error.error?.message || 'Failed to fetch analytics';
+              this.alert.showErrorMessage(errorMessage);
+            }
+          });
     }
   }
 

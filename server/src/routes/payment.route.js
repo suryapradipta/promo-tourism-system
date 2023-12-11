@@ -55,7 +55,7 @@ router.post('/create-paypal-transaction', async (req, res) => {
     const orderID = response.result.id;
     res.json({ orderID });
   } catch (error) {
-    console.error(error);
+    console.error('Error during payment:', error);
     res.status(500).send('Internal Server Error');
   }
 });
@@ -66,7 +66,7 @@ router.post('/save-payment', authMiddleware, async (req, res) => {
     await payment.save();
     res.status(201).json(payment);
   } catch (error) {
-    console.error(error);
+    console.error('Error saving payment:', error);
     res.status(500).json({ message: 'Internal server error' });
   }
 });
@@ -87,7 +87,7 @@ router.get('/get-by-paypal-id/:paypalId', authMiddleware, async (req, res) => {
 
     res.status(200).json(payment);
   } catch (error) {
-    console.error(error);
+    console.error('Error fetching payment:', error);
     res.status(500).json({ message: 'Internal server error' });
   }
 });

@@ -175,7 +175,7 @@ router.put('/approve/:id', authMiddleware,async (req, res) => {
 
     return res.status(200).json({ message: 'Merchant approved successfully', merchant });
   } catch (error) {
-    console.error(error);
+    console.error('Error approving merchant:', error);
     res.status(500).json({ message: 'Internal server error' });
   }
 });
@@ -198,7 +198,7 @@ router.put('/reject/:id', authMiddleware,async (req, res) => {
 
     return res.status(200).json({ message: 'Merchant rejected successfully', merchant });
   } catch (error) {
-    console.error(error);
+    console.error('Error rejecting merchant:', error);
     res.status(500).json({ message: 'Internal server error' });
   }
 });
@@ -219,7 +219,7 @@ router.post('/send-email',authMiddleware, async (req, res) => {
 
   await transporter.sendMail(mailOptions, (error, info) => {
     if (error) {
-      console.error(error);
+      console.error('Error sending email:', error);
       res.status(500).send('Internal Server Error');
     } else {
       console.log('Email sent: ' + info.response);
@@ -233,7 +233,7 @@ router.get('/', authMiddleware, async (req, res) => {
     const merchants = await Merchant.find();
     res.json(merchants);
   } catch (error) {
-    console.error(error);
+    console.error('Error fetching merchant:', error);
     res.status(500).json({ message: 'Internal Server Error' });
   }
 });
@@ -255,7 +255,7 @@ router.get('/by-email/:email', authMiddleware, async (req, res) => {
       res.status(404).json({ message: 'Merchant not found' });
     }
   } catch (error) {
-    console.error(error);
+    console.error('Error fetching merchant:', error);
     res.status(500).send('Internal Server Error');
   }
 });

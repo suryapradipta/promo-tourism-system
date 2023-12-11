@@ -42,7 +42,7 @@ router.post('/create', authMiddleware, async (req, res) => {
     const savedOrder = await order.save();
     res.status(201).json({ orderId: savedOrder._id, message: 'Transaction successful!' });
   } catch (error) {
-    console.error(error);
+    console.error('Error submitting order:', error);
     res.status(500).json({ message: 'Internal server error' });
   }
 });
@@ -55,7 +55,7 @@ router.get('/by-id/:id', authMiddleware, async (req, res) => {
     }
     res.status(200).json(order);
   } catch (error) {
-    console.error(error);
+    console.error('Error fetching order:', error);
     res.status(500).json({ message: 'Internal server error' });
   }
 });

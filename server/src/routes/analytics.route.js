@@ -4,14 +4,19 @@ const Product = require('../models/product.model');
 const Order = require('../models/order.model');
 const mongoose = require('mongoose');
 const Merchant = require('../models/merchant.model');
+const { ObjectId } = require('mongoose').Types;
 
 router.get('/product-analytics-and-stats/:merchantId', async (req, res) => {
   try {
     const merchantId = req.params.merchantId;
 
+    if (!ObjectId.isValid(merchantId)) {
+      return res.status(400).json({ error: 'Invalid merchantId' });
+    }
+
     const productAnalytics = await Product.aggregate([
       {
-        $match: {merchantId: new mongoose.Types.ObjectId(merchantId)},
+        $match: { merchantId: new mongoose.Types.ObjectId(merchantId) },
       },
       {
         $lookup: {
@@ -25,7 +30,7 @@ router.get('/product-analytics-and-stats/:merchantId', async (req, res) => {
         $project: {
           _id: 1,
           name: 1,
-          totalSold: {$size: '$productOrders'},
+          totalSold: { $size: '$productOrders' },
         },
       },
     ]);
@@ -43,28 +48,36 @@ router.get('/product-analytics-and-stats/:merchantId', async (req, res) => {
       averageSoldProducts,
     };
 
-    res.json({productAnalytics, stats});
+    res.json({ productAnalytics, stats });
   } catch (error) {
-    console.error(error);
-    res.status(500).json({error: 'Internal Server Error'});
+    console.error('Error while fetching analytics:', error);
+    res.status(500).json({ error: 'Internal Server Error' });
   }
 });
 
-router.get(
-  '/purchasing-power-analytics-and-stats/:merchantId',
-  async (req, res) => {
+router.get('/purchasing-power-analytics-and-stats/:merchantId', async (req, res) => {
     try {
       const merchantId = req.params.merchantId;
 
+      if (!ObjectId.isValid(merchantId)) {
+        return res.status(400).json({ error: 'Invalid merchantId' });
+      }
+
+      const merchantExists = await Merchant.findOne({ _id: merchantId });
+
+      if (!merchantExists) {
+        return res.status(404).json({ error: 'Merchant not found' });
+      }
+
       const customerPurchasingPower = await Order.aggregate([
         {
-          $match: {merchantId: new mongoose.Types.ObjectId(merchantId)},
+          $match: { merchantId: new mongoose.Types.ObjectId(merchantId) },
         },
         {
           $group: {
             _id: '$email',
-            totalSpent: {$sum: {$multiply: ['$quantity', '$totalAmount']}},
-            totalOrders: {$sum: 1},
+            totalSpent: { $sum: { $multiply: ['$quantity', '$totalAmount'] } },
+            totalOrders: { $sum: 1 },
           },
         },
         {
@@ -90,10 +103,10 @@ router.get(
         averageSpendingPerCustomer,
       };
 
-      res.json({customerPurchasingPower, stats});
+      res.json({ customerPurchasingPower, stats });
     } catch (error) {
-      console.error(error);
-      res.status(500).json({error: 'Internal Server Error'});
+      console.error('Error while fetching analytics:', error);
+      res.status(500).json({ error: 'Internal Server Error' });
     }
   }
 );
@@ -105,7 +118,7 @@ router.get('/all-merchant-analytics-and-stats', async (req, res) => {
       const merchantId = merchant._id;
 
       const productAnalytics = await Product.aggregate([
-        {$match: {merchantId: new mongoose.Types.ObjectId(merchantId)}},
+        { $match: { merchantId: new mongoose.Types.ObjectId(merchantId) } },
         {
           $lookup: {
             from: 'orders',
@@ -117,7 +130,7 @@ router.get('/all-merchant-analytics-and-stats', async (req, res) => {
         {
           $group: {
             _id: null,
-            totalSold: {$sum: {$size: '$productOrders'}},
+            totalSold: { $sum: { $size: '$productOrders' } },
           },
         },
         {
@@ -129,12 +142,12 @@ router.get('/all-merchant-analytics-and-stats', async (req, res) => {
       ]);
 
       const purchasingPowerAnalytics = await Order.aggregate([
-        {$match: {merchantId: new mongoose.Types.ObjectId(merchantId)}},
+        { $match: { merchantId: new mongoose.Types.ObjectId(merchantId) } },
         {
           $group: {
             _id: null,
-            totalSpent: {$sum: {$multiply: ['$quantity', '$totalAmount']}},
-            totalOrders: {$sum: 1},
+            totalSpent: { $sum: { $multiply: ['$quantity', '$totalAmount'] } },
+            totalOrders: { $sum: 1 },
           },
         },
         {
@@ -176,10 +189,10 @@ router.get('/all-merchant-analytics-and-stats', async (req, res) => {
       averageAmountSpent,
     };
 
-    res.json({allAnalytics, stats});
+    res.json({ allAnalytics, stats });
   } catch (error) {
-    console.error(error);
-    res.status(500).json({error: 'Internal Server Error'});
+    console.error('Error while fetching analytics:', error);
+    res.status(500).json({ error: 'Internal Server Error' });
   }
 });
 

@@ -9,6 +9,7 @@ const fs = require('fs').promises;
 const Review = require('../models/review.model');
 
 
+
 const projectRoot = path.resolve(__dirname, '..');
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
@@ -41,7 +42,7 @@ router.post('/add-product', authMiddleware, upload.single('image'), async (req, 
 
     res.status(201).json({message: 'Product created successfully'});
   } catch (error) {
-    console.error(error);
+    console.error('Error submitting product:', error);
     res.status(500).json({message: 'Internal server error'});
   }
 });
@@ -81,7 +82,7 @@ router.put('/edit-product/:id', authMiddleware, upload.single('image'), async (r
       message: 'Product updated successfully', product: updatedProduct
     });
   } catch (error) {
-    console.error(error);
+    console.error('Error updating product:', error);
     res.status(500).json({message: 'Internal server error'});
   }
 });
@@ -110,7 +111,7 @@ router.delete('/delete-product/:id', authMiddleware, async (req, res) => {
 
     res.status(200).json({message: 'Product deleted successfully'});
   } catch (error) {
-    console.error(error);
+    console.error('Error deleting product:', error);
     res.status(500).json({message: 'Internal server error'});
   }
 });
@@ -127,7 +128,7 @@ router.get('/by-merchant/:merchantId', authMiddleware, async (req, res) => {
 
     res.status(200).json(products);
   } catch (error) {
-    console.error(error);
+    console.error('Error fetching merchant:', error);
     res.status(500).json({message: 'Internal server error'});
   }
 });
@@ -148,7 +149,7 @@ router.get('/:productId', authMiddleware, async (req, res) => {
 
     res.status(200).json(product);
   } catch (error) {
-    console.error(error);
+    console.error('Error fetching product:', error);
     res.status(500).json({message: 'Internal server error'});
   }
 });
@@ -156,6 +157,10 @@ router.get('/:productId', authMiddleware, async (req, res) => {
 router.get('/', async (req, res) => {
   try {
     const products = await Product.find();
+
+    if (!products || products.length === 0) {
+      return res.status(404).json({ message: 'No products found' });
+    }
 
     res.status(200).json(products);
   } catch (error) {
@@ -168,20 +173,21 @@ router.get('/average-rating/:productId', async (req, res) => {
   try {
     const productId = req.params.productId;
 
+    if (!productId || !mongoose.Types.ObjectId.isValid(productId)) {
+      return res.status(400).json({ message: 'Invalid productId' });
+    }
+
     const product = await Product.findById(productId).populate('reviews');
     if (!product) {
       return res.status(404).json({ message: 'Product not found' });
     }
 
-    if (product.reviews.length > 0) {
-      const totalRating = product.reviews.reduce((sum, review) => sum + review.rating, 0);
-      const averageRating = totalRating / product.reviews.length;
-      return res.status(200).json({ averageRating });
-    }
+    const totalRating = product.reviews.reduce((sum, review) => sum + review.rating, 0);
+    const averageRating = product.reviews.length > 0 ? totalRating / product.reviews.length : 0;
 
-    res.status(200).json({ averageRating: 0 });
+    res.status(200).json({ averageRating });
   } catch (error) {
-    console.error(error);
+    console.error('Error fetching average rating:', error);
     res.status(500).json({ message: 'Internal server error' });
   }
 });
@@ -189,7 +195,9 @@ router.get('/average-rating/:productId', async (req, res) => {
 router.get('/products/:productId/reviews', async (req, res) => {
   try {
     const productId = req.params.productId;
-
+    if (!productId || !mongoose.Types.ObjectId.isValid(productId)) {
+      return res.status(400).json({ message: 'Invalid productId' });
+    }
     const product = await Product.findById(productId).populate({
       path: 'reviews',
       populate: {
@@ -205,7 +213,7 @@ router.get('/products/:productId/reviews', async (req, res) => {
     // Return the reviews
     res.json(product.reviews);
   } catch (error) {
-    console.error(error);
+    console.error('Error fetching reviews:', error);
     res.status(500).json({ message: 'Internal Server Error' });
   }
 });

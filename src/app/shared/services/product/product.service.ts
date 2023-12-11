@@ -1,16 +1,15 @@
-import {Injectable} from '@angular/core';
-import {HttpClient} from "@angular/common/http";
-import {ProductModel} from "../../models";
-import {Observable} from "rxjs";
+import { Injectable } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
+import { ProductModel } from '../../models';
+import { Observable } from 'rxjs';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class ProductService {
   private apiUrl = 'http://localhost:3000/api/products';
 
-  constructor(private http: HttpClient) {
-  }
+  constructor(private http: HttpClient) {}
 
   addProduct(product: ProductModel, imageFile: File): Observable<any> {
     const formData = new FormData();
@@ -24,7 +23,11 @@ export class ProductService {
     return this.http.post(`${this.apiUrl}/add-product`, formData);
   }
 
-  editProduct(productId: string, product: ProductModel, imageFile: File): Observable<any> {
+  editProduct(
+    productId: string,
+    product: ProductModel,
+    imageFile: File
+  ): Observable<any> {
     const formData = new FormData();
     formData.append('name', product.name);
     formData.append('description', product.description);
@@ -32,7 +35,10 @@ export class ProductService {
     formData.append('category', product.category);
     formData.append('image', imageFile);
 
-    return this.http.put<any>(`${this.apiUrl}/edit-product/${productId}`, formData);
+    return this.http.put<any>(
+      `${this.apiUrl}/edit-product/${productId}`,
+      formData
+    );
   }
 
   deleteProduct(productId: string): Observable<any> {
@@ -40,7 +46,9 @@ export class ProductService {
   }
 
   getProductsByMerchantId(merchantId: string): Observable<ProductModel[]> {
-    return this.http.get<ProductModel[]>(`${this.apiUrl}/by-merchant/${merchantId}`);
+    return this.http.get<ProductModel[]>(
+      `${this.apiUrl}/by-merchant/${merchantId}`
+    );
   }
 
   getProductById(productId: string): Observable<ProductModel> {
@@ -59,5 +67,4 @@ export class ProductService {
     const url = `${this.apiUrl}/products/${productId}/reviews`;
     return this.http.get<any[]>(url);
   }
-
 }

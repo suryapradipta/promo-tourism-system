@@ -2,7 +2,7 @@ import {Component, OnInit} from '@angular/core';
 import {
   AnalyticsService,
   AuthService, CreateChartService,
-  MerchantService
+  MerchantService, NotificationService
 } from '../../../../../shared/services';
 import {Chart, registerables} from 'chart.js';
 import {CustomerPurchasingPower} from "../../../../../shared/models";
@@ -28,7 +28,8 @@ export class MerchantAnalyticsComponent implements OnInit {
     private analyticsService: AnalyticsService,
     private authService: AuthService,
     private merchantService: MerchantService,
-    private createChartService: CreateChartService
+    private createChartService: CreateChartService,
+    private alert: NotificationService,
   ) {
   }
 
@@ -44,10 +45,14 @@ export class MerchantAnalyticsComponent implements OnInit {
         this.productSoldChart();
       },
         (error) => {
-          console.error(
-            'Error  :',
-            error
-          );
+          console.error('Error while fetching product analytics:', error);
+
+          if (error.status === 404) {
+            this.alert.showErrorMessage('Merchant not found');
+          } else {
+            const errorMessage = error.error?.message || 'Failed to fetch product analytics';
+            this.alert.showErrorMessage(errorMessage);
+          }
         });
 
     this.analyticsService
@@ -58,10 +63,14 @@ export class MerchantAnalyticsComponent implements OnInit {
         this.purchasingPowerChart();
       },
         (error) => {
-          console.error(
-            'Error :',
-            error
-          );
+          console.error('Error while fetching purchasing power analytics:', error);
+
+          if (error.status === 404) {
+            this.alert.showErrorMessage('Merchant not found');
+          } else {
+            const errorMessage = error.error?.message || 'Failed to fetch analytics';
+            this.alert.showErrorMessage(errorMessage);
+          }
         });
   }
 

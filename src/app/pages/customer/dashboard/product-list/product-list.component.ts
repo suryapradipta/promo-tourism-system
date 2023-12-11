@@ -1,10 +1,11 @@
-import {Component, OnInit} from '@angular/core';
-import {ProductModel} from '../../../../shared/models';
+import { Component, OnInit } from '@angular/core';
+import { ProductModel } from '../../../../shared/models';
 import {
   AuthService,
-  ProductService
+  NotificationService,
+  ProductService,
 } from '../../../../shared/services';
-import {Router} from '@angular/router';
+import { Router } from '@angular/router';
 import Swal from 'sweetalert2';
 
 @Component({
@@ -15,31 +16,38 @@ import Swal from 'sweetalert2';
 export class ProductListComponent implements OnInit {
   products: ProductModel[] = [];
 
-
   constructor(
     private router: Router,
     private authService: AuthService,
-    private productService: ProductService
-  ) {
-  }
+    private productService: ProductService,
+    private alert: NotificationService
+  ) {}
 
   ngOnInit(): void {
     this.productService.getAllProducts().subscribe(
-      (products) => {
+      (products: ProductModel[]) => {
         this.products = products;
         this.fetchAverageRatings(products);
       },
       (error) => {
-        console.error(error);
+        console.error('Error fetching products:', error);
+
+        if (error.status === 404) {
+          this.alert.showErrorMessage('No products found');
+        } else {
+          this.alert.showErrorMessage(
+            error.error?.message ||
+              'Failed to fetch products. Please try again later.'
+          );
+        }
       }
     );
   }
 
-
   viewProductDetails(product: ProductModel) {
     if (this.authService.isAuthenticated()) {
       this.router.navigate(['/product', product._id]);
-      window.scrollTo({top: 0});
+      window.scrollTo({ top: 0 });
     } else {
       Swal.fire({
         title: 'Welcome! To make a purchase, please',
@@ -60,7 +68,7 @@ export class ProductListComponent implements OnInit {
           product.averageRating = response.averageRating;
         },
         (error) => {
-          console.error(error);
+          console.error('Error while fetching average rating:', error);
         }
       );
     }
