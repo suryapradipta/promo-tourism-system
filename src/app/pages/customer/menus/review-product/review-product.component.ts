@@ -1,31 +1,33 @@
-import { Component, OnInit } from '@angular/core';
-import { AuthModel, OrderModel } from '../../../../shared/models';
+import {Component} from '@angular/core';
+import {OrderModel} from '../../../../shared/models';
 import {
   AuthService,
   NotificationService,
   ReviewService,
 } from '../../../../shared/services';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 
 @Component({
   selector: 'app-review-product',
   templateUrl: './review-product.component.html',
   styleUrls: ['./review-product.component.css'],
 })
-export class ReviewProductComponent implements OnInit {
+export class ReviewProductComponent {
   unreviewedOrders: OrderModel[] = [];
   showReviewForm = false;
   reviewForm: FormGroup;
   selectedOrderId: string;
 
+
   constructor(
     private formBuilder: FormBuilder,
     private alert: NotificationService,
     private reviewService: ReviewService,
-    private authService: AuthService
-  ) {}
+    private authService: AuthService,
+  ) {
+  }
 
-  ngOnInit(): void {
+  ngOnInit() {
     this.loadUnreviewedOrders();
     this.initReviewForm();
   }
@@ -34,25 +36,20 @@ export class ReviewProductComponent implements OnInit {
     return this.reviewForm.controls;
   }
 
-  private loadUnreviewedOrders(): void {
-    const user: AuthModel = this.authService.getCurrentUserJson();
+  private loadUnreviewedOrders() {
+    const user = this.authService.getCurrentUserJson();
 
     if (user) {
-      this.reviewService.getUnreviewedOrders(user._id).subscribe(
-        (response: OrderModel[]) => {
-          this.unreviewedOrders = response;
-        },
-        (error) => {
-          console.error('Error retrieving unreviewed orders:', error);
-          if (error.status === 404) {
-            this.alert.showErrorMessage('No unreviewed orders found.');
-          } else {
-            const errorMessage =
-              error.error?.message || 'Failed to retrieve unreviewed orders.';
-            this.alert.showErrorMessage(errorMessage);
+      this.reviewService.getUnreviewedOrders(user._id)
+        .subscribe(
+          (response) => {
+            this.unreviewedOrders = response;
+            console.log('Unreviewed orders retrieved successfully:', response);
+          },
+          (error) => {
+            console.error(error);
           }
-        }
-      );
+        );
     }
   }
 
@@ -64,7 +61,7 @@ export class ReviewProductComponent implements OnInit {
     });
   }
 
-  private initReviewForm(): void {
+  private initReviewForm() {
     this.reviewForm = this.formBuilder.group({
       rating: [
         null,
@@ -74,45 +71,40 @@ export class ReviewProductComponent implements OnInit {
     });
   }
 
-  openReviewForm(orderId: string): void {
+  openReviewForm(orderId: string) {
     this.showReviewForm = true;
     this.selectedOrderId = orderId;
   }
 
-  closeReviewForm(): void {
+  closeReviewForm() {
     this.showReviewForm = false;
     this.selectedOrderId = null;
   }
 
-  submitReview(): void {
+
+  submitReview() {
     if (this.reviewForm.valid) {
-      const orderId: string = this.selectedOrderId;
+      const orderId = this.selectedOrderId;
       const userId = this.authService.getCurrentUserJson()._id;
 
       const rating = this.reviewForm.value.rating;
       const comment = this.reviewForm.value.comment;
 
-      this.reviewService
-        .submitReview(orderId, +rating, comment, userId)
-        .subscribe(
-          (response) => {
-            this.reviewForm.reset();
-            this.showReviewForm = false;
-            this.loadUnreviewedOrders();
-            this.alert.showSuccessMessage(response.message);
-          },
-          (error) => {
-            console.error('Error submitting review:', error);
 
-            if (error.status === 404) {
-              this.alert.showErrorMessage('Order or product not found');
-            } else {
-              const errorMessage =
-                error.error?.message || 'Failed to submit review';
-              this.alert.showErrorMessage(errorMessage);
-            }
-          }
-        );
+      this.reviewService.submitReview(orderId, +rating, comment, userId).subscribe(
+        (response) => {
+          console.log('Review submitted successfully');
+          this.reviewForm.reset();
+          this.showReviewForm = false;
+          this.loadUnreviewedOrders();
+        },
+        (error) => {
+          // Handle error
+          console.error(error);
+        }
+      );
+
+
     }
   }
 }

@@ -3,13 +3,6 @@ import {HttpClient} from "@angular/common/http";
 import {Observable} from "rxjs";
 import {MerchantModel} from "../../models";
 
-interface MerchantRegistration {
-  name: string;
-  contact_number: number;
-  email: string;
-  company_description: string;
-}
-
 @Injectable({
   providedIn: 'root'
 })
@@ -21,13 +14,36 @@ export class MerchantService {
   getMerchants(): Observable<MerchantModel[]> {
     return this.http.get<MerchantModel[]>(this.apiUrl);
   }
+  /*
+  merchants: MerchantModel[] = [];
+
+  constructor(private merchantService: MerchantService) {}
+
+  ngOnInit(): void {
+    this.loadMerchants();
+  }
+
+  loadMerchants() {
+    this.merchantService.getMerchants().subscribe(
+      (data) => {
+        this.merchants = data;
+      },
+      (error) => {
+        console.error('Error fetching merchants:', error);
+      }
+    );
+  }
+  * */
 
   getMerchantIdByEmail(email: string): Observable<any> {
     return this.http.get<any>( `${this.apiUrl}/by-email/${email}`);
   }
 
   registerMerchant(
-    {name, contact_number, email, company_description}: MerchantRegistration
+    name: string,
+    contact_number: number,
+    email: string,
+    company_description: string
   ): Observable<any> {
     const merchantData :MerchantModel =
       {

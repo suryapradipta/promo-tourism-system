@@ -1,11 +1,11 @@
-import { Component } from '@angular/core';
+import {Component} from '@angular/core';
 import {
   OrderModel,
   PaymentModel,
   ProductModel,
-  ReviewModel,
+  ReviewModel
 } from '../../../../shared/models';
-import { ActivatedRoute, Router } from '@angular/router';
+import {ActivatedRoute, Router} from '@angular/router';
 import {
   AuthService,
   NotificationService,
@@ -13,8 +13,8 @@ import {
   PaymentService,
   ProductService,
 } from '../../../../shared/services';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { IPayPalConfig } from 'ngx-paypal';
+import {FormBuilder, FormGroup, Validators} from '@angular/forms';
+import {IPayPalConfig} from 'ngx-paypal';
 
 @Component({
   selector: 'app-product-detail',
@@ -39,8 +39,9 @@ export class ProductDetailComponent {
     private alert: NotificationService,
     private paymentService: PaymentService,
     private authService: AuthService,
-    private productService: ProductService
-  ) {}
+    private productService: ProductService,
+  ) {
+  }
 
   ngOnInit(): void {
     this.initializeProductForm();
@@ -61,41 +62,44 @@ export class ProductDetailComponent {
   }
 
   private fetchProductDetails(): void {
-    const productId: string = this.route.snapshot.paramMap.get('id');
+    const productId = this.route.snapshot.paramMap.get('id');
 
     if (productId) {
-      this.productService.getProductById(productId).subscribe(
-        (product: ProductModel): void => {
-          this.product = product;
+      this.productService.getProductById(productId)
+        .subscribe(
+          (product) => {
+            this.product = product;
 
-          this.productService.getAverageRating(this.product._id).subscribe(
-            (response) => {
-              this.averageRating = response.averageRating;
-            },
-            (error) => {
-              console.error(error);
-            }
-          );
-        },
-        (error) => console.error('Error fetching product:', error)
-      );
+            this.productService.getAverageRating(this.product._id)
+              .subscribe(
+                (response) => {
+                  this.averageRating = response.averageRating;
+                },
+                (error) => {
+                  console.error(error);
+                }
+              );
+          },
+          (error) => console.error('Error fetching product:', error)
+        );
 
       this.fetchReviews(productId);
+
     }
   }
 
   private fetchReviews(productId: string): void {
     this.productService.getReviewsForProduct(productId).subscribe(
-      (reviews: any[]) => {
+      reviews => {
         console.log(reviews);
         this.reviews = reviews;
+
       },
-      (error) => {
+      error => {
         console.error(error);
       }
     );
   }
-
   formatOrderDate(date: string): string {
     return new Date(date).toLocaleDateString('en-US', {
       year: 'numeric',
@@ -136,6 +140,7 @@ export class ProductDetailComponent {
   async onBooking(): Promise<void> {
     try {
       if (this.productForm.valid) {
+
         const order: OrderModel = {
           orderNumber: null,
           _id: null,
@@ -148,57 +153,43 @@ export class ProductDetailComponent {
           merchantId: this.product.merchantId,
         };
 
-        this.orderResponse = await this.orderService
-          .createOrder(order)
-          .toPromise();
+        this.orderResponse = await this.orderService.createOrder(order).toPromise();
       }
     } catch (error) {
-      console.error('Error during booking:', error);
+      console.error("Error during booking:", error);
     }
   }
 
+
   private initConfig(): void {
     this.payPalConfig = {
-      clientId:
-        'AXbp6-Ojon_2I2t6ACCq9gipRPGN9LjAOtYgZjDewvuI97s0DmoWTXLFrHgyzDXK-owvAgm4ptEBLIEQ',
+      clientId: 'AXbp6-Ojon_2I2t6ACCq9gipRPGN9LjAOtYgZjDewvuI97s0DmoWTXLFrHgyzDXK-owvAgm4ptEBLIEQ',
       createOrderOnServer: (data) => {
-        return fetch(
-          'http://localhost:3000/api/payments/create-paypal-transaction',
-          {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({
-              product: this.product,
-              itemTotal: this.itemTotal.toFixed(2),
-              itemTotalValue: this.subtotal.toFixed(2),
-              taxTotalValue: this.taxTotal.toFixed(2),
-              quantity: this.productForm.value.quantity.toString(),
-            }),
-          }
-        )
+        return fetch('http://localhost:3000/api/payments/create-paypal-transaction', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            product: this.product,
+            itemTotal: this.itemTotal.toFixed(2),
+            itemTotalValue: this.subtotal.toFixed(2),
+            taxTotalValue: this.taxTotal.toFixed(2),
+            quantity: this.productForm.value.quantity.toString(),
+          }),
+        })
           .then((res) => res.json())
           .then((order) => order.orderID);
       },
       onApprove: (data, actions) => {
-        console.log(
-          'onApprove - transaction was approved, but not authorized',
-          data,
-          actions
-        );
-        actions.order.get().then((details) => {
-          console.log(
-            'onApprove - get full order details inside onApprove: ',
-            details
-          );
+        console.log('onApprove - transaction was approved, but not authorized', data, actions);
+        actions.order.get().then(details => {
+          console.log('onApprove - get full order details inside onApprove: ', details);
         });
+
       },
       onClientAuthorization: (data) => {
-        console.log(
-          'onClientAuthorization - inform your server about completed transaction at this point',
-          data
-        );
+        console.log('onClientAuthorization - inform your server about completed transaction at this point', data);
         this.onBooking()
           .then(() => {
             const productID = this.product._id;
@@ -206,7 +197,7 @@ export class ProductDetailComponent {
             const orderID = this.orderResponse.orderId;
 
             const {
-              name: { full_name: shippingName },
+              name: {full_name: shippingName},
               address: {
                 address_line_1: addressLine,
                 admin_area_2,
@@ -214,6 +205,7 @@ export class ProductDetailComponent {
                 postal_code,
               },
             } = data.purchase_units[0].shipping;
+
 
             const payment: PaymentModel = {
               _id: null,
@@ -240,40 +232,30 @@ export class ProductDetailComponent {
               (error) => {
                 console.error('Error saving payment:', error);
                 if (error.status === 400) {
-                  this.alert.showErrorMessage(
-                    'Invalid payment data. Please check your input.'
-                  );
+                  this.alert.showErrorMessage('Invalid payment data. Please check your input.');
                 } else if (error.status === 500) {
-                  this.alert.showErrorMessage(
-                    'Internal server error. Please try again later.'
-                  );
+                  this.alert.showErrorMessage('Internal server error. Please try again later.');
                 } else {
-                  const errorMessage =
-                    error.error?.message || 'Failed to save payment.';
+                  const errorMessage = error.error?.message || 'Failed to save payment.';
                   this.alert.showErrorMessage(errorMessage);
                 }
               }
             );
 
-            this.router.navigate(['/receipt'], {
-              queryParams: { productID, paymentID, orderID },
-            });
+            this.router.navigate(
+              ['/receipt'],
+              {queryParams: {productID, paymentID, orderID}}
+            );
+
           })
           .catch((error) => {
-            console.error('Booking failed. Error:', error);
+            console.error("Booking failed. Error:", error);
             if (error.status === 400) {
-              this.alert.showErrorMessage(
-                'Validation error. Please check your input.'
-              );
+              this.alert.showErrorMessage('Validation error. Please check your input.');
             } else if (error.status === 500) {
-              this.alert.showErrorMessage(
-                'Server error. Please try again later.'
-              );
+              this.alert.showErrorMessage('Server error. Please try again later.');
             } else {
-              this.alert.showErrorMessage(
-                error.error?.message ||
-                  'An unexpected error occurred during booking.'
-              );
+              this.alert.showErrorMessage(error.error?.message || 'An unexpected error occurred during booking.');
             }
           });
       },
@@ -281,7 +263,7 @@ export class ProductDetailComponent {
         console.log('OnCancel', data, actions);
         this.alert.showWarningMessage('Transaction canceled!');
       },
-      onError: (err) => {
+      onError: err => {
         console.log('OnError', err);
         this.alert.showErrorMessage('Transaction failed!');
       },
