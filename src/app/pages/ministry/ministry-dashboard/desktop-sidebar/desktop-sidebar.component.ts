@@ -1,7 +1,3 @@
-/**
- * This component represents the sidebar in the desktop view and provides functionality
- * for setting the active link, checking user roles, and handling logout with a confirmation dialog.
- */
 import { Component } from '@angular/core';
 import { AuthService } from '../../../../shared/services';
 import { Router } from '@angular/router';
@@ -15,7 +11,7 @@ import Swal from 'sweetalert2';
 export class DesktopSidebarComponent {
   activeLink: string = 'dashboard';
 
-  setActiveLink(link: string) {
+  setActiveLink(link: string): void  {
     this.activeLink = link;
   }
 
@@ -31,7 +27,7 @@ export class DesktopSidebarComponent {
     return user && user.role === 'merchant';
   }
 
-  logout() {
+  logout(): void  {
     Swal.fire({
       title: 'Are you sure you want to log out?',
       icon: 'warning',

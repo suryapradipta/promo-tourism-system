@@ -34,10 +34,10 @@ export class ManageProductComponent implements OnInit {
     this.loadProducts(this.merchantId);
   }
 
-  loadProducts(merchantId: string) {
+  loadProducts(merchantId: string): void  {
     this.productService.getProductsByMerchantId(merchantId)
       .subscribe(
-        (products) => {
+        (products: ProductModel[]) => {
           this.products = products;
         },
         (error) => {

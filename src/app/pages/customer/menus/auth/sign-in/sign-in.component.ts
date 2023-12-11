@@ -42,7 +42,7 @@ export class SignInComponent implements OnInit {
     if (this.loginForm.valid) {
       const {email, password} = this.loginForm.value;
       this.authService.login(email, password).subscribe(
-        (response) => {
+        (response: { token: string }) => {
           localStorage.setItem('token', response.token);
           this.getCurrentUser();
         },
@@ -75,7 +75,7 @@ export class SignInComponent implements OnInit {
 
   private handleLoginSuccess(currentUser: AuthModel): void {
     this.authService.isFirstLogin(currentUser.email).subscribe(
-      (isFirstLogin) => {
+      (isFirstLogin: boolean) => {
         if (isFirstLogin) {
           this.router.navigate(['/change-password']).then(() =>
             this.alert.showSuccessMessage('Login successful!')
@@ -94,8 +94,16 @@ export class SignInComponent implements OnInit {
         }
       },
       (error) => {
-        console.error(error);
-        this.alert.showErrorMessage('Error checking first login status.');
+        console.error('Error checking first login status:', error);
+        if (error.status === 500) {
+          this.alert.showErrorMessage(
+            'Internal server error. Please try again later.'
+          );
+        } else {
+          const errorMessage =
+            error.error?.message || 'Failed to check login status. Please try again later.';
+          this.alert.showErrorMessage(errorMessage);
+        }
       });
   }
 }

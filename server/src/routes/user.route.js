@@ -19,6 +19,11 @@ router.post('/register', async (req, res) => {
   if (!isValidEmail(email)) {
     return res.status(400).json({ message: 'Invalid email address' });
   }
+  if (password.length < 8) {
+    return res
+      .status(400)
+      .json({ message: 'Password must be at least 8 characters long' });
+  }
 
   const existingUser = await User.findOne({ email });
   if (existingUser) {
@@ -46,18 +51,20 @@ router.post('/login', async (req, res) => {
   const { email, password } = req.body;
 
   try {
-    if (!email || !isValidEmail(email)) {
-      return res.status(400).json({ message: 'Invalid email format' });
-    }
-    if (!password || password.length < 6) {
-      return res
-        .status(400)
-        .json({ message: 'Password must be at least 6 characters long' });
-    }
     if (!email || !password) {
       return res
         .status(400)
         .json({ message: 'Email and password are required' });
+    }
+
+    if (!isValidEmail(email)) {
+      return res.status(400).json({ message: 'Invalid email format' });
+    }
+
+    if (password.length < 8) {
+      return res
+        .status(400)
+        .json({ message: 'Password must be at least 8 characters long' });
     }
 
     let user = await User.findOne({ email });

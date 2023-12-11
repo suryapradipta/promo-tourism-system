@@ -64,12 +64,12 @@ export class AddEditProductComponent implements OnInit {
       );
   }
 
-  handleImageUpload(event: any) {
+  handleImageUpload(event: any): void  {
     this.imageFile = event.target.files[0];
     this.loadImagePreview(this.imageFile);
   }
 
-  loadImagePreview(file?: File) {
+  loadImagePreview(file?: File): void  {
     if (file) {
       const reader = new FileReader();
       reader.onload = (e) => {

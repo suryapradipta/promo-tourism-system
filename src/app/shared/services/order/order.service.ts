@@ -1,6 +1,5 @@
-import { Injectable } from '@angular/core';
-import { OrderModel, ProductModel } from '../../models';
-import { v4 as uuidv4 } from 'uuid';
+import {Injectable} from '@angular/core';
+import {OrderModel} from '../../models';
 import {HttpClient} from "@angular/common/http";
 import {Observable} from "rxjs";
 
@@ -19,14 +18,5 @@ export class OrderService {
 
   getOrderById(orderId: string): Observable<OrderModel> {
     return this.http.get<OrderModel>(`${this.apiUrl}/by-id/${orderId}`);
-  }
-
-
-  private orders: OrderModel[] = [];
-
-
-
-  getOrdersByMerchant(merchantId: string): OrderModel[] {
-    return this.orders.filter((order) => order.merchantId === merchantId);
   }
 }

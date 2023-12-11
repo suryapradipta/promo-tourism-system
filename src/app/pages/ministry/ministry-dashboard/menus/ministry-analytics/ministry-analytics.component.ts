@@ -25,8 +25,6 @@ export class MinistryAnalyticsComponent implements OnInit {
   isSelectedProductSold: boolean = true;
   isSelectedPurchasingPower: boolean = false;
 
-  // Chart instances for Product Sold and Purchasing Power
-
   constructor(private analyticsService: AnalyticsService,
               private createChartService: CreateChartService,
               private alert: NotificationService) {
@@ -83,7 +81,7 @@ export class MinistryAnalyticsComponent implements OnInit {
     setTimeout(() => this.selectedPurchasingPowerChart(), 0);
   }
 
-  onSelectMerchant(merchantId: string) {
+  onSelectMerchant(merchantId: string): void  {
     this.selectedMerchantId = merchantId;
     this.refreshAnalytics();
     this.isAllProductSold = false;
@@ -93,7 +91,7 @@ export class MinistryAnalyticsComponent implements OnInit {
     }
   }
 
-  refreshAnalytics() {
+  refreshAnalytics(): void  {
     if (this.selectedMerchantId) {
       const index = this.allAnalytics.findIndex(
         (item) => item.merchant._id === this.selectedMerchantId
@@ -170,7 +168,7 @@ export class MinistryAnalyticsComponent implements OnInit {
     this.createChartService.createChart('selectedProductSoldChart', chartConfig);
   }
 
-  private selectedPurchasingPowerChart() {
+  private selectedPurchasingPowerChart(): void  {
     const productAnalytics: CustomerPurchasingPower[] = this.allAnalytics.find(
       (item) => item.merchant._id === this.selectedMerchantId
     ).purchasingPowerAnalytics;
@@ -205,7 +203,7 @@ export class MinistryAnalyticsComponent implements OnInit {
   }
 
 
-  private purchasingPowerAnalytics() {
+  private purchasingPowerAnalytics(): void  {
     const labels = this.allAnalytics.map((item) => item.merchant.name);
     const totalSpent = this.allAnalytics.map(
       (item) => item.purchasingPowerAnalytics.totalSpent
@@ -235,7 +233,7 @@ export class MinistryAnalyticsComponent implements OnInit {
   }
 
 
-  private productSoldAnalytics() {
+  private productSoldAnalytics(): void  {
     const labels = this.allAnalytics.map((item) => item.merchant.name);
     const data = this.allAnalytics.map(
       (item) => item.productAnalytics.totalSold

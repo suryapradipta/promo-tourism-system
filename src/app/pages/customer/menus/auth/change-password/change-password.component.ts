@@ -50,7 +50,7 @@ export class ChangePasswordComponent implements OnInit {
       this.alert.showErrorMessage('New password and confirm password must match.');
     } else {
       this.authService.checkPassword(userEmail, currentPassword).subscribe(
-        (isValid) => {
+        (isValid: boolean) => {
           if (isValid) {
             this.authService.updatePassword(userEmail, newPassword).subscribe(
               (response) => {

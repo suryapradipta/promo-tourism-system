@@ -1,5 +1,5 @@
-import {Component, OnInit} from '@angular/core';
-import {NgForm} from '@angular/forms';
+import { Component, OnInit } from '@angular/core';
+import { NgForm } from '@angular/forms';
 import {
   MerchantService,
   NotificationService,
@@ -18,39 +18,40 @@ export class RegisterMerchantComponent {
   constructor(
     private merchantService: MerchantService,
     private alert: NotificationService
-  ) {
-  }
+  ) {}
 
-
-  onRegisterMerchant(form: NgForm) {
+  onRegisterMerchant(form: NgForm): void {
     if (form.invalid) {
       return;
     }
 
-    this.merchantService.registerMerchant(
-      form.value.name,
-      form.value.contact_number,
-      form.value.email,
-      form.value.company_description
-    ).subscribe(
-      (response) => {
-        this.submitted = true;
-        this.alert.showSuccessMessage(response.message);
-        this.merchantId = response.id;
-      },
-      (error) => {
-        console.error(error);
-        if (error.status === 500 || error.status === 409) {
-          this.alert.showEmailInUseMessage();
-        } else {
-          this.alert.showErrorMessage(error.error?.message ||
-            'Registration failed. Please try again.');
+    this.merchantService
+      .registerMerchant(
+        form.value.name,
+        form.value.contact_number,
+        form.value.email,
+        form.value.company_description
+      )
+      .subscribe(
+        (response) => {
+          this.submitted = true;
+          this.alert.showSuccessMessage(response.message);
+          this.merchantId = response.id;
+        },
+        (error) => {
+          console.error(error);
+          if (error.status === 500 || error.status === 409) {
+            this.alert.showEmailInUseMessage();
+          } else {
+            this.alert.showErrorMessage(
+              error.error?.message || 'Registration failed. Please try again.'
+            );
+          }
         }
-      }
-    );
+      );
   }
 
-  onGetFile(event: any) {
+  onGetFile(event: any): void  {
     this.files = event.target.files;
   }
 
@@ -59,20 +60,19 @@ export class RegisterMerchantComponent {
       return;
     }
 
-    this.merchantService.uploadDocuments(
-      this.merchantId,
-      this.files,
-      form.value.file_description
-    ).subscribe(
-      (response) => {
-        this.submitted = true;
-        this.alert.showSuccessMessage(response.message);
-      },
-      (error) => {
-        console.error(error);
-        this.alert.showErrorMessage(error.error?.message ||
-          'Error uploading documents.');
-      }
-    );
+    this.merchantService
+      .uploadDocuments(this.merchantId, this.files, form.value.file_description)
+      .subscribe(
+        (response) => {
+          this.submitted = true;
+          this.alert.showSuccessMessage(response.message);
+        },
+        (error) => {
+          console.error(error);
+          this.alert.showErrorMessage(
+            error.error?.message || 'Error uploading documents.'
+          );
+        }
+      );
   }
 }

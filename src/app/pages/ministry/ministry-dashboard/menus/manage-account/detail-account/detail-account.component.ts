@@ -72,7 +72,7 @@ export class DetailAccountComponent implements OnInit {
     return randomPassword;
   };
 
-  createMerchantAccount(merchant: MerchantModel) {
+  createMerchantAccount(merchant: MerchantModel): void  {
     const email = merchant.email;
     const defaultPassword = 'PRS*' + this.generateRandomPassword() + '@';
     console.log(defaultPassword);
@@ -100,7 +100,7 @@ export class DetailAccountComponent implements OnInit {
     );
   }
 
-  sendEmail(templateParams: any) {
+  sendEmail(templateParams: any): void  {
     const to = templateParams.to_email;
     const subject = 'Your New Merchant Account';
     const html = `

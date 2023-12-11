@@ -29,7 +29,7 @@ export class ManageAccountComponent implements OnInit {
     );
   }
 
-  previewMerchant(merchant: MerchantModel) {
+  previewMerchant(merchant: MerchantModel): void  {
       this.router.navigate(['/ministry-dashboard/merchant', merchant._id]);
   }
 }
