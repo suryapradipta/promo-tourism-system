@@ -10,7 +10,7 @@ function isValidEmail(email) {
   return /\S+@\S+\.\S+/.test(email);
 }
 router.post('/register', async (req, res) => {
-  const { email, password, role, isFirstLogin} = req.body;
+  const { email, password, role, isFirstLogin } = req.body;
 
   if (!email || !password || !role || isFirstLogin === undefined) {
     return res.status(400).json({ message: 'All fields are required' });
@@ -27,7 +27,12 @@ router.post('/register', async (req, res) => {
 
   try {
     const hashedPassword = await bcrypt.hash(password, 10);
-    const user = new User({ email, password: hashedPassword, role, isFirstLogin});
+    const user = new User({
+      email,
+      password: hashedPassword,
+      role,
+      isFirstLogin,
+    });
 
     await user.save();
     return res.status(201).json({ message: 'User registered successfully' });
@@ -42,7 +47,9 @@ router.post('/login', async (req, res) => {
 
   try {
     if (!email || !password) {
-      return res.status(400).json({ message: 'Email and password are required' });
+      return res
+        .status(400)
+        .json({ message: 'Email and password are required' });
     }
 
     let user = await User.findOne({ email });
@@ -61,13 +68,18 @@ router.post('/login', async (req, res) => {
       email: user.email,
       _id: user._id,
       role: user.role,
-      isFirstLogin: user.isFirstLogin
+      isFirstLogin: user.isFirstLogin,
     };
 
-    jwt.sign(payload, process.env.JWT_SECRET, { expiresIn: '1h' }, (err, token) => {
-      if (err) throw err;
-      res.json({ token });
-    });
+    jwt.sign(
+      payload,
+      process.env.JWT_SECRET,
+      { expiresIn: '1h' },
+      (err, token) => {
+        if (err) throw err;
+        res.json({ token });
+      }
+    );
   } catch (err) {
     console.error(err.message);
     res.status(500).send('Server error');
@@ -78,7 +90,7 @@ router.get('/current-user', authMiddleware, (req, res) => {
   res.json(req.user);
 });
 
-router.get('/is-first-login/:email', authMiddleware,async (req, res) => {
+router.get('/is-first-login/:email', authMiddleware, async (req, res) => {
   const email = req.params.email;
 
   if (!email) {
@@ -95,11 +107,13 @@ router.get('/is-first-login/:email', authMiddleware,async (req, res) => {
   }
 });
 
-router.post('/update-password', authMiddleware,async (req, res) => {
+router.post('/update-password', authMiddleware, async (req, res) => {
   const { email, newPassword } = req.body;
 
   if (!email || !newPassword) {
-    return res.status(400).json({ error: 'Email and new password are required' });
+    return res
+      .status(400)
+      .json({ error: 'Email and new password are required' });
   }
 
   try {
@@ -116,7 +130,7 @@ router.post('/update-password', authMiddleware,async (req, res) => {
   }
 });
 
-router.post('/check-password', authMiddleware,async (req, res) => {
+router.post('/check-password', authMiddleware, async (req, res) => {
   const { email, currentPassword } = req.body;
 
   try {
