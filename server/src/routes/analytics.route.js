@@ -113,7 +113,7 @@ router.get('/purchasing-power-analytics-and-stats/:merchantId', async (req, res)
 
 router.get('/all-merchant-analytics-and-stats', async (req, res) => {
   try {
-    const allMerchants = await Merchant.find();
+    const allMerchants = await Merchant.find({ status: 'APPROVED' });
     const allAnalyticsPromises = allMerchants.map(async (merchant) => {
       const merchantId = merchant._id;
 

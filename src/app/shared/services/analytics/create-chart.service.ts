@@ -93,7 +93,10 @@ export class CreateChartService {
           beginAtZero: true,
           title: {
             display: true,
-            text: xTitle
+            text: xTitle,
+            font: {
+              weight: 'bold',
+            },
           },
         },
         y: {
@@ -101,6 +104,9 @@ export class CreateChartService {
           title: {
             display: true,
             text: yTitle,
+            font: {
+              weight: 'bold',
+            },
           },
           ticks: {
             stepSize: 2000,
@@ -110,6 +116,9 @@ export class CreateChartService {
           title: {
             display: true,
             text: secondaryTitle,
+            font: {
+              weight: 'bold',
+            },
           },
           beginAtZero: true,
           position: 'right',
@@ -167,13 +176,25 @@ export class CreateChartService {
       scales: {
         x: {
           beginAtZero: true,
-          title: {display: true, text: xTitle},
+          title: {
+            display: true,
+            text: xTitle,
+            font: {
+              weight: 'bold',
+            },
+          },
+          ticks: {
+            stepSize: 1,
+          },
         },
         y: {
           beginAtZero: true,
           title: {
             display: true,
             text: yTitle,
+            font: {
+              weight: 'bold',
+            },
           },
           ticks: {
             stepSize: 1,
