@@ -1,6 +1,6 @@
 import {Component, OnInit} from '@angular/core';
 import {
-  AuthService,
+  AuthService, LoadingService,
   NotificationService,
 } from '../../../../../shared/services';
 import {Router} from '@angular/router';
@@ -19,7 +19,8 @@ export class ChangePasswordComponent implements OnInit {
     private authService: AuthService,
     private router: Router,
     private fb: FormBuilder,
-    private alert: NotificationService
+    private alert: NotificationService,
+    private loading: LoadingService
   ) {
   }
 
@@ -35,7 +36,7 @@ export class ChangePasswordComponent implements OnInit {
     return this.changePasswordForm.controls;
   }
 
-  onSubmit() {
+  onSubmit(): void {
     if (this.changePasswordForm.invalid) {
       return;
     }
@@ -49,25 +50,30 @@ export class ChangePasswordComponent implements OnInit {
       this.passwordMismatch = true;
       this.alert.showErrorMessage('New password and confirm password must match.');
     } else {
+      this.loading.show();
       this.authService.checkPassword(userEmail, currentPassword).subscribe(
         (isValid: boolean) => {
           if (isValid) {
             this.authService.updatePassword(userEmail, newPassword).subscribe(
               (response) => {
+                this.loading.hide();
                 this.passwordMismatch = false;
                 this.changePasswordForm.reset();
                 this.router.navigate(['/ministry-dashboard'])
                   .then(() => this.alert.showSuccessMessage(response.message));
               },
               (error) => {
+                this.loading.hide();
                 console.error('Error updating password:', error);
                 this.alert.showErrorMessage(error.error?.message || 'An unexpected error occurred');
               });
           } else {
+            this.loading.hide();
             this.alert.showErrorMessage('Incorrect current password.');
           }
         },
         (error) => {
+          this.loading.hide();
           console.error(error);
           this.alert.showErrorMessage('Error checking current password.');
         }

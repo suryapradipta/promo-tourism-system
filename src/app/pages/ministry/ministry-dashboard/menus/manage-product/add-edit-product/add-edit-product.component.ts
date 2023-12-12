@@ -1,13 +1,14 @@
-import {Component, OnInit} from '@angular/core';
-import {ProductModel} from '../../../../../../shared/models';
-import {ActivatedRoute, Router} from '@angular/router';
+import { Component, OnInit } from '@angular/core';
+import { ProductModel } from '../../../../../../shared/models';
+import { ActivatedRoute, Router } from '@angular/router';
 import {
   AuthService,
+  LoadingService,
   MerchantService,
   NotificationService,
   ProductService,
 } from '../../../../../../shared/services';
-import {NgForm} from '@angular/forms';
+import { NgForm } from '@angular/forms';
 
 @Component({
   selector: 'app-add-edit-product',
@@ -34,42 +35,47 @@ export class AddEditProductComponent implements OnInit {
     private alert: NotificationService,
     private authService: AuthService,
     private productService: ProductService,
-    private merchantService: MerchantService
-  ) {
-  }
+    private merchantService: MerchantService,
+    private loading: LoadingService
+  ) {}
 
   ngOnInit(): void {
     const productId = this.route.snapshot.paramMap.get('id');
     if (productId) {
+      this.loading.show();
       this.productService.getProductById(productId).subscribe(
         (product) => {
+          this.loading.hide();
           this.product = product;
           this.loadImagePreview();
         },
         (error) => {
+          this.loading.hide();
           console.error('Error fetching product:', error);
         }
       );
     }
 
     const email = this.authService.getCurrentUserJson().email;
-    this.merchantService.getMerchantIdByEmail(email)
-      .subscribe((data) => {
-          this.product.merchantId = data.merchantId;
-          console.log(this.product.merchantId);
-        },
-        (error) => {
-          console.error('Error fetching merchant ID:', error);
-        }
-      );
+    this.loading.show();
+    this.merchantService.getMerchantIdByEmail(email).subscribe(
+      (data) => {
+        this.loading.hide();
+        this.product.merchantId = data.merchantId;
+      },
+      (error) => {
+        this.loading.hide();
+        console.error('Error fetching merchant ID:', error);
+      }
+    );
   }
 
-  handleImageUpload(event: any): void  {
+  handleImageUpload(event: any): void {
     this.imageFile = event.target.files[0];
     this.loadImagePreview(this.imageFile);
   }
 
-  loadImagePreview(file?: File): void  {
+  loadImagePreview(file?: File): void {
     if (file) {
       const reader = new FileReader();
       reader.onload = (e) => {
@@ -95,44 +101,63 @@ export class AddEditProductComponent implements OnInit {
     }
 
     if (this.product._id) {
-      this.productService.editProduct(this.product._id, this.product, this.imageFile).subscribe(
-        (response) => {
-          this.router.navigate(['/ministry-dashboard/manage-product'])
-            .then(() => this.alert.showSuccessMessage(response.message))
-        },
-        (error) => {
-          console.error('Error updating product:', error);
-
-          if (error.status === 404) {
-            this.alert.showErrorMessage('Product not found. Please refresh and try again.');
-          } else if (error.status === 400) {
-            this.alert.showErrorMessage('All fields are required. Please fill in all details.');
-          } else {
-            this.alert.showErrorMessage(error.error?.message ||
-              'Edit product failed. Please try again later.');
-          }
-        }
-      );
-    } else {
-      this.productService.addProduct(this.product, this.imageFile)
+      this.loading.show();
+      this.productService
+        .editProduct(this.product._id, this.product, this.imageFile)
         .subscribe(
           (response) => {
-            this.router.navigate(['/ministry-dashboard/manage-product'])
+            this.loading.hide();
+            this.router
+              .navigate(['/ministry-dashboard/manage-product'])
               .then(() => this.alert.showSuccessMessage(response.message));
           },
           (error) => {
+            this.loading.hide();
+            console.error('Error updating product:', error);
 
-            console.error('Error while adding product:', error);
-
-            if (error.status === 400) {
-              this.alert.showErrorMessage('All fields are required');
-            } else if (error.status === 500) {
-              this.alert.showErrorMessage('Internal server error. Please try again later.');
+            if (error.status === 404) {
+              this.alert.showErrorMessage(
+                'Product not found. Please refresh and try again.'
+              );
+            } else if (error.status === 400) {
+              this.alert.showErrorMessage(
+                'All fields are required. Please fill in all details.'
+              );
             } else {
-              this.alert.showErrorMessage(error.error?.message||'Add product failed. Please try again later.');
+              this.alert.showErrorMessage(
+                error.error?.message ||
+                  'Edit product failed. Please try again later.'
+              );
             }
           }
         );
+    } else {
+      this.loading.show();
+      this.productService.addProduct(this.product, this.imageFile).subscribe(
+        (response) => {
+          this.loading.hide();
+          this.router
+            .navigate(['/ministry-dashboard/manage-product'])
+            .then(() => this.alert.showSuccessMessage(response.message));
+        },
+        (error) => {
+          this.loading.hide();
+          console.error('Error while adding product:', error);
+
+          if (error.status === 400) {
+            this.alert.showErrorMessage('All fields are required');
+          } else if (error.status === 500) {
+            this.alert.showErrorMessage(
+              'Internal server error. Please try again later.'
+            );
+          } else {
+            this.alert.showErrorMessage(
+              error.error?.message ||
+                'Add product failed. Please try again later.'
+            );
+          }
+        }
+      );
     }
   }
 }

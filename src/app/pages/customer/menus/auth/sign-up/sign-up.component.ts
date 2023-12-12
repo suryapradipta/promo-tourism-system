@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import {Component, OnInit} from '@angular/core';
 import {
   AbstractControl,
   FormBuilder,
@@ -6,12 +6,12 @@ import {
   ValidatorFn,
   Validators,
 } from '@angular/forms';
-import { Router } from '@angular/router';
+import {Router} from '@angular/router';
 import {
   AuthService,
+  LoadingService,
   NotificationService,
 } from '../../../../../shared/services';
-import { AuthModel } from '../../../../../shared/models';
 
 @Component({
   selector: 'app-sign-up',
@@ -22,13 +22,12 @@ export class SignUpComponent implements OnInit {
   registerForm: FormGroup;
   submitted = false;
 
-  users: AuthModel[] = [];
-
   constructor(
     private formBuilder: FormBuilder,
     private router: Router,
     private alert: NotificationService,
-    private authService: AuthService
+    private authService: AuthService,
+    private loading: LoadingService
   ) {}
 
   ngOnInit(): void {
@@ -65,6 +64,7 @@ export class SignUpComponent implements OnInit {
   onRegister(): void {
     this.submitted = true;
     if (this.registerForm.valid) {
+      this.loading.show();
       this.authService
         .createUser(
           this.registerForm.value.email,
@@ -73,11 +73,14 @@ export class SignUpComponent implements OnInit {
         )
         .subscribe(
           (response) => {
+            this.loading.hide();
             this.router
               .navigate(['/sign-in'])
               .then(() => this.alert.showSuccessMessage(response.message));
           },
           (error) => {
+            this.loading.hide();
+
             if (error.status === 400 || error.status === 422) {
               this.alert.showErrorMessage(error.error.message);
             } else if (error.status === 409) {

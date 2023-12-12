@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { NgForm } from '@angular/forms';
 import {
+  LoadingService,
   MerchantService,
   NotificationService,
 } from '../../../../shared/services';
@@ -17,7 +18,8 @@ export class RegisterMerchantComponent {
 
   constructor(
     private merchantService: MerchantService,
-    private alert: NotificationService
+    private alert: NotificationService,
+    private loading: LoadingService
   ) {}
 
   onRegisterMerchant(form: NgForm): void {
@@ -25,6 +27,7 @@ export class RegisterMerchantComponent {
       return;
     }
 
+    this.loading.show();
     this.merchantService
       .registerMerchant(
         form.value.name,
@@ -34,12 +37,14 @@ export class RegisterMerchantComponent {
       )
       .subscribe(
         (response) => {
+          this.loading.hide();
           this.submitted = true;
           this.alert.showSuccessMessage(response.message);
           this.merchantId = response.id;
         },
         (error) => {
-          console.error(error);
+          this.loading.hide();
+          console.error('Error registering merchant:', error);
           if (error.status === 500 || error.status === 409) {
             this.alert.showEmailInUseMessage();
           } else {
@@ -51,7 +56,7 @@ export class RegisterMerchantComponent {
       );
   }
 
-  onGetFile(event: any): void  {
+  onGetFile(event: any): void {
     this.files = event.target.files;
   }
 
@@ -60,15 +65,18 @@ export class RegisterMerchantComponent {
       return;
     }
 
+    this.loading.show();
     this.merchantService
       .uploadDocuments(this.merchantId, this.files, form.value.file_description)
       .subscribe(
         (response) => {
+          this.loading.hide();
           this.submitted = true;
           this.alert.showSuccessMessage(response.message);
         },
         (error) => {
-          console.error(error);
+          this.loading.hide();
+          console.error('Error uploading documents:', error);
           this.alert.showErrorMessage(
             error.error?.message || 'Error uploading documents.'
           );

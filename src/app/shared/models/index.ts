@@ -6,4 +6,3 @@ export { OrderModel } from './order.model';
 export { PaymentModel } from './payment.model';
 export { ReviewModel } from './review.model';
 export { CustomerPurchasingPower } from './customer-purchasing-power.model';
-export { ProductSold } from './product-sold.model';

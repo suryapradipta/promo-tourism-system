@@ -8,6 +8,7 @@ import {
 import { ActivatedRoute, Router } from '@angular/router';
 import {
   AuthService,
+  LoadingService,
   NotificationService,
   OrderService,
   PaymentService,
@@ -39,7 +40,8 @@ export class ProductDetailComponent {
     private alert: NotificationService,
     private paymentService: PaymentService,
     private authService: AuthService,
-    private productService: ProductService
+    private productService: ProductService,
+    private loading: LoadingService
   ) {}
 
   ngOnInit(): void {
@@ -64,20 +66,26 @@ export class ProductDetailComponent {
     const productId: string = this.route.snapshot.paramMap.get('id');
 
     if (productId) {
+      this.loading.show();
       this.productService.getProductById(productId).subscribe(
         (product: ProductModel): void => {
           this.product = product;
 
           this.productService.getAverageRating(this.product._id).subscribe(
             (response) => {
+              this.loading.hide();
               this.averageRating = response.averageRating;
             },
             (error) => {
+              this.loading.hide();
               console.error('Error while fetching average rating:', error);
             }
           );
         },
-        (error) => console.error('Error fetching product:', error)
+        (error) => {
+          this.loading.hide();
+          console.error('Error fetching product:', error);
+        }
       );
 
       this.fetchReviews(productId);
@@ -85,12 +93,15 @@ export class ProductDetailComponent {
   }
 
   private fetchReviews(productId: string): void {
+    this.loading.show();
     this.productService.getReviewsForProduct(productId).subscribe(
       (response: any[]) => {
+        this.loading.hide();
         this.reviews = response;
       },
       (error) => {
-        console.error(error);
+        this.loading.hide();
+        console.error('Error fetching reviews:', error);
       }
     );
   }
@@ -198,6 +209,7 @@ export class ProductDetailComponent {
           'onClientAuthorization - inform your server about completed transaction at this point',
           data
         );
+        this.loading.show();
         this.onBooking()
           .then(() => {
             const productID = this.product._id;
@@ -233,10 +245,12 @@ export class ProductDetailComponent {
             this.alert.showSuccessMessage(this.orderResponse.message);
 
             this.paymentService.savePayment(payment).subscribe(
-              (savedPayment) => {
+              (savedPayment: PaymentModel) => {
+                this.loading.hide();
                 console.log('Payment saved:', savedPayment);
               },
               (error) => {
+                this.loading.hide();
                 console.error('Error saving payment:', error);
                 if (error.status === 400) {
                   this.alert.showErrorMessage(
@@ -259,6 +273,7 @@ export class ProductDetailComponent {
             });
           })
           .catch((error) => {
+            this.loading.hide();
             console.error('Booking failed. Error:', error);
             if (error.status === 400) {
               this.alert.showErrorMessage(

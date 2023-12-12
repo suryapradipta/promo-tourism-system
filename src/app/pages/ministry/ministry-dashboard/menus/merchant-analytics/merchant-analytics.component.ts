@@ -1,12 +1,15 @@
-import {Component, OnInit} from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import {
   AnalyticsService,
-  AuthService, CreateChartService,
-  MerchantService, NotificationService
+  AuthService,
+  CreateChartService,
+  LoadingService,
+  MerchantService,
+  NotificationService,
 } from '../../../../../shared/services';
-import {Chart, registerables} from 'chart.js';
-import {CustomerPurchasingPower} from "../../../../../shared/models";
-import {ChartConfiguration} from "chart.js/auto";
+import { Chart, registerables } from 'chart.js';
+import { CustomerPurchasingPower } from '../../../../../shared/models';
+import { ChartConfiguration } from 'chart.js/auto';
 
 Chart.register(...registerables);
 
@@ -23,55 +26,74 @@ export class MerchantAnalyticsComponent implements OnInit {
   productSoldStats: any = {};
   purchasingPowerStats: any = {};
 
-
   constructor(
     private analyticsService: AnalyticsService,
     private authService: AuthService,
     private merchantService: MerchantService,
     private createChartService: CreateChartService,
     private alert: NotificationService,
-  ) {
-  }
+    private loading: LoadingService
+  ) {}
 
   async ngOnInit(): Promise<void> {
     const email: string = this.authService.getCurrentUserJson().email;
-    const response = await this.merchantService.getMerchantIdByEmail(email).toPromise()
+    const response = await this.merchantService
+      .getMerchantIdByEmail(email)
+      .toPromise();
 
+    this.loading.show();
     this.analyticsService
       .getProductAnalyticsAndStats(response.merchantId)
-      .subscribe((data) => {
-        this.productAnalytics = data.productAnalytics;
-        this.productSoldStats = data.stats;
-        this.productSoldChart();
-      },
+      .subscribe(
+        (data) => {
+          this.loading.hide();
+
+          this.productAnalytics = data.productAnalytics;
+          this.productSoldStats = data.stats;
+          this.productSoldChart();
+        },
         (error) => {
+          this.loading.hide();
+
           console.error('Error while fetching product analytics:', error);
 
           if (error.status === 404) {
             this.alert.showErrorMessage('Merchant not found');
           } else {
-            const errorMessage = error.error?.message || 'Failed to fetch product analytics';
+            const errorMessage =
+              error.error?.message || 'Failed to fetch product analytics';
             this.alert.showErrorMessage(errorMessage);
           }
-        });
+        }
+      );
 
+    this.loading.show();
     this.analyticsService
       .getPurchasingPowerAnalyticsAndStats(response.merchantId)
-      .subscribe((data) => {
-        this.customerPurchasingPower = data.customerPurchasingPower;
-        this.purchasingPowerStats = data.stats;
-        this.purchasingPowerChart();
-      },
+      .subscribe(
+        (data) => {
+          this.loading.hide();
+          this.customerPurchasingPower = data.customerPurchasingPower;
+          this.purchasingPowerStats = data.stats;
+          this.purchasingPowerChart();
+        },
         (error) => {
-          console.error('Error while fetching purchasing power analytics:', error);
+          this.loading.hide();
+
+          console.error(
+            'Error while fetching purchasing power analytics:',
+            error
+          );
 
           if (error.status === 404) {
             this.alert.showErrorMessage('Merchant not found');
           } else {
-            const errorMessage = error.error?.message || 'Failed to fetch analytics';
+            const errorMessage =
+              error.error?.message || 'Failed to fetch analytics';
             this.alert.showErrorMessage(errorMessage);
           }
-        });
+        }
+      );
   }
 
   showProductSoldChart(): void {
@@ -104,14 +126,15 @@ export class MerchantAnalyticsComponent implements OnInit {
   };
 
   private purchasingPowerChart = (): void => {
-    const labels: string[] = this.customerPurchasingPower.map((customer) => customer.email);
-    const totalSpent: number[] = Object.values(this.customerPurchasingPower).map(
-      (customer: CustomerPurchasingPower) => customer.totalSpent
+    const labels: string[] = this.customerPurchasingPower.map(
+      (customer) => customer.email
     );
-    const totalOrders: number[] = Object.values(this.customerPurchasingPower).map(
-      (customer: CustomerPurchasingPower) => customer.totalOrders
-    );
-
+    const totalSpent: number[] = Object.values(
+      this.customerPurchasingPower
+    ).map((customer: CustomerPurchasingPower) => customer.totalSpent);
+    const totalOrders: number[] = Object.values(
+      this.customerPurchasingPower
+    ).map((customer: CustomerPurchasingPower) => customer.totalOrders);
 
     const chartConfig: ChartConfiguration = {
       type: 'bar',
@@ -127,10 +150,9 @@ export class MerchantAnalyticsComponent implements OnInit {
         'Customers Email',
         'Amount Spent ($)',
         'Customer Purchasing Power Analytics',
-        'Number of Orders',
-      )
+        'Number of Orders'
+      ),
     };
     this.createChartService.createChart('purchasingPowerChart', chartConfig);
-
   };
 }

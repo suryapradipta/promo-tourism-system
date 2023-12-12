@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { AuthModel, OrderModel } from '../../../../shared/models';
 import {
   AuthService,
+  LoadingService,
   NotificationService,
   ReviewService,
 } from '../../../../shared/services';
@@ -22,7 +23,8 @@ export class ReviewProductComponent implements OnInit {
     private formBuilder: FormBuilder,
     private alert: NotificationService,
     private reviewService: ReviewService,
-    private authService: AuthService
+    private authService: AuthService,
+    private loading: LoadingService
   ) {}
 
   ngOnInit(): void {
@@ -38,11 +40,14 @@ export class ReviewProductComponent implements OnInit {
     const user: AuthModel = this.authService.getCurrentUserJson();
 
     if (user) {
+      this.loading.show();
       this.reviewService.getUnreviewedOrders(user._id).subscribe(
         (response: OrderModel[]) => {
+          this.loading.hide();
           this.unreviewedOrders = response;
         },
         (error) => {
+          this.loading.hide();
           console.error('Error retrieving unreviewed orders:', error);
           if (error.status === 404) {
             this.alert.showErrorMessage('No unreviewed orders found.');
@@ -92,16 +97,19 @@ export class ReviewProductComponent implements OnInit {
       const rating = this.reviewForm.value.rating;
       const comment = this.reviewForm.value.comment;
 
+      this.loading.show();
       this.reviewService
         .submitReview(orderId, +rating, comment, userId)
         .subscribe(
           (response) => {
+            this.loading.hide();
             this.reviewForm.reset();
             this.showReviewForm = false;
             this.loadUnreviewedOrders();
             this.alert.showSuccessMessage(response.message);
           },
           (error) => {
+            this.loading.hide();
             console.error('Error submitting review:', error);
 
             if (error.status === 400) {

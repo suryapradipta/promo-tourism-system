@@ -11,7 +11,7 @@ import Swal from "sweetalert2";
 export class MobileSidebarComponent {
   activeLink: string = 'dashboard';
 
-  setActiveLink(link: string) {
+  setActiveLink(link: string): void {
     this.activeLink = link;
   }
 
@@ -27,7 +27,7 @@ export class MobileSidebarComponent {
     return user && user.role === 'merchant';
   }
 
-  logout() {
+  logout(): void {
     Swal.fire({
       title: 'Are you sure you want to log out?',
       icon: 'warning',

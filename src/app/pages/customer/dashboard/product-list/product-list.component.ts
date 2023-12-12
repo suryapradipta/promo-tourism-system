@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { ProductModel } from '../../../../shared/models';
 import {
   AuthService,
+  LoadingService,
   NotificationService,
   ProductService,
 } from '../../../../shared/services';
@@ -20,16 +21,19 @@ export class ProductListComponent implements OnInit {
     private router: Router,
     private authService: AuthService,
     private productService: ProductService,
-    private alert: NotificationService
+    private alert: NotificationService,
+    private loading: LoadingService
   ) {}
 
   ngOnInit(): void {
+    this.loading.show();
     this.productService.getAllProducts().subscribe(
       (products: ProductModel[]) => {
         this.products = products;
         this.fetchAverageRatings(products);
       },
       (error) => {
+        this.loading.hide();
         console.error('Error fetching products:', error);
 
         if (error.status === 404) {
@@ -44,7 +48,7 @@ export class ProductListComponent implements OnInit {
     );
   }
 
-  viewProductDetails(product: ProductModel) {
+  viewProductDetails(product: ProductModel): void {
     if (this.authService.isAuthenticated()) {
       this.router.navigate(['/product', product._id]);
       window.scrollTo({ top: 0 });
@@ -65,9 +69,11 @@ export class ProductListComponent implements OnInit {
     for (const product of products) {
       this.productService.getAverageRating(product._id).subscribe(
         (response) => {
+          this.loading.hide();
           product.averageRating = response.averageRating;
         },
         (error) => {
+          this.loading.hide();
           console.error('Error while fetching average rating:', error);
         }
       );

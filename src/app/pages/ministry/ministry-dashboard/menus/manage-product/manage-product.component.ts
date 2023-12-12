@@ -1,12 +1,13 @@
-import {Component, OnInit} from '@angular/core';
-import {ProductModel} from '../../../../../shared/models';
+import { Component, OnInit } from '@angular/core';
+import { ProductModel } from '../../../../../shared/models';
 import {
   AuthService,
+  LoadingService,
   MerchantService,
   NotificationService,
   ProductService,
 } from '../../../../../shared/services';
-import {Router} from '@angular/router';
+import { Router } from '@angular/router';
 import Swal from 'sweetalert2';
 
 @Component({
@@ -23,34 +24,43 @@ export class ManageProductComponent implements OnInit {
     private router: Router,
     private authService: AuthService,
     private merchantService: MerchantService,
-    private alert: NotificationService
-  ) {
-  }
+    private alert: NotificationService,
+    private loading: LoadingService
+  ) {}
 
   async ngOnInit(): Promise<void> {
     const email = this.authService.getCurrentUserJson().email;
-    const response = await this.merchantService.getMerchantIdByEmail(email).toPromise()
+    const response = await this.merchantService
+      .getMerchantIdByEmail(email)
+      .toPromise();
     this.merchantId = response.merchantId;
     this.loadProducts(this.merchantId);
   }
 
-  loadProducts(merchantId: string): void  {
-    this.productService.getProductsByMerchantId(merchantId)
-      .subscribe(
-        (products: ProductModel[]) => {
-          this.products = products;
-        },
-        (error) => {
-          console.error('Error fetching products:', error);
-          if (error.status === 404) {
-            this.alert.showErrorMessage('Merchant not found.');
-          } else if (error.status === 500) {
-            this.alert.showErrorMessage('Internal server error. Please try again later.');
-          } else {
-            this.alert.showErrorMessage(error.error?.message || 'An unexpected error occurred. Please try again.');
-          }
+  loadProducts(merchantId: string): void {
+    this.loading.show();
+    this.productService.getProductsByMerchantId(merchantId).subscribe(
+      (products: ProductModel[]) => {
+        this.loading.hide();
+        this.products = products;
+      },
+      (error) => {
+        this.loading.hide();
+        console.error('Error fetching products:', error);
+        if (error.status === 404) {
+          this.alert.showErrorMessage('Merchant not found.');
+        } else if (error.status === 500) {
+          this.alert.showErrorMessage(
+            'Internal server error. Please try again later.'
+          );
+        } else {
+          this.alert.showErrorMessage(
+            error.error?.message ||
+              'An unexpected error occurred. Please try again.'
+          );
         }
-      );
+      }
+    );
   }
 
   addProduct(): void {
@@ -76,17 +86,22 @@ export class ManageProductComponent implements OnInit {
           'Product have been successfully deleted.',
           'success'
         );
+        this.loading.show();
         this.productService.deleteProduct(productId).subscribe(
           () => {
+            this.loading.hide();
             this.loadProducts(this.merchantId);
           },
           (error) => {
+            this.loading.hide();
             if (error.status === 400) {
               this.alert.showErrorMessage('Invalid product ID');
             } else if (error.status === 404) {
               this.alert.showErrorMessage('Product not found');
             } else {
-              this.alert.showErrorMessage(error.error?.message || 'Failed to delete product');
+              this.alert.showErrorMessage(
+                error.error?.message || 'Failed to delete product'
+              );
             }
           }
         );

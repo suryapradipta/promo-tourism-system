@@ -1,17 +1,18 @@
-import {Component, OnInit} from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import {
   OrderModel,
   PaymentModel,
   ProductModel,
 } from '../../../../shared/models';
-import {ActivatedRoute, Router} from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import {
+  LoadingService,
   NotificationService,
   OrderService,
   PaymentService,
   ProductService,
 } from '../../../../shared/services';
-import {ReceiptService} from "../../../../shared/services/receipt/receipt.service";
+import { ReceiptService } from '../../../../shared/services/receipt/receipt.service';
 
 @Component({
   selector: 'app-receipt',
@@ -33,15 +34,17 @@ export class ReceiptComponent implements OnInit {
     private route: ActivatedRoute,
     private router: Router,
     private alert: NotificationService,
-  ) {
-  }
+    private loading: LoadingService
+  ) {}
 
   ngOnInit(): void {
+    this.loading.show();
     this.route.queryParams.subscribe(async (params) => {
       try {
         await this.loadData(params);
       } catch (error) {
-        console.error("Error during loading data:", error);
+        this.loading.hide();
+        console.error('Error during loading data:', error);
       }
     });
   }
@@ -51,11 +54,16 @@ export class ReceiptComponent implements OnInit {
     const paymentID = params['paymentID'];
     const orderID = params['orderID'];
 
-    this.product = await this.productService.getProductById(productID).toPromise();
-    this.payment = await this.paymentService.getPaymentByPaypalId(paymentID).toPromise();
+    this.product = await this.productService
+      .getProductById(productID)
+      .toPromise();
+    this.payment = await this.paymentService
+      .getPaymentByPaypalId(paymentID)
+      .toPromise();
     this.order = await this.orderService.getOrderById(orderID).toPromise();
 
     this.orderDate = ReceiptComponent.formatOrderDate(this.payment.createdAt);
+    this.loading.hide();
   }
 
   private static formatOrderDate(date: string): string {
@@ -68,8 +76,10 @@ export class ReceiptComponent implements OnInit {
 
   exportToPdf(): void {
     this.receiptService.exportToPdf('receipt_container', 'receipt');
-    this.router.navigate(['/']).then(() =>
-      this.alert.showSuccessMessage('Official Receipt Successfully Saved')
-    );
+    this.router
+      .navigate(['/'])
+      .then(() =>
+        this.alert.showSuccessMessage('Official Receipt Successfully Saved')
+      );
   }
 }

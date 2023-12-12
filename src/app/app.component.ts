@@ -1,15 +1,13 @@
-import { Component } from "@angular/core"
-import { Meta, Title } from "@angular/platform-browser"
+import {Component, OnInit} from "@angular/core"
 import {
-  Router,
   Event as RouterEvent,
-  NavigationStart,
-  NavigationEnd,
   NavigationCancel,
+  NavigationEnd,
   NavigationError,
+  NavigationStart,
+  Router,
 } from "@angular/router"
-import { OnInit } from '@angular/core';
-import { initFlowbite } from 'flowbite';
+import {initFlowbite} from 'flowbite';
 import {LoadingService} from "./shared/services";
 
 

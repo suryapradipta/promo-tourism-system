@@ -1,12 +1,13 @@
-import {Component, OnInit} from '@angular/core';
-import {FormBuilder, FormGroup, Validators} from '@angular/forms';
-import {Router} from '@angular/router';
+import { Component, OnInit } from '@angular/core';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { Router } from '@angular/router';
 
 import {
-  AuthService, LoadingService,
-  NotificationService
+  AuthService,
+  LoadingService,
+  NotificationService,
 } from '../../../../../shared/services';
-import {AuthModel} from '../../../../../shared/models';
+import { AuthModel } from '../../../../../shared/models';
 
 @Component({
   selector: 'app-sign-in',
@@ -15,8 +16,6 @@ import {AuthModel} from '../../../../../shared/models';
 })
 export class SignInComponent implements OnInit {
   loginForm: FormGroup;
-  users: AuthModel[] = [];
-
 
   constructor(
     private formBuilder: FormBuilder,
@@ -24,15 +23,13 @@ export class SignInComponent implements OnInit {
     private authService: AuthService,
     private alert: NotificationService,
     private loading: LoadingService
-  ) {
-  }
+  ) {}
 
   ngOnInit(): void {
     this.loginForm = this.formBuilder.group({
       email: ['', [Validators.required, Validators.email]],
       password: ['', [Validators.required]],
     });
-
   }
 
   get formControl() {
@@ -41,7 +38,7 @@ export class SignInComponent implements OnInit {
 
   onLogin(): void {
     if (this.loginForm.valid) {
-      const {email, password} = this.loginForm.value;
+      const { email, password } = this.loginForm.value;
       this.loading.show();
       this.authService.login(email, password).subscribe(
         (response: { token: string }) => {
@@ -49,31 +46,47 @@ export class SignInComponent implements OnInit {
           this.getCurrentUser();
         },
         (error) => {
-          console.error(error);
-          if (error.status === 401 || error.status === 400) {
-            this.alert.showErrorMessage(error.error.message + '. Please try again.');
-          } else if (error.status === 500) {
-            this.alert.showErrorMessage('Server error. Please try again later.');
-          } else {
-            this.alert.showErrorMessage(error.error?.message || 'An unexpected error occurred. Please try again.');
-          }
           this.loading.hide();
-        });
+          console.error("Error during loginL ", error);
+          if (error.status === 401 || error.status === 400) {
+            this.alert.showErrorMessage(
+              error.error.message + '. Please try again.'
+            );
+          } else if (error.status === 500) {
+            this.alert.showErrorMessage(
+              'Server error. Please try again later.'
+            );
+          } else {
+            this.alert.showErrorMessage(
+              error.error?.message ||
+                'An unexpected error occurred. Please try again.'
+            );
+          }
+        }
+      );
     }
   }
 
   private getCurrentUser(): void {
-    this.authService.getCurrentUser().subscribe((currentUser) => {
+    this.authService.getCurrentUser().subscribe(
+      (currentUser) => {
+        this.loading.hide();
         localStorage.setItem('currentUser', JSON.stringify(currentUser));
-      this.loading.hide();
         this.handleLoginSuccess(currentUser);
-      }, (error) => {
+      },
+      (error) => {
+        this.loading.hide();
         console.error('Error fetching current user:', error);
-        if (error.status === 401 && error.error.message === 'Token has expired') {
+        if (
+          error.status === 401 &&
+          error.error.message === 'Token has expired'
+        ) {
           this.router.navigate(['/login']);
         }
-        this.alert.showErrorMessage(error.error?.message || 'An unexpected error occurred. Please try again.');
-      this.loading.hide();
+        this.alert.showErrorMessage(
+          error.error?.message ||
+            'An unexpected error occurred. Please try again.'
+        );
       }
     );
   }
@@ -84,9 +97,9 @@ export class SignInComponent implements OnInit {
       (isFirstLogin: boolean) => {
         this.loading.hide();
         if (isFirstLogin) {
-          this.router.navigate(['/change-password']).then(() =>
-            this.alert.showSuccessMessage('Login successful!')
-          );
+          this.router
+            .navigate(['/change-password'])
+            .then(() => this.alert.showSuccessMessage('Login successful!'));
         } else {
           switch (currentUser.role) {
             case 'ministry':
@@ -97,7 +110,7 @@ export class SignInComponent implements OnInit {
               this.router.navigate(['/']);
               break;
           }
-          this.alert.showSuccessMessage('Login successful!')
+          this.alert.showSuccessMessage('Login successful!');
         }
       },
       (error) => {
@@ -109,9 +122,11 @@ export class SignInComponent implements OnInit {
           );
         } else {
           const errorMessage =
-            error.error?.message || 'Failed to check login status. Please try again later.';
+            error.error?.message ||
+            'Failed to check login status. Please try again later.';
           this.alert.showErrorMessage(errorMessage);
         }
-      });
+      }
+    );
   }
 }
