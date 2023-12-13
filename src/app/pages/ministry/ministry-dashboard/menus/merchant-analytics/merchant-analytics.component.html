@@ -2,7 +2,7 @@
   <div class="flex flex-1 flex-col overflow-hidden">
     <div class="flex flex-1 items-stretch overflow-hidden">
       <main class="flex-1 overflow-y-auto">
-        <div class="mx-auto max-w-7xl px-4 pt-8 sm:px-6 lg:px-8">
+        <div class="mx-auto max-w-7xl py-12 px-4 sm:px-6 lg:px-8">
           <div class="flex">
             <h1 class="flex-1 text-xl font-semibold text-gray-900">Analytic
               Reports</h1>
@@ -39,19 +39,8 @@
           <div
             x-data="{ openTab: 1 }"
             class="mt-3 sm:mt-2">
-            <!-- Responsive Tab Selector for Small Screens -->
-            <div class="sm:hidden">
-              <label for="tabs" class="sr-only">Select a tab</label>
-              <select id="tabs" name="tabs"
-                      x-model="openTab"
-                      class="block w-full rounded-md border-gray-300 py-2 pl-3 pr-10 text-base focus:border-indigo-500 focus:outline-none focus:ring-indigo-500 sm:text-sm">
-
-                <option value="1">Product Sold</option>
-                <option value="2">Purchasing Power</option>
-              </select>
-            </div>
             <!-- Tab Navigation for Larger Screens -->
-            <div class="hidden sm:block">
+            <div class="sm:block">
               <div class="flex items-center border-b border-gray-200">
                 <nav class="-mb-px flex flex-1 space-x-6 xl:space-x-8"
                      aria-label="Tabs">
