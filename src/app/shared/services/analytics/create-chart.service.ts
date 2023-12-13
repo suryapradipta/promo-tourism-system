@@ -111,6 +111,9 @@ export class CreateChartService {
           ticks: {
             stepSize: 2000,
           },
+          grid: {
+            display: false,
+          },
         },
         secondary: {
           title: {

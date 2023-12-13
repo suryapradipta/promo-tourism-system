@@ -95,7 +95,7 @@ export class AddEditProductComponent implements OnInit {
       return;
     }
 
-    if (!this.imageFile) {
+    if (!this.imageFile && !this.product.image) {
       this.alert.showErrorMessage('Image file is required');
       return;
     }

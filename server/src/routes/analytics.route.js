@@ -161,8 +161,8 @@ router.get('/all-merchant-analytics-and-stats', async (req, res) => {
 
       return {
         merchant,
-        productAnalytics: productAnalytics[0],
-        purchasingPowerAnalytics: purchasingPowerAnalytics[0],
+        productAnalytics: productAnalytics[0] || { totalSold: 0 },
+        purchasingPowerAnalytics: purchasingPowerAnalytics[0] || { totalSpent: 0, totalOrders: 0 },
       };
     });
 

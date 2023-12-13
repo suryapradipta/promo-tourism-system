@@ -1,4 +1,4 @@
-<div class="bg-white">
+<div class="bg-white flex h-screen">
   <div class="flex flex-1 flex-col overflow-hidden">
     <div class="flex flex-1 items-stretch overflow-hidden">
       <main class="flex-1 overflow-y-auto">
@@ -258,7 +258,7 @@
             <dd
               class="mt-1 text-3xl font-semibold tracking-tight text-indigo-600"
             >
-              {{ allMerchantStats.averageProductsSold }}
+              {{ allMerchantStats.averageProductsSold?.toFixed(2) }}
             </dd>
           </div>
         </div>
@@ -289,7 +289,7 @@
             <dd
               class="mt-1 text-3xl font-semibold tracking-tight text-indigo-600"
             >
-              ${{ allMerchantStats.averageAmountSpent }}
+              ${{ allMerchantStats.averageAmountSpent.toFixed(2) }}
             </dd>
           </div>
         </div>
@@ -331,7 +331,7 @@
             <dd
               class="mt-1 text-3xl font-semibold tracking-tight text-indigo-600"
             >
-              {{ productSoldStats.averageSoldProducts }}
+              {{ productSoldStats.averageSoldProducts?.toFixed(2) }}
             </dd>
           </div>
         </div>
@@ -372,7 +372,7 @@
             <dd
               class="mt-1 text-3xl font-semibold tracking-tight text-indigo-600"
             >
-              ${{ purchasingPowerStats.averageSpendingPerCustomer }}
+              ${{ purchasingPowerStats.averageSpendingPerCustomer?.toFixed(2) }}
             </dd>
           </div>
         </div>
