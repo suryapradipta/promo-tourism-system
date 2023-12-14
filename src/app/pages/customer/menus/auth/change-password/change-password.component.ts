@@ -59,7 +59,7 @@ export class ChangePasswordComponent implements OnInit {
                 this.loading.hide();
                 this.passwordMismatch = false;
                 this.changePasswordForm.reset();
-                this.router.navigate(['/ministry-dashboard'])
+                this.router.navigate(['/ministry-dashboard/home'])
                   .then(() => this.alert.showSuccessMessage(response.message));
               },
               (error) => {
