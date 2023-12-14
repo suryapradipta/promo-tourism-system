@@ -5,9 +5,8 @@ const nodemailer = require('nodemailer');
 
 const Merchant = require('../models/merchant.model');
 const User = require('../models/user.model');
-const authMiddleware = require("../middleware/auth.middleware");
-const mongoose = require("mongoose");
-
+const authMiddleware = require('../middleware/auth.middleware');
+const mongoose = require('mongoose');
 
 const router = express.Router();
 const projectRoot = path.resolve(__dirname, '..');
@@ -17,12 +16,35 @@ const storage = multer.diskStorage({
   },
   filename: function (req, file, cb) {
     const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1e9);
-    cb(null, file.fieldname + '-' + uniqueSuffix + path.extname(file.originalname));
+    cb(
+      null,
+      file.fieldname + '-' + uniqueSuffix + path.extname(file.originalname)
+    );
   },
 });
+
+const allowedMimeTypes = ['image/jpeg', 'image/png', 'application/pdf'];
+const allowedExtensions = ['.jpg', '.jpeg', '.png', '.pdf'];
+
 const upload = multer({
   storage: storage,
-  limits: { fileSize: 1024 * 1024 },
+  limits: {
+    fileSize: 2 * 1024 * 1024,
+    files: 3,
+  },
+  fileFilter: (req, file, cb) => {
+    const ext = path.extname(file.originalname).toLowerCase();
+    if (
+      allowedMimeTypes.includes(file.mimetype) &&
+      allowedExtensions.includes(ext)
+    ) {
+      cb(null, true);
+    } else {
+      const error = new Error('Invalid file type or extension');
+      error.fileFilterError = true;
+      cb(error);
+    }
+  },
 });
 
 const transporter = nodemailer.createTransport({
@@ -39,12 +61,7 @@ function isValidEmail(email) {
 
 router.post('/register-merchant', async (req, res) => {
   try {
-    const {
-      name,
-      contact_number,
-      email,
-      company_description,
-    } = req.body;
+    const { name, contact_number, email, company_description } = req.body;
 
     if (!name || !contact_number || !email || !company_description) {
       return res.status(400).json({ message: 'All fields are required' });
@@ -65,16 +82,16 @@ router.post('/register-merchant', async (req, res) => {
       company_description,
     });
 
-    await merchant.save().then(registeredMerchant => {
+    await merchant.save().then((registeredMerchant) => {
       console.log(registeredMerchant);
       res.status(201).json({
         message: 'Merchant registered successfully',
-        id: registeredMerchant._id
+        id: registeredMerchant._id,
       });
     });
   } catch (error) {
     console.error(error);
-    res.status(500).json({message: 'Internal server error'});
+    res.status(500).json({ message: 'Internal server error' });
   }
 });
 
@@ -84,50 +101,70 @@ router.post('/:id/upload', async (req, res) => {
   uploadArray(req, res, async (err) => {
     if (err instanceof multer.MulterError) {
       if (err.code === 'LIMIT_FILE_SIZE') {
-        return res.status(400).json({ message: 'File size limit exceeded (max: 1MB)' });
+        return res
+          .status(400)
+          .json({ message: 'File size limit exceeded (max: 2MB)' });
+      } else if (err.code === 'LIMIT_FILE_COUNT') {
+        return res
+          .status(400)
+          .json({ message: 'File limit exceeded (max: 3)' });
       } else {
         console.error('Multer error:', err);
         return res.status(400).json({ message: 'File upload error' });
       }
     } else if (err) {
-      console.error('Error uploading files:', err);
-      return res.status(500).json({ message: 'Internal server error' });
+      if (err.fileFilterError) {
+        return res.status(400).json({
+          message: 'Invalid file type or extension',
+        });
+      } else {
+        console.error('Error uploading file:', err);
+        return res.status(500).json({ message: 'Internal server error' });
+      }
     }
+    try {
+      const merchantId = req.params.id;
+      const documentDescription = req.body.document_description;
 
-  try {
-    const merchantId = req.params.id;
-    const documentDescription = req.body.document_description;
+      if (!documentDescription) {
+        return res
+          .status(400)
+          .json({ message: 'Document description is required' });
+      }
 
-    if (!documentDescription) {
-      return res.status(400).json({ message: 'Document description is required' });
+      const files = req.files.map((file) => ({
+        filename: file.filename,
+      }));
+
+      if (!files || files.length === 0) {
+        return res
+          .status(400)
+          .json({ message: 'At least one document is required' });
+      }
+
+      const merchant = await Merchant.findById(merchantId);
+      if (!merchant) {
+        return res.status(404).json({ message: 'Merchant not found' });
+      }
+
+      merchant.documents = files;
+      merchant.document_description = documentDescription;
+
+      await merchant.save();
+      res.status(200).json({ message: 'Documents uploaded successfully' });
+    } catch (error) {
+      console.error(error);
+      if (error.message === 'Invalid file type or extension') {
+        return res
+          .status(400)
+          .json({ message: 'Invalid file type or extension' });
+      }
+      res.status(500).json({ message: 'Internal server error' });
     }
-
-    const files = req.files.map((file) => ({
-      filename: file.filename,
-    }));
-
-    if (!files || files.length === 0) {
-      return res.status(400).json({ message: 'At least one document is required' });
-    }
-
-    const merchant = await Merchant.findById(merchantId);
-    if (!merchant) {
-      return res.status(404).json({message: 'Merchant not found'});
-    }
-
-    merchant.documents = files;
-    merchant.document_description = documentDescription;
-
-    await merchant.save();
-    res.status(200).json({message: 'Documents uploaded successfully'});
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({message: 'Internal server error'});
-  }
   });
 });
 
-router.get('/pending', authMiddleware,async (req, res) => {
+router.get('/pending', authMiddleware, async (req, res) => {
   try {
     // Parse query parameters for pagination
     const page = parseInt(req.query.page) || 1;
@@ -146,7 +183,7 @@ router.get('/pending', authMiddleware,async (req, res) => {
   }
 });
 
-router.get('/by-id/:id', authMiddleware,async (req, res) => {
+router.get('/by-id/:id', authMiddleware, async (req, res) => {
   const merchantId = req.params.id;
 
   if (!mongoose.Types.ObjectId.isValid(merchantId)) {
@@ -167,7 +204,7 @@ router.get('/by-id/:id', authMiddleware,async (req, res) => {
   }
 });
 
-router.put('/approve/:id', authMiddleware,async (req, res) => {
+router.put('/approve/:id', authMiddleware, async (req, res) => {
   const merchantId = req.params.id;
 
   if (!mongoose.Types.ObjectId.isValid(merchantId)) {
@@ -183,14 +220,16 @@ router.put('/approve/:id', authMiddleware,async (req, res) => {
     merchant.status = 'APPROVED';
     await merchant.save();
 
-    return res.status(200).json({ message: 'Merchant approved successfully', merchant });
+    return res
+      .status(200)
+      .json({ message: 'Merchant approved successfully', merchant });
   } catch (error) {
     console.error('Error approving merchant:', error);
     res.status(500).json({ message: 'Internal server error' });
   }
 });
 
-router.put('/reject/:id', authMiddleware,async (req, res) => {
+router.put('/reject/:id', authMiddleware, async (req, res) => {
   const merchantId = req.params.id;
 
   if (!mongoose.Types.ObjectId.isValid(merchantId)) {
@@ -206,14 +245,16 @@ router.put('/reject/:id', authMiddleware,async (req, res) => {
     merchant.status = 'REJECTED';
     await merchant.save();
 
-    return res.status(200).json({ message: 'Merchant rejected successfully', merchant });
+    return res
+      .status(200)
+      .json({ message: 'Merchant rejected successfully', merchant });
   } catch (error) {
     console.error('Error rejecting merchant:', error);
     res.status(500).json({ message: 'Internal server error' });
   }
 });
 
-router.post('/send-email',authMiddleware, async (req, res) => {
+router.post('/send-email', authMiddleware, async (req, res) => {
   const { to, subject, html } = req.body;
 
   if (!to || !subject || !html) {
