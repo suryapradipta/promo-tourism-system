@@ -121,6 +121,7 @@ export class AddEditProductComponent implements OnInit {
               );
             } else if (error.status === 400) {
               this.alert.showErrorMessage(
+                error.error?.message ||
                 'All fields are required. Please fill in all details.'
               );
             } else {
@@ -145,7 +146,7 @@ export class AddEditProductComponent implements OnInit {
           console.error('Error while adding product:', error);
 
           if (error.status === 400) {
-            this.alert.showErrorMessage('All fields are required');
+            this.alert.showErrorMessage(error.error?.message || 'All fields are required');
           } else if (error.status === 500) {
             this.alert.showErrorMessage(
               'Internal server error. Please try again later.'

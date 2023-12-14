@@ -6,9 +6,6 @@ const path = require('path');
 const multer = require('multer');
 const mongoose = require("mongoose");
 const fs = require('fs').promises;
-const Review = require('../models/review.model');
-
-
 
 const projectRoot = path.resolve(__dirname, '..');
 const storage = multer.diskStorage({
@@ -19,13 +16,37 @@ const storage = multer.diskStorage({
     cb(null, file.fieldname + '-' + uniqueSuffix + '.' + file.originalname.split('.').pop());
   },
 });
-const upload = multer({storage: storage});
+const upload = multer({
+  storage: storage,
+  limits: {
+    fileSize: 2 * 1024 * 1024,
+  },});
 const uploadDirectory = path.join(__dirname, '..', 'uploads');
 
-router.post('/add-product', authMiddleware, upload.single('image'), async (req, res) => {
+router.post('/add-product', authMiddleware, async (req, res, err) => {
+  const uploadSingle = upload.single('image');
+
+  uploadSingle(req, res, async (err) => {
+    if (err instanceof multer.MulterError) {
+      if (err.code === 'LIMIT_FILE_SIZE') {
+        return res.status(400).json({message: 'File size limit exceeded (max: 2MB)'});
+      } else {
+        console.error('Multer error:', err);
+        return res.status(400).json({message: 'File upload error'});
+      }
+    } else if (err) {
+      console.error('Error uploading file:', err);
+      return res.status(500).json({message: 'Internal server error'});
+    }
+
   try {
     const {name, description, price, category, merchantId} = req.body;
-    const image = req.file ? req.file.filename : null;
+
+    if (!req.file) {
+      return res.status(400).json({ message: 'Image is required' });
+    }
+
+    const image = req.file.filename;
 
     if (!name || !description || !price || !category || !merchantId) {
       return res.status(400).json({message: 'All fields are required'});
@@ -45,9 +66,25 @@ router.post('/add-product', authMiddleware, upload.single('image'), async (req, 
     console.error('Error submitting product:', error);
     res.status(500).json({message: 'Internal server error'});
   }
+  });
 });
 
-router.put('/edit-product/:id', authMiddleware, upload.single('image'), async (req, res) => {
+router.put('/edit-product/:id', authMiddleware, async (req, res) => {
+  const uploadSingle = upload.single('image');
+
+  uploadSingle(req, res, async (err) => {
+    if (err instanceof multer.MulterError) {
+      if (err.code === 'LIMIT_FILE_SIZE') {
+        return res.status(400).json({message: 'File size limit exceeded (max: 2MB)'});
+      } else {
+        console.error('Multer error:', err);
+        return res.status(400).json({message: 'File upload error'});
+      }
+    } else if (err) {
+      console.error('Error uploading file:', err);
+      return res.status(500).json({message: 'Internal server error'});
+    }
+
   const productId = req.params.id;
   const {name, description, price, category} = req.body;
 
@@ -85,6 +122,7 @@ router.put('/edit-product/:id', authMiddleware, upload.single('image'), async (r
     console.error('Error updating product:', error);
     res.status(500).json({message: 'Internal server error'});
   }
+  });
 });
 
 router.delete('/delete-product/:id', authMiddleware, async (req, res) => {

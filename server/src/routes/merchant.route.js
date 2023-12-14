@@ -78,7 +78,22 @@ router.post('/register-merchant', async (req, res) => {
   }
 });
 
-router.post('/:id/upload', upload.array('documents'), async (req, res) => {
+router.post('/:id/upload', async (req, res) => {
+  const uploadArray = upload.array('documents');
+
+  uploadArray(req, res, async (err) => {
+    if (err instanceof multer.MulterError) {
+      if (err.code === 'LIMIT_FILE_SIZE') {
+        return res.status(400).json({ message: 'File size limit exceeded (max: 1MB)' });
+      } else {
+        console.error('Multer error:', err);
+        return res.status(400).json({ message: 'File upload error' });
+      }
+    } else if (err) {
+      console.error('Error uploading files:', err);
+      return res.status(500).json({ message: 'Internal server error' });
+    }
+
   try {
     const merchantId = req.params.id;
     const documentDescription = req.body.document_description;
@@ -93,12 +108,6 @@ router.post('/:id/upload', upload.array('documents'), async (req, res) => {
 
     if (!files || files.length === 0) {
       return res.status(400).json({ message: 'At least one document is required' });
-    }
-    for (const file of files) {
-      if (file.size > 1024 * 1024) {
-        // Limit file size to 1MB
-        return res.status(400).json({ message: 'File size exceeds the limit (1MB)' });
-      }
     }
 
     const merchant = await Merchant.findById(merchantId);
@@ -115,6 +124,7 @@ router.post('/:id/upload', upload.array('documents'), async (req, res) => {
     console.error(error);
     res.status(500).json({message: 'Internal server error'});
   }
+  });
 });
 
 router.get('/pending', authMiddleware,async (req, res) => {
