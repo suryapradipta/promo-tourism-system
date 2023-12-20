@@ -1,3 +1,8 @@
+/**
+ * This service provides methods to create and manage Chart.js charts and their configurations.
+ * It includes functions for creating single and multi-dataset charts, defining chart data, and
+ * specifying chart options such as titles and axis labels.
+ */
 import { Injectable } from '@angular/core';
 import { Chart, ChartData, ChartOptions } from 'chart.js';
 import { ChartConfiguration } from 'chart.js/auto';
@@ -8,8 +13,13 @@ import { ChartConfiguration } from 'chart.js/auto';
 export class CreateChartService {
   private chartInstance: Chart;
 
-  constructor() {}
-
+  /**
+   * Create a Chart.js chart with the provided configuration on the specified canvas element.
+   * If a previous chart instance exists, it is destroyed before creating the new one.
+   *
+   * @param {string} canvasId - The ID of the HTML canvas element to render the chart.
+   * @param {ChartConfiguration} chartConfig - Configuration options for the Chart.js chart.
+   */
   createChart(canvasId: string, chartConfig: ChartConfiguration): void {
     const canvas: HTMLCanvasElement = document.getElementById(
       canvasId
@@ -25,6 +35,14 @@ export class CreateChartService {
     }
   }
 
+  /**
+   * Create chart data for a single-dataset bar chart.
+   *
+   * @param {string[]} labels - Array of labels for the chart data.
+   * @param {number[]} data - Array of numerical data values.
+   * @param {string} label - Label for the dataset.
+   * @returns {ChartData} - Chart data configuration object.
+   */
   createChartData(labels: string[], data: number[], label: string): ChartData {
     return {
       labels,
@@ -43,6 +61,17 @@ export class CreateChartService {
     };
   }
 
+  /**
+   * Create chart data for a multi-dataset bar chart.
+   *
+   * @param {string[]} labels - Array of labels for the chart data.
+   * @param {string} label1 - Label for the first dataset.
+   * @param {number[]} data1 - Array of numerical data values for the first dataset.
+   * @param {string} label2 - Label for the second dataset.
+   * @param {number[]} data2 - Array of numerical data values for the second dataset.
+   * @param {string | undefined} yAxisID - ID of the y-axis for the second dataset.
+   * @returns {ChartData} - Chart data configuration object.
+   */
   createMultiChartData(
     labels: string[],
     label1: string,
@@ -79,6 +108,15 @@ export class CreateChartService {
     };
   }
 
+  /**
+   * Create chart options for a multi-dataset bar chart.
+   *
+   * @param {string} xTitle - Title for the x-axis.
+   * @param {string} yTitle - Title for the y-axis.
+   * @param {string} title - Title for the chart.
+   * @param {string} secondaryTitle - Title for the secondary y-axis (if applicable).
+   * @returns {ChartOptions} - Chart options configuration object.
+   */
   createMultiChartOptions(
     xTitle: string,
     yTitle: string,
@@ -149,6 +187,15 @@ export class CreateChartService {
     };
   }
 
+  /**
+   * Create chart options for a single-dataset bar chart or line chart.
+   *
+   * @param {string} title - Title for the chart.
+   * @param {string} xTitle - Title for the x-axis.
+   * @param {string} yTitle - Title for the y-axis.
+   * @param {'x' | 'y' | undefined} indexAxis - Axis to index the data along.
+   * @returns {ChartOptions} - Chart options configuration object.
+   */
   createChartOptions(
     title: string,
     xTitle: string,

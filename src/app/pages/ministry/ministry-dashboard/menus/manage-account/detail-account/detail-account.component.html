@@ -4,8 +4,12 @@
       <div>
         <div>
           <!-- Applicant Information Header -->
-          <h3 class="text-lg font-medium leading-6 text-gray-900">Applicant Information</h3>
-          <p class="mt-1 max-w-2xl text-sm text-gray-500">Personal details and application.</p>
+          <h3 class="text-lg font-medium leading-6 text-gray-900">
+            Applicant Information
+          </h3>
+          <p class="mt-1 max-w-2xl text-sm text-gray-500">
+            Personal details and application.
+          </p>
         </div>
         <div class="mt-5 border-t border-gray-200">
           <!-- Details List -->
@@ -75,15 +79,19 @@
                       </svg>
 
                       <!-- Document Name -->
-                      <span class="ml-2 w-0 flex-1 truncate">{{ document.filename }}</span>
+                      <span class="ml-2 w-0 flex-1 truncate">{{
+                        document.filename
+                      }}</span>
                     </div>
                     <div class="ml-4 flex-shrink-0">
                       <a
-                        href="http://localhost:3000/api/files/server/src/uploads/{{document.filename}}"
+                        href="http://localhost:3000/api/files/server/src/uploads/{{
+                          document.filename
+                        }}"
                         target="_blank"
                         class="font-medium text-indigo-600 hover:text-indigo-500"
                         download
-                      >Download</a
+                        >Download</a
                       >
                     </div>
                   </li>
@@ -97,10 +105,9 @@
                 Document Description
               </dt>
               <dd class="mt-1 text-sm text-gray-900 sm:col-span-2 sm:mt-0">
-                {{ merchant.document_description}}
+                {{ merchant.document_description }}
               </dd>
             </div>
-
 
             <div class="py-4 sm:grid sm:grid-cols-1 sm:py-5">
               <dt class="text-sm font-medium text-gray-500 flex justify-end">
@@ -124,10 +131,6 @@
           </dl>
         </div>
       </div>
-
     </div>
   </div>
 </div>
-
-
-

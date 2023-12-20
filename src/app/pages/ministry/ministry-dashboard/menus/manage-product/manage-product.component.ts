@@ -1,3 +1,8 @@
+/**
+ * This component is responsible for managing and displaying products associated with a specific merchant.
+ * It interacts with the ProductService, AuthService, MerchantService, NotificationService, and LoadingService
+ * for product-related operations, user authentication, merchant identification, and UI notifications.
+ */
 import { Component, OnInit } from '@angular/core';
 import { Product } from '../../../../../shared/models';
 import {
@@ -19,6 +24,15 @@ export class ManageProductComponent implements OnInit {
   products: Product[] = [];
   merchantId: string | undefined;
 
+  /**
+   * @constructor
+   * @param {ProductService} productService - The service responsible for product-related operations.
+   * @param {Router} router - Angular's router service for navigation.
+   * @param {AuthService} authService - The service managing user authentication.
+   * @param {MerchantService} merchantService - The service for merchant-related operations.
+   * @param {NotificationService} alert - The service for displaying notifications to the user.
+   * @param {LoadingService} loading - The service for managing loading indicators.
+   */
   constructor(
     private productService: ProductService,
     private router: Router,
@@ -28,6 +42,13 @@ export class ManageProductComponent implements OnInit {
     private loading: LoadingService
   ) {}
 
+  /**
+   * Retrieves the current user's email, fetches the associated merchant ID,
+   * and loads products associated with the merchant.
+   *
+   * @async
+   * @returns {Promise<void>}
+   */
   async ngOnInit(): Promise<void> {
     const email = this.authService.getCurrentUserJson().email;
     const response = await this.merchantService
@@ -37,6 +58,13 @@ export class ManageProductComponent implements OnInit {
     this.loadProducts(this.merchantId);
   }
 
+  /**
+   * Load products associated with the given merchant ID.
+   * Displays loading indicators during the operation and handles errors.
+   *
+   * @param {string} merchantId - The ID of the merchant whose products are to be loaded.
+   * @returns {void}
+   */
   loadProducts(merchantId: string): void {
     this.loading.show();
     this.productService.getProductsByMerchantId(merchantId).subscribe(
@@ -63,14 +91,32 @@ export class ManageProductComponent implements OnInit {
     );
   }
 
+  /**
+   * Navigate to the "Add Product" page.
+   *
+   * @returns {void}
+   */
   addProduct(): void {
     this.router.navigate(['/ministry-dashboard/add-product']);
   }
 
+  /**
+   * Navigate to the "Edit Product" page for the specified product.
+   *
+   * @param {Product} product - The product to be edited.
+   * @returns {void}
+   */
   editProduct(product: Product): void {
     this.router.navigate(['/ministry-dashboard/edit-product', product._id]);
   }
 
+  /**
+   * Delete the specified product after user confirmation.
+   * Displays a confirmation dialog and handles the deletion process.
+   *
+   * @param {string} productId - The ID of the product to be deleted.
+   * @returns {void}
+   */
   deleteProduct(productId: string): void {
     Swal.fire({
       title: 'Are you sure you want to delete this product?',

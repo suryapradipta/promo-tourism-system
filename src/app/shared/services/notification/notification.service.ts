@@ -1,3 +1,9 @@
+/**
+ * This service provides methods for displaying various types of notifications using the
+ * SweetAlert2 library. It offers functionality for showing error messages, warning messages,
+ * success messages with auto-dismissal, and a specific message for indicating that an email
+ * address is already in use during registration.
+ */
 import { Injectable } from '@angular/core';
 import Swal from 'sweetalert2';
 
@@ -5,8 +11,11 @@ import Swal from 'sweetalert2';
   providedIn: 'root',
 })
 export class NotificationService {
-  constructor() {}
-
+  /**
+   * Display an error message notification.
+   *
+   * @param {string} message - The error message to be displayed.
+   */
   showErrorMessage(message: string): void {
     Swal.fire({
       icon: 'error',
@@ -15,6 +24,11 @@ export class NotificationService {
     });
   }
 
+  /**
+   * Display a warning message notification.
+   *
+   * @param {string} message - The warning message to be displayed.
+   */
   showWarningMessage(message: string): void {
     Swal.fire({
       icon: 'warning',
@@ -23,6 +37,11 @@ export class NotificationService {
     });
   }
 
+  /**
+   * Display a success message notification with auto-dismissal.
+   *
+   * @param {string} title - The title of the success message to be displayed.
+   */
   showSuccessMessage(title: string): void {
     Swal.fire({
       position: 'top-end',
@@ -33,6 +52,9 @@ export class NotificationService {
     });
   }
 
+  /**
+   * Display a specific error message for an email address already in use during registration.
+   */
   showEmailInUseMessage = (): void => {
     Swal.fire({
       icon: 'error',

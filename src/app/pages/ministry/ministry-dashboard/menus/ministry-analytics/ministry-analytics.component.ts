@@ -1,3 +1,7 @@
+/**
+ * This component manages the display of analytics for ministry users,
+ * including charts for product sold and customer purchasing power.
+ */
 import { Component, OnInit } from '@angular/core';
 import {
   AnalyticsService,
@@ -15,18 +19,22 @@ import { CustomerPurchasingPower } from '../../../../../shared/models';
 })
 export class MinistryAnalyticsComponent implements OnInit {
   allAnalytics: any;
-  //all analytics
   selectedMerchantId: string | null = null;
   allMerchantStats: any = {};
   productSoldStats: any = {};
   purchasingPowerStats: any = {};
-
-  // Flags to control the visibility of different charts
   isAllProductSold: boolean = true;
   isAllPurchasingPower: boolean = false;
   isSelectedProductSold: boolean = true;
   isSelectedPurchasingPower: boolean = false;
 
+  /**
+   * @constructor
+   * @param {AnalyticsService} analyticsService - Service for fetching analytics data.
+   * @param {CreateChartService} createChartService - Service for creating charts.
+   * @param {NotificationService} alert - Service for displaying notifications.
+   * @param {LoadingService} loading - Service for managing loading indicators.
+   */
   constructor(
     private analyticsService: AnalyticsService,
     private createChartService: CreateChartService,
@@ -34,6 +42,9 @@ export class MinistryAnalyticsComponent implements OnInit {
     private loading: LoadingService
   ) {}
 
+  /**
+   * Fetches initial analytics data on component initialization.
+   */
   ngOnInit(): void {
     this.loading.show();
 
@@ -61,6 +72,9 @@ export class MinistryAnalyticsComponent implements OnInit {
     );
   }
 
+  /**
+   * Show the chart displaying the total products sold by all merchants.
+   */
   showProductSoldChart(): void {
     this.isAllProductSold = true;
     this.isAllPurchasingPower = false;
@@ -68,6 +82,9 @@ export class MinistryAnalyticsComponent implements OnInit {
     setTimeout(() => this.productSoldAnalytics(), 0);
   }
 
+  /**
+   * Show the chart displaying the total customer purchasing power by all merchants.
+   */
   showPurchasingPowerChart(): void {
     this.isAllProductSold = false;
     this.isAllPurchasingPower = true;
@@ -75,6 +92,9 @@ export class MinistryAnalyticsComponent implements OnInit {
     setTimeout(() => this.purchasingPowerAnalytics(), 0);
   }
 
+  /**
+   * Show the chart displaying the products sold by the currently selected merchant.
+   */
   showSelectedProductSold(): void {
     this.isSelectedProductSold = true;
     this.isSelectedPurchasingPower = false;
@@ -83,6 +103,9 @@ export class MinistryAnalyticsComponent implements OnInit {
     setTimeout(() => this.selectedProductSoldChart(), 0);
   }
 
+  /**
+   * Show the chart displaying the customer purchasing power by the currently selected merchant.
+   */
   showSelectedPurchasingPower(): void {
     this.isSelectedProductSold = false;
     this.isSelectedPurchasingPower = true;
@@ -91,6 +114,10 @@ export class MinistryAnalyticsComponent implements OnInit {
     setTimeout(() => this.selectedPurchasingPowerChart(), 0);
   }
 
+  /**
+   * Handle the selection of a specific merchant.
+   * @param {string} merchantId - The ID of the selected merchant.
+   */
   onSelectMerchant(merchantId: string): void {
     this.selectedMerchantId = merchantId;
     this.refreshAnalytics();
@@ -101,6 +128,9 @@ export class MinistryAnalyticsComponent implements OnInit {
     }
   }
 
+  /**
+   * Refresh analytics data based on the selected merchant.
+   */
   refreshAnalytics(): void {
     if (this.selectedMerchantId) {
       const index = this.allAnalytics.findIndex(
@@ -173,6 +203,9 @@ export class MinistryAnalyticsComponent implements OnInit {
     }
   }
 
+  /**
+   * Create and display the chart for products sold by the currently selected merchant.
+   */
   private selectedProductSoldChart(): void {
     const productAnalytics = this.allAnalytics.find(
       (item) => item.merchant._id === this.selectedMerchantId
@@ -197,6 +230,9 @@ export class MinistryAnalyticsComponent implements OnInit {
     );
   }
 
+  /**
+   * Create and display the chart for customer purchasing power by the currently selected merchant.
+   */
   private selectedPurchasingPowerChart(): void {
     const productAnalytics: CustomerPurchasingPower[] = this.allAnalytics.find(
       (item) => item.merchant._id === this.selectedMerchantId
@@ -234,6 +270,9 @@ export class MinistryAnalyticsComponent implements OnInit {
     );
   }
 
+  /**
+   * Create and display the chart for customer purchasing power by all merchants.
+   */
   private purchasingPowerAnalytics(): void {
     const labels = this.allAnalytics.map((item) => item.merchant.name);
     const totalSpent = this.allAnalytics.map(
@@ -263,6 +302,9 @@ export class MinistryAnalyticsComponent implements OnInit {
     this.createChartService.createChart('allPurchasingPowerChart', chartConfig);
   }
 
+  /**
+   * Create and display the chart for products sold by all merchants.
+   */
   private productSoldAnalytics(): void {
     const labels = this.allAnalytics.map((item) => item.merchant.name);
     const data = this.allAnalytics.map(

@@ -1,3 +1,9 @@
+/**
+ * This component handles the detailed view of a merchant account,
+ * including actions such as approving, rejecting, and creating a new
+ * user account for the approved merchant. It also provides functionality
+ * to send an email to the merchant with account details.
+ */
 import { Component, OnInit } from '@angular/core';
 import { Merchant } from '../../../../../../shared/models';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -16,6 +22,15 @@ import {
 export class DetailAccountComponent implements OnInit {
   merchant: Merchant | null = null;
 
+  /**
+   * @constructor
+   * @param {ActivatedRoute} route - Service to get information about the current route.
+   * @param {Router} router - Router service for navigation.
+   * @param {MerchantService} merchantService - Service for managing merchant-related operations.
+   * @param {NotificationService} alert - Service for displaying notifications.
+   * @param {AuthService} authService - Service for user authentication.
+   * @param {LoadingService} loading - Service for managing loading indicators.
+   */
   constructor(
     private route: ActivatedRoute,
     private router: Router,
@@ -25,6 +40,9 @@ export class DetailAccountComponent implements OnInit {
     private loading: LoadingService
   ) {}
 
+  /**
+   * Retrieves the merchant details based on the route parameter 'id' during component initialization.
+   */
   ngOnInit(): void {
     const merchantId = this.route.snapshot.paramMap.get('id');
 
@@ -43,6 +61,11 @@ export class DetailAccountComponent implements OnInit {
     }
   }
 
+  /**
+   * Approve the merchant by updating its status and creating a user account for the approved merchant.
+   *
+   * @param {Merchant} merchant - The merchant to be approved.
+   */
   approveMerchant(merchant: Merchant): void {
     this.loading.show();
     this.merchantService.approveMerchant(merchant._id).subscribe(
@@ -65,7 +88,12 @@ export class DetailAccountComponent implements OnInit {
     );
   }
 
-  private generateRandomPassword = () => {
+  /**
+   * Generate a random password for the new merchant user account.
+   *
+   * @returns {string} - The randomly generated password.
+   */
+  private generateRandomPassword = (): string => {
     const characters =
       'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*()_+';
     const passwordLength = 12;
@@ -80,6 +108,12 @@ export class DetailAccountComponent implements OnInit {
     return randomPassword;
   };
 
+  /**
+   * Create a user account for the approved merchant, send an email with account details,
+   * and handle errors if any occur during the process.
+   *
+   * @param {Merchant} merchant - The approved merchant.
+   */
   createMerchantAccount(merchant: Merchant): void {
     const email = merchant.email;
     const defaultPassword = 'PRS*' + this.generateRandomPassword() + '@';
@@ -111,6 +145,11 @@ export class DetailAccountComponent implements OnInit {
     );
   }
 
+  /**
+   * Send an email to the approved merchant with account details.
+   *
+   * @param {any} templateParams - Template parameters for the email.
+   */
   sendEmail(templateParams: any): void {
     const to = templateParams.to_email;
     const subject = 'Your New Merchant Account';
@@ -154,6 +193,11 @@ export class DetailAccountComponent implements OnInit {
     );
   }
 
+  /**
+   * Reject the merchant by updating its status and handle errors if any occur during the process.
+   *
+   * @param {Merchant} merchant - The merchant to be rejected.
+   */
   rejectMerchant(merchant: Merchant): void {
     this.loading.show();
     this.merchantService.rejectMerchant(merchant._id).subscribe(

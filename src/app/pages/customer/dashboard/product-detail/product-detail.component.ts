@@ -1,10 +1,10 @@
-import { Component } from '@angular/core';
-import {
-  Order,
-  Payment,
-  Product,
-  Review,
-} from '../../../../shared/models';
+/**
+ * This component is responsible for displaying detailed information about a product,
+ * handling user interactions related to product booking, and integrating PayPal for
+ * payment processing.
+ */
+import { Component, OnInit } from '@angular/core';
+import { Order, Payment, Product, Review } from '../../../../shared/models';
 import { ActivatedRoute, Router } from '@angular/router';
 import {
   AuthService,
@@ -22,7 +22,7 @@ import { IPayPalConfig } from 'ngx-paypal';
   templateUrl: './product-detail.component.html',
   styleUrls: ['./product-detail.component.css'],
 })
-export class ProductDetailComponent {
+export class ProductDetailComponent implements OnInit {
   product: Product | undefined;
   productForm: FormGroup;
   orderResponse: any;
@@ -32,6 +32,18 @@ export class ProductDetailComponent {
   // PayPal's configuration for payment processing
   public payPalConfig?: IPayPalConfig;
 
+  /**
+   * @constructor
+   * @param {ActivatedRoute} route - Angular service to retrieve route information.
+   * @param {Router} router - Angular service for navigation.
+   * @param {FormBuilder} formBuilder - Angular service for building and managing forms.
+   * @param {OrderService} orderService - Service for managing product orders.
+   * @param {NotificationService} alert - Service for displaying notifications.
+   * @param {PaymentService} paymentService - Service for managing payments.
+   * @param {AuthService} authService - Service for user authentication.
+   * @param {ProductService} productService - Service for managing product-related operations.
+   * @param {LoadingService} loading - Service for managing loading indicators.
+   */
   constructor(
     private route: ActivatedRoute,
     private router: Router,
@@ -44,16 +56,19 @@ export class ProductDetailComponent {
     private loading: LoadingService
   ) {}
 
+  /**
+   * Initializes the product form and fetches product details.
+   */
   ngOnInit(): void {
     this.initializeProductForm();
     this.fetchProductDetails();
-  }
-
-  ngAfterViewInit(): void {
     // Initialize PayPal configuration
     this.initConfig();
   }
 
+  /**
+   * Initializes the form for booking a product.
+   */
   private initializeProductForm(): void {
     this.productForm = this.formBuilder.group({
       quantity: [1, [Validators.required, Validators.min(1)]],
@@ -62,6 +77,9 @@ export class ProductDetailComponent {
     });
   }
 
+  /**
+   * Fetches product details based on the route parameter.
+   */
   private fetchProductDetails(): void {
     const productId: string = this.route.snapshot.paramMap.get('id');
 
@@ -92,6 +110,11 @@ export class ProductDetailComponent {
     }
   }
 
+  /**
+   * Fetches reviews for the specified product.
+   *
+   * @param {string} productId - ID of the product for which reviews are to be fetched.
+   */
   private fetchReviews(productId: string): void {
     this.loading.show();
     this.productService.getReviewsForProduct(productId).subscribe(
@@ -106,6 +129,12 @@ export class ProductDetailComponent {
     );
   }
 
+  /**
+   * Formats the order date for display.
+   *
+   * @param {string} date - Date string to be formatted.
+   * @returns {string} - Formatted date string.
+   */
   formatOrderDate(date: string): string {
     return new Date(date).toLocaleDateString('en-US', {
       year: 'numeric',
@@ -114,16 +143,25 @@ export class ProductDetailComponent {
     });
   }
 
+  /**
+   * Getter function to access form controls.
+   */
   get formControl() {
     return this.productForm.controls;
   }
 
+  /**
+   * Increments the quantity in the booking form.
+   */
   incrementQuantity(): void {
     this.productForm
       .get('quantity')
       .setValue(this.productForm.get('quantity').value + 1);
   }
 
+  /**
+   * Decrements the quantity in the booking form, with a minimum value of 1.
+   */
   decrementQuantity(): void {
     const currentQuantity = this.productForm.get('quantity').value;
     if (currentQuantity > 1) {
@@ -131,18 +169,37 @@ export class ProductDetailComponent {
     }
   }
 
+  /**
+   * Calculates the subtotal for the booking based on quantity and product price.
+   *
+   * @returns {number} - Subtotal amount.
+   */
   get subtotal(): number {
     return this.productForm.value.quantity * this.product.price;
   }
 
+  /**
+   * Calculates the tax total for the booking based on the subtotal.
+   *
+   * @returns {number} - Tax total amount.
+   */
   get taxTotal(): number {
     return 0.1 * this.subtotal;
   }
 
+  /**
+   * Calculates the total amount for the booking, including subtotal and tax.
+   *
+   * @returns {number} - Total amount.
+   */
   get itemTotal(): number {
     return this.subtotal + this.taxTotal;
   }
 
+  /**
+   * Handles the booking process, creating an order and processing the payment.
+   * Displays success or error messages based on the outcome.
+   */
   async onBooking(): Promise<void> {
     try {
       if (this.productForm.valid) {
@@ -167,6 +224,9 @@ export class ProductDetailComponent {
     }
   }
 
+  /**
+   * Initializes the configuration for PayPal payment processing.
+   */
   private initConfig(): void {
     this.payPalConfig = {
       clientId:

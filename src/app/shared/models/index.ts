@@ -1,4 +1,3 @@
-// This module exports various models representing different entities in the application.
 export { Auth } from './auth.model';
 export { Merchant } from './merchant.model';
 export { Product } from './product.model';

@@ -1,3 +1,9 @@
+/**
+ * This component is responsible for displaying analytics data for a merchant, including
+ * charts for product sales and customer purchasing power. It interacts with the AnalyticsService,
+ * AuthService, MerchantService, CreateChartService, NotificationService, and LoadingService
+ * to fetch and display the necessary data.
+ */
 import { Component, OnInit } from '@angular/core';
 import {
   AnalyticsService,
@@ -26,6 +32,15 @@ export class MerchantAnalyticsComponent implements OnInit {
   productSoldStats: any = {};
   purchasingPowerStats: any = {};
 
+  /**
+   * @constructor
+   * @param {AnalyticsService} analyticsService - Service for fetching analytics data.
+   * @param {AuthService} authService - Service for user authentication.
+   * @param {MerchantService} merchantService - Service for merchant-related operations.
+   * @param {CreateChartService} createChartService - Service for creating charts.
+   * @param {NotificationService} alert - Service for displaying notifications.
+   * @param {LoadingService} loading - Service for managing loading indicators.
+   */
   constructor(
     private analyticsService: AnalyticsService,
     private authService: AuthService,
@@ -35,6 +50,12 @@ export class MerchantAnalyticsComponent implements OnInit {
     private loading: LoadingService
   ) {}
 
+  /**
+   * Fetches merchant ID, product analytics, and purchasing power analytics data
+   * from respective services and updates the charts accordingly.
+   *
+   * @returns {Promise<void>}
+   */
   async ngOnInit(): Promise<void> {
     const email: string = this.authService.getCurrentUserJson().email;
     const response = await this.merchantService
@@ -96,18 +117,28 @@ export class MerchantAnalyticsComponent implements OnInit {
       );
   }
 
+  /**
+   * Display the product sold chart.
+   */
   showProductSoldChart(): void {
     this.showProductSold = true;
     this.showPurchasingPower = false;
     setTimeout(() => this.productSoldChart(), 0);
   }
 
+  /**
+   * Display the purchasing power chart.
+   */
   showPurchasingPowerChart(): void {
     this.showProductSold = false;
     this.showPurchasingPower = true;
     setTimeout(() => this.purchasingPowerChart(), 0);
   }
 
+  /**
+   * Generate and display the product sold chart using Chart.js.
+   * Uses the CreateChartService to create the chart configuration.
+   */
   private productSoldChart = (): void => {
     const labels: any[] = this.productAnalytics.map((item) => item.name);
     const data: number[] = this.productAnalytics.map((item) => item.totalSold);
@@ -125,6 +156,10 @@ export class MerchantAnalyticsComponent implements OnInit {
     this.createChartService.createChart('productSoldChart', chartConfig);
   };
 
+  /**
+   * Generate and display the purchasing power chart using Chart.js.
+   * Uses the CreateChartService to create the chart configuration.
+   */
   private purchasingPowerChart = (): void => {
     const labels: string[] = this.customerPurchasingPower.map(
       (customer) => customer.email

@@ -1,9 +1,9 @@
+/**
+ * This component displays the details of a receipt, including product information,
+ * payment details, and order information. It allows users to export the receipt to PDF.
+ */
 import { Component, OnInit } from '@angular/core';
-import {
-  Order,
-  Payment,
-  Product,
-} from '../../../../shared/models';
+import { Order, Payment, Product } from '../../../../shared/models';
 import { ActivatedRoute, Router } from '@angular/router';
 import {
   LoadingService,
@@ -20,12 +20,22 @@ import { ReceiptService } from '../../../../shared/services/receipt/receipt.serv
   styleUrls: ['./receipt.component.css'],
 })
 export class ReceiptComponent implements OnInit {
-  // Data models for product, payment, and order
   product: Product;
   payment: Payment;
   order: Order;
   orderDate: string;
 
+  /**
+   * @constructor
+   * @param {PaymentService} paymentService - The service for managing payment-related operations.
+   * @param {OrderService} orderService - The service for managing order-related operations.
+   * @param {ReceiptService} receiptService - The service for exporting receipts to PDF.
+   * @param {ProductService} productService - The service for managing product-related operations.
+   * @param {ActivatedRoute} route - The route for accessing URL parameters.
+   * @param {Router} router - The router for navigating between components.
+   * @param {NotificationService} alert - The service for displaying notification messages.
+   * @param {LoadingService} loading - The service for displaying loading indicators.
+   */
   constructor(
     private paymentService: PaymentService,
     private orderService: OrderService,
@@ -37,6 +47,9 @@ export class ReceiptComponent implements OnInit {
     private loading: LoadingService
   ) {}
 
+  /**
+   * It retrieves and displays the receipt details based on the provided parameters.
+   */
   ngOnInit(): void {
     this.loading.show();
     this.route.queryParams.subscribe(async (params) => {
@@ -49,6 +62,13 @@ export class ReceiptComponent implements OnInit {
     });
   }
 
+  /**
+   * Private method to load data based on the provided parameters.
+   * Retrieves product, payment, and order details and formats the order date.
+   *
+   * @param {any} params - URL parameters containing productID, paymentID, and orderID.
+   * @returns {Promise<void>} - Promise that resolves once data loading is complete.
+   */
   private async loadData(params: any): Promise<void> {
     const productID = params['productID'];
     const paymentID = params['paymentID'];
@@ -66,6 +86,12 @@ export class ReceiptComponent implements OnInit {
     this.loading.hide();
   }
 
+  /**
+   * Formats the order date in a user-friendly format.
+   *
+   * @param {string} date - The date to be formatted.
+   * @returns {string} - Formatted date string.
+   */
   private static formatOrderDate(date: string): string {
     return new Date(date).toLocaleDateString('en-US', {
       year: 'numeric',
@@ -74,6 +100,9 @@ export class ReceiptComponent implements OnInit {
     });
   }
 
+  /**
+   * Exports the receipt to PDF and navigates back to the home page.
+   */
   exportToPdf(): void {
     this.receiptService.exportToPdf('receipt_container', 'receipt');
     this.router

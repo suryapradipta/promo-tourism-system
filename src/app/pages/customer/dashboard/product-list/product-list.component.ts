@@ -1,3 +1,8 @@
+/**
+ * This component displays a list of products and handles user interactions,
+ * such as viewing product details. It utilizes various services for product retrieval,
+ * authentication checks, and displaying notifications.
+ */
 import { Component, OnInit } from '@angular/core';
 import { Product } from '../../../../shared/models';
 import {
@@ -17,6 +22,14 @@ import Swal from 'sweetalert2';
 export class ProductListComponent implements OnInit {
   products: Product[] = [];
 
+  /**
+   * @constructor
+   * @param {Router} router - Angular router service for navigation.
+   * @param {AuthService} authService - Authentication service for checking user authentication status.
+   * @param {ProductService} productService - Service for retrieving product-related data.
+   * @param {NotificationService} alert - Service for displaying notifications.
+   * @param {LoadingService} loading - Service for managing loading indicators.
+   */
   constructor(
     private router: Router,
     private authService: AuthService,
@@ -25,6 +38,9 @@ export class ProductListComponent implements OnInit {
     private loading: LoadingService
   ) {}
 
+  /**
+   * Fetches the list of products and their average ratings.
+   */
   ngOnInit(): void {
     this.loading.show();
     this.productService.getAllProducts().subscribe(
@@ -48,6 +64,12 @@ export class ProductListComponent implements OnInit {
     );
   }
 
+  /**
+   * Navigate to the details page of a selected product.
+   * If the user is not authenticated, prompt them to log in.
+   *
+   * @param {Product} product - The selected product.
+   */
   viewProductDetails(product: Product): void {
     if (this.authService.isAuthenticated()) {
       this.router.navigate(['/product', product._id]);
@@ -65,6 +87,11 @@ export class ProductListComponent implements OnInit {
     }
   }
 
+  /**
+   * Fetch the average ratings for each product in the list.
+   *
+   * @param {Product[]} products - The list of products.
+   */
   private fetchAverageRatings(products: Product[]): void {
     for (const product of products) {
       this.productService.getAverageRating(product._id).subscribe(

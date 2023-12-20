@@ -179,24 +179,36 @@
             <!-- Display analytics data for the selected merchant -->
             <div *ngIf="selectedMerchantId">
               <div *ngIf="isSelectedProductSold">
-                <canvas id="selectedProductSoldChart" class="border border-indigo-600 rounded-lg"></canvas>
+                <canvas
+                  id="selectedProductSoldChart"
+                  class="border border-indigo-600 rounded-lg"
+                ></canvas>
               </div>
 
               <!-- Total Spent Chart -->
               <div *ngIf="isSelectedPurchasingPower">
-                <canvas id="selectedPurchasingPowerChart" class="border border-indigo-600 rounded-lg"></canvas>
+                <canvas
+                  id="selectedPurchasingPowerChart"
+                  class="border border-indigo-600 rounded-lg"
+                ></canvas>
               </div>
             </div>
 
             <!-- Display analytics data for all merchants -->
             <div *ngIf="!selectedMerchantId">
               <div *ngIf="isAllProductSold">
-                <canvas id="allProductSoldChart" class="border border-indigo-600 rounded-lg"></canvas>
+                <canvas
+                  id="allProductSoldChart"
+                  class="border border-indigo-600 rounded-lg"
+                ></canvas>
               </div>
 
               <!-- Total Spent Chart -->
               <div *ngIf="isAllPurchasingPower">
-                <canvas id="allPurchasingPowerChart" class="border border-indigo-600 rounded-lg"></canvas>
+                <canvas
+                  id="allPurchasingPowerChart"
+                  class="border border-indigo-600 rounded-lg"
+                ></canvas>
               </div>
             </div>
           </section>

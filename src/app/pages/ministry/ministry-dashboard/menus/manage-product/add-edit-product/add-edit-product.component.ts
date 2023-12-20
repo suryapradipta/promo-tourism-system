@@ -1,3 +1,7 @@
+/**
+ * This component handles the addition and editing of products. It interacts with the ProductService
+ * and MerchantService to fetch and update product data, as well as manage image uploads and form submissions.
+ */
 import { Component, OnInit } from '@angular/core';
 import { Product } from '../../../../../../shared/models';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -29,6 +33,16 @@ export class AddEditProductComponent implements OnInit {
   imageFile: File | null = null;
   previewImage: string | ArrayBuffer | null = null;
 
+  /**
+   * @constructor
+   * @param {ActivatedRoute} route - Service to interact with the current route information.
+   * @param {Router} router - Service to interact with the application's route navigation.
+   * @param {NotificationService} alert - Service to display notifications to the user.
+   * @param {AuthService} authService - Service for user authentication-related functionality.
+   * @param {ProductService} productService - Service for product-related functionality.
+   * @param {MerchantService} merchantService - Service for merchant-related functionality.
+   * @param {LoadingService} loading - Service to manage loading indicators during asynchronous operations.
+   */
   constructor(
     private route: ActivatedRoute,
     private router: Router,
@@ -39,6 +53,9 @@ export class AddEditProductComponent implements OnInit {
     private loading: LoadingService
   ) {}
 
+  /**
+   * Fetches product and merchant information based on the route parameters and the current user's email.
+   */
   ngOnInit(): void {
     const productId = this.route.snapshot.paramMap.get('id');
     if (productId) {
@@ -70,11 +87,22 @@ export class AddEditProductComponent implements OnInit {
     );
   }
 
+  /**
+   * Event handler for image upload input.
+   * Updates the selected image file and triggers the image preview update.
+   *
+   * @param {any} event - The input event containing the selected image file.
+   */
   handleImageUpload(event: any): void {
     this.imageFile = event.target.files[0];
     this.loadImagePreview(this.imageFile);
   }
 
+  /**
+   * Load image preview based on the selected or existing product image.
+   *
+   * @param {File} [file] - Optional file parameter for updating the preview based on a new image file.
+   */
   loadImagePreview(file?: File): void {
     if (file) {
       const reader = new FileReader();
@@ -87,6 +115,12 @@ export class AddEditProductComponent implements OnInit {
     }
   }
 
+  /**
+   * Save product data based on the form submission.
+   * Handles both product editing and addition scenarios.
+   *
+   * @param {NgForm} form - The NgForm containing the product data.
+   */
   saveProduct(form: NgForm): void {
     if (form.invalid) {
       this.alert.showErrorMessage(
@@ -122,7 +156,7 @@ export class AddEditProductComponent implements OnInit {
             } else if (error.status === 400) {
               this.alert.showErrorMessage(
                 error.error?.message ||
-                'All fields are required. Please fill in all details.'
+                  'All fields are required. Please fill in all details.'
               );
             } else {
               this.alert.showErrorMessage(
@@ -146,7 +180,9 @@ export class AddEditProductComponent implements OnInit {
           console.error('Error while adding product:', error);
 
           if (error.status === 400) {
-            this.alert.showErrorMessage(error.error?.message || 'All fields are required');
+            this.alert.showErrorMessage(
+              error.error?.message || 'All fields are required'
+            );
           } else if (error.status === 500) {
             this.alert.showErrorMessage(
               'Internal server error. Please try again later.'

@@ -17,9 +17,7 @@ import { ManageProductComponent } from './pages/ministry/ministry-dashboard/menu
 import { AddEditProductComponent } from './pages/ministry/ministry-dashboard/menus/manage-product/add-edit-product/add-edit-product.component';
 import { MerchantAnalyticsComponent } from './pages/ministry/ministry-dashboard/menus/merchant-analytics/merchant-analytics.component';
 import { MinistryAnalyticsComponent } from './pages/ministry/ministry-dashboard/menus/ministry-analytics/ministry-analytics.component';
-import {
-  HomeComponent
-} from "./pages/ministry/ministry-dashboard/home/home.component";
+import { HomeComponent } from './pages/ministry/ministry-dashboard/home/home.component';
 
 const routes: Routes = [
   { path: '', component: DashboardComponent },

@@ -33,7 +33,9 @@
                 </div>
                 <div>
                   <dt class="font-medium text-gray-900">Order placed</dt>
-                  <dd class="mt-1 text-gray-500">{{formatOrderDate(order.createdAt)}}</dd>
+                  <dd class="mt-1 text-gray-500">
+                    {{ formatOrderDate(order.createdAt) }}
+                  </dd>
                 </div>
                 <div>
                   <dt class="font-medium text-gray-900">Total amount</dt>
@@ -65,7 +67,9 @@
                     class="h-20 w-20 flex-shrink-0 overflow-hidden rounded-lg bg-gray-200 sm:h-40 sm:w-40"
                   >
                     <img
-                      src="http://localhost:3000/api/files/server/src/uploads/{{order.product.image}}"
+                      src="http://localhost:3000/api/files/server/src/uploads/{{
+                        order.product.image
+                      }}"
                       alt="{{ order.product.name }}"
                       class="h-full w-full object-cover object-center"
                     />
@@ -84,9 +88,7 @@
                 </div>
 
                 <!-- Review Form -->
-                <div
-                  *ngIf="showReviewForm && selectedOrderId === order._id"
-                >
+                <div *ngIf="showReviewForm && selectedOrderId === order._id">
                   <form
                     [formGroup]="reviewForm"
                     (ngSubmit)="submitReview()"
@@ -195,8 +197,6 @@
                 </div>
               </li>
             </ul>
-
-
           </div>
 
           <!-- Empty State Message -->
@@ -204,7 +204,9 @@
             *ngIf="unreviewedOrders.length === 0"
             class="mx-auto max-w-2xl space-y-8 sm:px-4 lg:max-w-4xl lg:px-0"
           >
-            <div class="h-96 rounded-lg border-2 border-dashed border-gray-200 flex items-center justify-center text-center">
+            <div
+              class="h-96 rounded-lg border-2 border-dashed border-gray-200 flex items-center justify-center text-center"
+            >
               <div class="text-center">
                 <svg
                   aria-hidden="true"
@@ -220,7 +222,9 @@
                     d="M15.75 10.5V6a3.75 3.75 0 10-7.5 0v4.5m11.356-1.993l1.263 12c.07.665-.45 1.243-1.119 1.243H4.25a1.125 1.125 0 01-1.12-1.243l1.264-12A1.125 1.125 0 015.513 7.5h12.974c.576 0 1.059.435 1.119 1.007zM8.625 10.5a.375.375 0 11-.75 0 .375.375 0 01.75 0zm7.5 0a.375.375 0 11-.75 0 .375.375 0 01.75 0z"
                   />
                 </svg>
-                <h3 class="mt-4 text-lg font-medium text-gray-500">No unreviewed orders</h3>
+                <h3 class="mt-4 text-lg font-medium text-gray-500">
+                  No unreviewed orders
+                </h3>
                 <p class="mt-2 text-sm text-gray-500">
                   There are currently no orders. Please add purchase one.
                 </p>

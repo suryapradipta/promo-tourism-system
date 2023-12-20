@@ -1,3 +1,7 @@
+/**
+ * This component manages the review process for products. It displays a list of unreviewed
+ * orders for the currently authenticated user and provides a form to submit reviews.
+ */
 import { Component, OnInit } from '@angular/core';
 import { Auth, Order } from '../../../../shared/models';
 import {
@@ -19,6 +23,14 @@ export class ReviewProductComponent implements OnInit {
   reviewForm: FormGroup;
   selectedOrderId: string;
 
+  /**
+   * @constructor
+   * @param {FormBuilder} formBuilder - Angular service for building reactive forms.
+   * @param {NotificationService} alert - Service for displaying notifications.
+   * @param {ReviewService} reviewService - Service for managing product reviews.
+   * @param {AuthService} authService - Service for managing user authentication.
+   * @param {LoadingService} loading - Service for displaying loading indicators.
+   */
   constructor(
     private formBuilder: FormBuilder,
     private alert: NotificationService,
@@ -27,15 +39,24 @@ export class ReviewProductComponent implements OnInit {
     private loading: LoadingService
   ) {}
 
+  /**
+   * Loads unreviewed orders and initializes the review form.
+   */
   ngOnInit(): void {
     this.loadUnreviewedOrders();
     this.initReviewForm();
   }
 
+  /**
+   * Getter for accessing form controls in the template.
+   */
   get formControl() {
     return this.reviewForm.controls;
   }
 
+  /**
+   * Private method to load unreviewed orders for the current user.
+   */
   private loadUnreviewedOrders(): void {
     const user: Auth = this.authService.getCurrentUserJson();
 
@@ -61,6 +82,12 @@ export class ReviewProductComponent implements OnInit {
     }
   }
 
+  /**
+   * Format the order date for display in the template.
+   *
+   * @param {string} date - Order date string.
+   * @returns {string} - Formatted date string.
+   */
   formatOrderDate(date: string): string {
     return new Date(date).toLocaleDateString('en-US', {
       year: 'numeric',
@@ -69,6 +96,9 @@ export class ReviewProductComponent implements OnInit {
     });
   }
 
+  /**
+   * Private method to initialize the review form with validators.
+   */
   private initReviewForm(): void {
     this.reviewForm = this.formBuilder.group({
       rating: [
@@ -79,16 +109,27 @@ export class ReviewProductComponent implements OnInit {
     });
   }
 
+  /**
+   * Open the review form for a selected order.
+   *
+   * @param {string} orderId - ID of the selected order for review.
+   */
   openReviewForm(orderId: string): void {
     this.showReviewForm = true;
     this.selectedOrderId = orderId;
   }
 
+  /**
+   * Close the review form.
+   */
   closeReviewForm(): void {
     this.showReviewForm = false;
     this.selectedOrderId = null;
   }
 
+  /**
+   * Submit the review form. If the form is valid, send the review to the server.
+   */
   submitReview(): void {
     if (this.reviewForm.valid) {
       const orderId: string = this.selectedOrderId;
