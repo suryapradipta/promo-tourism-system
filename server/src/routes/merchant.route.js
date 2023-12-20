@@ -59,6 +59,16 @@ function isValidEmail(email) {
   return /\S+@\S+\.\S+/.test(email);
 }
 
+/**
+ * Handles merchant registration by creating a new merchant account.
+ *
+ * @route {POST} /register-merchant
+ * @param {Object} req.body - Request body containing merchant details (name, contact_number, email, company_description).
+ * @returns {Object} - JSON response indicating the success or failure of the registration process.
+ * @throws {Object} - Returns a 400 status with an error message for missing or invalid input.
+ * @throws {Object} - Returns a 409 status if the email is already registered.
+ * @throws {Object} - Returns a 500 status with an error message for internal server errors.
+ */
 router.post('/register-merchant', async (req, res) => {
   try {
     const { name, contact_number, email, company_description } = req.body;
@@ -95,6 +105,18 @@ router.post('/register-merchant', async (req, res) => {
   }
 });
 
+/**
+ * Handles the upload of documents for a specific merchant.
+ *
+ * @route {POST} /:id/upload
+ * @param {string} req.params.id - The unique identifier of the merchant.
+ * @param {Object} req.body - Request body containing document description.
+ * @param {Object} req.files - Request files containing uploaded documents.
+ * @returns {Object} - JSON response indicating the success or failure of the document upload.
+ * @throws {Object} - Returns a 400 status with an error message for various upload errors.
+ * @throws {Object} - Returns a 404 status if the merchant is not found.
+ * @throws {Object} - Returns a 500 status with an error message for internal server errors.
+ */
 router.post('/:id/upload', async (req, res) => {
   const uploadArray = upload.array('documents');
 
@@ -164,6 +186,16 @@ router.post('/:id/upload', async (req, res) => {
   });
 });
 
+/**
+ * Retrieves a list of pending merchants for administrative review.
+ *
+ * @route {GET} /pending
+ * @middleware {authMiddleware} - Ensures that the request is authenticated.
+ * @param {number} req.query.page - Page number for pagination (optional, default: 1).
+ * @param {number} req.query.limit - Number of merchants per page (optional, default: 5).
+ * @returns {Object} - JSON response containing a list of pending merchants.
+ * @throws {Object} - Returns a 500 status with an error message for internal server errors.
+ */
 router.get('/pending', authMiddleware, async (req, res) => {
   try {
     // Parse query parameters for pagination
@@ -183,6 +215,17 @@ router.get('/pending', authMiddleware, async (req, res) => {
   }
 });
 
+/**
+ * Retrieves a merchant by their unique identifier.
+ *
+ * @route {GET} /by-id/:id
+ * @middleware {authMiddleware} - Ensures that the request is authenticated.
+ * @param {string} req.params.id - The unique identifier of the merchant.
+ * @returns {Object} - JSON response containing merchant details.
+ * @throws {Object} - Returns a 400 status with an error message for an invalid merchant ID.
+ * @throws {Object} - Returns a 404 status if the merchant is not found.
+ * @throws {Object} - Returns a 500 status with an error message for internal server errors.
+ */
 router.get('/by-id/:id', authMiddleware, async (req, res) => {
   const merchantId = req.params.id;
 
@@ -204,6 +247,17 @@ router.get('/by-id/:id', authMiddleware, async (req, res) => {
   }
 });
 
+/**
+ * Approves a pending merchant, changing their status to 'APPROVED'.
+ *
+ * @route {PUT} /approve/:id
+ * @middleware {authMiddleware} - Ensures that the request is authenticated.
+ * @param {string} req.params.id - The unique identifier of the merchant.
+ * @returns {Object} - JSON response indicating the success of the approval process.
+ * @throws {Object} - Returns a 400 status with an error message for an invalid merchant ID.
+ * @throws {Object} - Returns a 404 status if the merchant is not found.
+ * @throws {Object} - Returns a 500 status with an error message for internal server errors.
+ */
 router.put('/approve/:id', authMiddleware, async (req, res) => {
   const merchantId = req.params.id;
 
@@ -229,6 +283,17 @@ router.put('/approve/:id', authMiddleware, async (req, res) => {
   }
 });
 
+/**
+ * Rejects a pending merchant, changing their status to 'REJECTED'.
+ *
+ * @route {PUT} /reject/:id
+ * @middleware {authMiddleware} - Ensures that the request is authenticated.
+ * @param {string} req.params.id - The unique identifier of the merchant.
+ * @returns {Object} - JSON response indicating the success of the rejection process.
+ * @throws {Object} - Returns a 400 status with an error message for an invalid merchant ID.
+ * @throws {Object} - Returns a 404 status if the merchant is not found.
+ * @throws {Object} - Returns a 500 status with an error message for internal server errors.
+ */
 router.put('/reject/:id', authMiddleware, async (req, res) => {
   const merchantId = req.params.id;
 
@@ -253,6 +318,17 @@ router.put('/reject/:id', authMiddleware, async (req, res) => {
     res.status(500).json({ message: 'Internal server error' });
   }
 });
+
+/**
+ * Sends an email to the specified recipient.
+ *
+ * @route {POST} /send-email
+ * @middleware {authMiddleware} - Ensures that the request is authenticated.
+ * @param {Object} req.body - Request body containing email details (to, subject, html).
+ * @returns {Object} - JSON response indicating the success of the email sending process.
+ * @throws {Object} - Returns a 400 status with an error message for missing or invalid input.
+ * @throws {Object} - Returns a 500 status with an error message for internal server errors.
+ */
 
 router.post('/send-email', authMiddleware, async (req, res) => {
   const { to, subject, html } = req.body;
@@ -279,6 +355,14 @@ router.post('/send-email', authMiddleware, async (req, res) => {
   });
 });
 
+/**
+ * Retrieves a list of all merchants.
+ *
+ * @route {GET} /
+ *
+ * @returns {Object} - JSON response containing a list of all merchants.
+ * @throws {Object} - Returns a 500 status with an error message for internal server errors.
+ */
 router.get('/', authMiddleware, async (req, res) => {
   try {
     const merchants = await Merchant.find();
@@ -289,6 +373,16 @@ router.get('/', authMiddleware, async (req, res) => {
   }
 });
 
+/**
+ * Retrieves the merchant ID by their email address.
+ * @middleware {authMiddleware} - Ensures that the request is authenticated.
+ * @route {GET} /by-email/:email
+ * @param {string} req.params.email - The email address of the merchant.
+ * @returns {Object} - JSON response containing the merchant ID.
+ * @throws {Object} - Returns a 400 status with an error message for missing or invalid input.
+ * @throws {Object} - Returns a 404 status if the merchant is not found.
+ * @throws {Object} - Returns a 500 status with an error message for internal server errors.
+ */
 router.get('/by-email/:email', authMiddleware, async (req, res) => {
   const { email } = req.params;
 

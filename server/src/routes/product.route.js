@@ -50,6 +50,17 @@ const upload = multer({
 
 const uploadDirectory = path.join(__dirname, '..', 'uploads');
 
+/**
+ * Adds a new product to the database.
+ *
+ * @route {POST} /add-product
+ * @middleware {authMiddleware} - Validates user authentication.
+ * @param {Object} req.body - Product details (name, description, price, category, merchantId).
+ * @param {Object} req.file - Product image file.
+ * @returns {Object} - JSON response indicating the success or failure of the operation.
+ * @throws {Object} - Returns a 400 status with an error message for invalid inputs.
+ * @throws {Object} - Returns a 500 status with an error message for internal server errors.
+ */
 router.post('/add-product', authMiddleware, async (req, res, err) => {
   const uploadSingle = upload.single('image');
 
@@ -110,6 +121,19 @@ router.post('/add-product', authMiddleware, async (req, res, err) => {
   });
 });
 
+/**
+ * Edits an existing product in the database.
+ *
+ * @route {PUT} /edit-product/:id
+ * @middleware {authMiddleware} - Validates user authentication.
+ * @param {string} req.params.id - The unique identifier of the product to be edited.
+ * @param {Object} req.body - Updated product details (name, description, price, category).
+ * @param {Object} req.file - Updated product image file.
+ * @returns {Object} - JSON response indicating the success or failure of the operation.
+ * @throws {Object} - Returns a 400 status with an error message for invalid inputs.
+ * @throws {Object} - Returns a 404 status with an error message if the product is not found.
+ * @throws {Object} - Returns a 500 status with an error message for internal server errors.
+ */
 router.put('/edit-product/:id', authMiddleware, async (req, res) => {
   const uploadSingle = upload.single('image');
 
@@ -169,6 +193,17 @@ router.put('/edit-product/:id', authMiddleware, async (req, res) => {
   });
 });
 
+/**
+ * Deletes an existing product from the database.
+ *
+ * @route {DELETE} /delete-product/:id
+ * @middleware {authMiddleware} - Validates user authentication.
+ * @param {string} req.params.id - The unique identifier of the product to be deleted.
+ * @returns {Object} - JSON response indicating the success or failure of the operation.
+ * @throws {Object} - Returns a 400 status with an error message for invalid inputs.
+ * @throws {Object} - Returns a 404 status with an error message if the product is not found.
+ * @throws {Object} - Returns a 500 status with an error message for internal server errors.
+ */
 router.delete('/delete-product/:id', authMiddleware, async (req, res) => {
   const productId = req.params.id;
 
@@ -198,6 +233,16 @@ router.delete('/delete-product/:id', authMiddleware, async (req, res) => {
   }
 });
 
+/**
+ * Fetches all products associated with a specific merchant.
+ *
+ * @route {GET} /by-merchant/:merchantId
+ * @middleware {authMiddleware} - Validates user authentication.
+ * @param {string} req.params.merchantId - The unique identifier of the merchant.
+ * @returns {Object} - JSON response containing an array of products for the specified merchant.
+ * @throws {Object} - Returns a 400 status with an error message for invalid inputs.
+ * @throws {Object} - Returns a 500 status with an error message for internal server errors.
+ */
 router.get('/by-merchant/:merchantId', authMiddleware, async (req, res) => {
   const merchantId = req.params.merchantId;
 
@@ -215,6 +260,17 @@ router.get('/by-merchant/:merchantId', authMiddleware, async (req, res) => {
   }
 });
 
+/**
+ * Fetches details of a specific product based on its ID.
+ *
+ * @route {GET} /:productId
+ * @middleware {authMiddleware} - Validates user authentication.
+ * @param {string} req.params.productId - The unique identifier of the product.
+ * @returns {Object} - JSON response containing the details of the specified product.
+ * @throws {Object} - Returns a 400 status with an error message for invalid inputs.
+ * @throws {Object} - Returns a 404 status with an error message if the product is not found.
+ * @throws {Object} - Returns a 500 status with an error message for internal server errors.
+ */
 router.get('/:productId', authMiddleware, async (req, res) => {
   const productId = req.params.productId;
 
@@ -236,6 +292,14 @@ router.get('/:productId', authMiddleware, async (req, res) => {
   }
 });
 
+/**
+ * Fetches all products from the database.
+ *
+ * @route {GET} /
+ * @returns {Object} - JSON response containing an array of all products.
+ * @throws {Object} - Returns a 404 status with an error message if no products are found.
+ * @throws {Object} - Returns a 500 status with an error message for internal server errors.
+ */
 router.get('/', async (req, res) => {
   try {
     const products = await Product.find();
@@ -251,6 +315,16 @@ router.get('/', async (req, res) => {
   }
 });
 
+/**
+ * Fetches the average rating of a specific product based on its ID.
+ *
+ * @route {GET} /average-rating/:productId
+ * @param {string} req.params.productId - The unique identifier of the product.
+ * @returns {Object} - JSON response containing the average rating of the specified product.
+ * @throws {Object} - Returns a 400 status with an error message for invalid inputs.
+ * @throws {Object} - Returns a 404 status with an error message if the product is not found.
+ * @throws {Object} - Returns a 500 status with an error message for internal server errors.
+ */
 router.get('/average-rating/:productId', async (req, res) => {
   try {
     const productId = req.params.productId;
@@ -278,6 +352,16 @@ router.get('/average-rating/:productId', async (req, res) => {
   }
 });
 
+/**
+ * Fetches reviews for a specific product based on its ID.
+ *
+ * @route {GET} /products/:productId/reviews
+ * @param {string} req.params.productId - The unique identifier of the product.
+ * @returns {Object} - JSON response containing an array of reviews for the specified product.
+ * @throws {Object} - Returns a 400 status with an error message for invalid inputs.
+ * @throws {Object} - Returns a 404 status with an error message if the product is not found.
+ * @throws {Object} - Returns a 500 status with an error message for internal server errors.
+ */
 router.get('/products/:productId/reviews', async (req, res) => {
   try {
     const productId = req.params.productId;

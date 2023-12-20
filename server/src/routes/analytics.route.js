@@ -6,6 +6,15 @@ const mongoose = require('mongoose');
 const Merchant = require('../models/merchant.model');
 const { ObjectId } = require('mongoose').Types;
 
+/**
+ * Retrieves product analytics and statistics for a specific merchant based on their ID.
+ *
+ * @route {GET} /product-analytics-and-stats/:merchantId
+ * @param {string} merchantId - The unique identifier of the merchant.
+ * @returns {Object} - JSON response containing product analytics and statistics.
+ * @throws {Object} - Returns a 400 status with an error message for an invalid merchantId.
+ * @throws {Object} - Returns a 500 status with an error message for internal server errors.
+ */
 router.get('/product-analytics-and-stats/:merchantId', async (req, res) => {
   try {
     const merchantId = req.params.merchantId;
@@ -55,7 +64,19 @@ router.get('/product-analytics-and-stats/:merchantId', async (req, res) => {
   }
 });
 
-router.get('/purchasing-power-analytics-and-stats/:merchantId', async (req, res) => {
+/**
+ * Retrieves purchasing power analytics and statistics for a specific merchant based on their ID.
+ *
+ * @route {GET} /purchasing-power-analytics-and-stats/:merchantId
+ * @param {string} merchantId - The unique identifier of the merchant.
+ * @returns {Object} - JSON response containing purchasing power analytics and statistics.
+ * @throws {Object} - Returns a 400 status with an error message for an invalid merchantId.
+ * @throws {Object} - Returns a 404 status with an error message if the merchant is not found.
+ * @throws {Object} - Returns a 500 status with an error message for internal server errors.
+ */
+router.get(
+  '/purchasing-power-analytics-and-stats/:merchantId',
+  async (req, res) => {
     try {
       const merchantId = req.params.merchantId;
 
@@ -111,6 +132,13 @@ router.get('/purchasing-power-analytics-and-stats/:merchantId', async (req, res)
   }
 );
 
+/**
+ * Retrieves aggregated analytics and statistics for all approved merchants.
+ *
+ * @route {GET} /all-merchant-analytics-and-stats
+ * @returns {Object} - JSON response containing analytics and statistics for all approved merchants.
+ * @throws {Object} - Returns a 500 status with an error message for internal server errors.
+ */
 router.get('/all-merchant-analytics-and-stats', async (req, res) => {
   try {
     const allMerchants = await Merchant.find({ status: 'APPROVED' });
@@ -162,7 +190,10 @@ router.get('/all-merchant-analytics-and-stats', async (req, res) => {
       return {
         merchant,
         productAnalytics: productAnalytics[0] || { totalSold: 0 },
-        purchasingPowerAnalytics: purchasingPowerAnalytics[0] || { totalSpent: 0, totalOrders: 0 },
+        purchasingPowerAnalytics: purchasingPowerAnalytics[0] || {
+          totalSpent: 0,
+          totalOrders: 0,
+        },
       };
     });
 

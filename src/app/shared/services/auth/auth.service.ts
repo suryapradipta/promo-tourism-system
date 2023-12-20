@@ -1,8 +1,7 @@
-import {Injectable} from '@angular/core';
-import {AuthModel} from '../../models';
-import {HttpClient} from "@angular/common/http";
-import {Observable} from "rxjs";
-
+import { Injectable } from '@angular/core';
+import { AuthModel } from '../../models';
+import { HttpClient } from '@angular/common/http';
+import { Observable } from 'rxjs';
 
 @Injectable({
   providedIn: 'root',
@@ -21,17 +20,17 @@ export class AuthService {
         role === 'merchant'
           ? 'merchant'
           : role === 'customer'
-            ? 'customer'
-            : role === 'ministry'
-              ? 'ministry'
-              : '',
+          ? 'customer'
+          : role === 'ministry'
+          ? 'ministry'
+          : '',
       isFirstLogin: role === 'merchant',
     };
     return this.http.post(`${this.apiUrl}/register`, authData);
   }
 
   login(email: string, password: string): Observable<{ token: string }> {
-    const authData = {email: email, password: password};
+    const authData = { email: email, password: password };
     return this.http.post<{ token: string }>(`${this.apiUrl}/login`, authData);
   }
 
@@ -63,10 +62,16 @@ export class AuthService {
   }
 
   updatePassword(email: string, newPassword: string): Observable<any> {
-    return this.http.post(`${this.apiUrl}/update-password`, { email, newPassword });
+    return this.http.post(`${this.apiUrl}/update-password`, {
+      email,
+      newPassword,
+    });
   }
 
   checkPassword(email: string, currentPassword: string): Observable<boolean> {
-    return this.http.post<boolean>(`${this.apiUrl}/check-password`, { email, currentPassword });
+    return this.http.post<boolean>(`${this.apiUrl}/check-password`, {
+      email,
+      currentPassword,
+    });
   }
 }

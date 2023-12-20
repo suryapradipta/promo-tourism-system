@@ -9,6 +9,17 @@ const router = express.Router();
 function isValidEmail(email) {
   return /\S+@\S+\.\S+/.test(email);
 }
+
+/**
+ * Handles user registration, storing user information securely in the database.
+ *
+ * @route {POST} /register
+ * @param {Object} req.body - The request body containing email, password, role, and isFirstLogin.
+ * @returns {Object} - JSON response indicating the success of user registration.
+ * @throws {Object} - Returns a 400 status with an error message for missing or invalid fields.
+ * @throws {Object} - Returns a 409 status with an error message if the email is already registered.
+ * @throws {Object} - Returns a 500 status with an error message for internal server errors.
+ */
 router.post('/register', async (req, res) => {
   const { email, password, role, isFirstLogin } = req.body;
 
@@ -47,6 +58,16 @@ router.post('/register', async (req, res) => {
   }
 });
 
+/**
+ * Handles user login, validating credentials and generating a JWT token upon successful authentication.
+ *
+ * @route {POST} /login
+ * @param {Object} req.body - The request body containing email and password.
+ * @returns {Object} - JSON response containing a JWT token upon successful login.
+ * @throws {Object} - Returns a 400 status with an error message for invalid or missing fields.
+ * @throws {Object} - Returns a 401 status with an error message for invalid email or password.
+ * @throws {Object} - Returns a 500 status with an error message for internal server errors.
+ */
 router.post('/login', async (req, res) => {
   const { email, password } = req.body;
 
@@ -101,10 +122,28 @@ router.post('/login', async (req, res) => {
   }
 });
 
+/**
+ * Retrieves the current user based on the provided JWT token.
+ *
+ * @route {GET} /current-user
+ * @middleware {authMiddleware} - Ensures that the request is authenticated.
+ * @returns {Object} - JSON response containing details of the current user.
+ * @throws {Object} - Returns a 401 status with an error message if authentication fails.
+ */
 router.get('/current-user', authMiddleware, (req, res) => {
   res.json(req.user);
 });
 
+/**
+ * Checks if a user's first login status based on their email.
+ *
+ * @route {GET} /is-first-login/:email
+ * @middleware {authMiddleware} - Ensures that the request is authenticated.
+ * @param {string} email - The email address of the user.
+ * @returns {Object} - JSON response indicating whether it's the user's first login.
+ * @throws {Object} - Returns a 400 status with an error message if the email is missing.
+ * @throws {Object} - Returns a 500 status with an error message for internal server errors.
+ */
 router.get('/is-first-login/:email', authMiddleware, async (req, res) => {
   const email = req.params.email;
 
@@ -122,6 +161,17 @@ router.get('/is-first-login/:email', authMiddleware, async (req, res) => {
   }
 });
 
+/**
+ * Updates the user's password based on their email.
+ *
+ * @route {POST} /update-password
+ * @middleware {authMiddleware} - Ensures that the request is authenticated.
+ * @param {Object} req.body - The request body containing email and newPassword.
+ * @returns {Object} - JSON response indicating the success of the password update.
+ * @throws {Object} - Returns a 400 status with an error message if email or newPassword is missing.
+ * @throws {Object} - Returns a 404 status with an error message if the user is not found.
+ * @throws {Object} - Returns a 500 status with an error message for internal server errors.
+ */
 router.post('/update-password', authMiddleware, async (req, res) => {
   const { email, newPassword } = req.body;
 
@@ -145,6 +195,17 @@ router.post('/update-password', authMiddleware, async (req, res) => {
   }
 });
 
+/**
+ * Checks the validity of a user's current password.
+ *
+ * @route {POST} /check-password
+ * @middleware {authMiddleware} - Ensures that the request is authenticated.
+ * @param {Object} req.body - The request body containing email and currentPassword.
+ * @returns {Object} - JSON response indicating whether the current password is valid.
+ * @throws {Object} - Returns a 400 status with an error message if email or currentPassword is missing.
+ * @throws {Object} - Returns a 404 status with an error message if the user is not found.
+ * @throws {Object} - Returns a 500 status with an error message for internal server errors.
+ */
 router.post('/check-password', authMiddleware, async (req, res) => {
   const { email, currentPassword } = req.body;
 

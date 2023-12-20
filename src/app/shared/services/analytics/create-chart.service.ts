@@ -1,22 +1,19 @@
-import {Injectable} from '@angular/core';
-import {Chart, ChartData, ChartOptions} from "chart.js";
-import {ChartConfiguration} from "chart.js/auto";
+import { Injectable } from '@angular/core';
+import { Chart, ChartData, ChartOptions } from 'chart.js';
+import { ChartConfiguration } from 'chart.js/auto';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class CreateChartService {
-
   private chartInstance: Chart;
 
-  constructor() {
-  }
+  constructor() {}
 
-  createChart(
-    canvasId: string,
-    chartConfig: ChartConfiguration
-  ): void {
-    const canvas: HTMLCanvasElement = document.getElementById(canvasId) as HTMLCanvasElement;
+  createChart(canvasId: string, chartConfig: ChartConfiguration): void {
+    const canvas: HTMLCanvasElement = document.getElementById(
+      canvasId
+    ) as HTMLCanvasElement;
 
     if (canvas) {
       const context: CanvasRenderingContext2D = canvas.getContext('2d');
@@ -26,7 +23,7 @@ export class CreateChartService {
       }
       this.chartInstance = new Chart(context, chartConfig);
     }
-  };
+  }
 
   createChartData(labels: string[], data: number[], label: string): ChartData {
     return {
@@ -46,12 +43,13 @@ export class CreateChartService {
     };
   }
 
-  createMultiChartData(labels: string[],
-                       label1: string,
-                       data1: number[],
-                       label2: string,
-                       data2: number[],
-                       yAxisID?: string,
+  createMultiChartData(
+    labels: string[],
+    label1: string,
+    data1: number[],
+    label2: string,
+    data2: number[],
+    yAxisID?: string
   ): ChartData {
     return {
       labels,
@@ -76,16 +74,16 @@ export class CreateChartService {
           barPercentage: 0.5,
           borderRadius: 10,
           yAxisID: yAxisID,
-        }
+        },
       ],
     };
-  };
+  }
 
   createMultiChartOptions(
     xTitle: string,
     yTitle: string,
     title: string,
-    secondaryTitle: string,
+    secondaryTitle: string
   ): ChartOptions {
     return {
       scales: {
@@ -149,18 +147,19 @@ export class CreateChartService {
       },
       aspectRatio: 1.8,
     };
-  };
+  }
 
   createChartOptions(
     title: string,
     xTitle: string,
     yTitle: string,
-    indexAxis?: "x" | "y",
+    indexAxis?: 'x' | 'y'
   ): ChartOptions {
     return {
       indexAxis: indexAxis || 'x',
       animation: {
-        duration: 1000, easing: 'easeInOutQuart',
+        duration: 1000,
+        easing: 'easeInOutQuart',
       },
       plugins: {
         title: {
@@ -205,5 +204,5 @@ export class CreateChartService {
         },
       },
     };
-  };
+  }
 }

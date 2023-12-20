@@ -1,18 +1,18 @@
 import { Injectable } from '@angular/core';
-import {HttpClient} from "@angular/common/http";
-import {Observable} from "rxjs";
-import {MerchantModel} from "../../models";
+import { HttpClient } from '@angular/common/http';
+import { Observable } from 'rxjs';
+import { MerchantModel } from '../../models';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class MerchantService {
   private apiUrl = 'http://localhost:3000/api/merchants';
 
-  constructor(private http: HttpClient) { }
+  constructor(private http: HttpClient) {}
 
   getMerchantIdByEmail(email: string): Observable<any> {
-    return this.http.get<any>( `${this.apiUrl}/by-email/${email}`);
+    return this.http.get<any>(`${this.apiUrl}/by-email/${email}`);
   }
 
   registerMerchant(
@@ -21,21 +21,25 @@ export class MerchantService {
     email: string,
     company_description: string
   ): Observable<any> {
-    const merchantData :MerchantModel =
-      {
-        document_description: null,
-        documents: null,
-        _id: null,
-        status: null,
-        name,
-        contact_number,
-        email,
-        company_description };
+    const merchantData: MerchantModel = {
+      document_description: null,
+      documents: null,
+      _id: null,
+      status: null,
+      name,
+      contact_number,
+      email,
+      company_description,
+    };
 
     return this.http.post(`${this.apiUrl}/register-merchant`, merchantData);
   }
 
-  uploadDocuments(merchantId: string, files: File[], documentDescription: string): Observable<any> {
+  uploadDocuments(
+    merchantId: string,
+    files: File[],
+    documentDescription: string
+  ): Observable<any> {
     const formData = new FormData();
     for (let i = 0; i < files.length; i++) {
       formData.append('documents', files[i]);

@@ -1,4 +1,4 @@
-import {ReviewModel} from "./review.model";
+import { ReviewModel } from './review.model';
 
 export interface ProductModel {
   _id: string;
@@ -6,7 +6,7 @@ export interface ProductModel {
   description: string;
   price: number;
   image: string;
-  category: "Diving" | "Cruise" | "Honeymoon" | "Homestay" | "Shopping";
+  category: 'Diving' | 'Cruise' | 'Honeymoon' | 'Homestay' | 'Shopping';
   reviews: ReviewModel[];
   merchantId: string;
   averageRating?: number;
