@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { MerchantModel } from '../../models';
+import { Merchant } from '../../models';
 
 @Injectable({
   providedIn: 'root',
@@ -21,7 +21,7 @@ export class MerchantService {
     email: string,
     company_description: string
   ): Observable<any> {
-    const merchantData: MerchantModel = {
+    const merchantData: Merchant = {
       document_description: null,
       documents: null,
       _id: null,
@@ -49,12 +49,12 @@ export class MerchantService {
     return this.http.post(`${this.apiUrl}/${merchantId}/upload`, formData);
   }
 
-  getPendingApplications(): Observable<MerchantModel[]> {
-    return this.http.get<MerchantModel[]>(`${this.apiUrl}/pending`);
+  getPendingApplications(): Observable<Merchant[]> {
+    return this.http.get<Merchant[]>(`${this.apiUrl}/pending`);
   }
 
-  getMerchantById(id: string): Observable<MerchantModel> {
-    return this.http.get<MerchantModel>(`${this.apiUrl}/by-id/${id}`);
+  getMerchantById(id: string): Observable<Merchant> {
+    return this.http.get<Merchant>(`${this.apiUrl}/by-id/${id}`);
   }
 
   approveMerchant(merchantId: string): Observable<any> {

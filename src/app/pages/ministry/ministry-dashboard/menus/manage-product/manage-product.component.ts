@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { ProductModel } from '../../../../../shared/models';
+import { Product } from '../../../../../shared/models';
 import {
   AuthService,
   LoadingService,
@@ -16,7 +16,7 @@ import Swal from 'sweetalert2';
   styleUrls: ['./manage-product.component.css'],
 })
 export class ManageProductComponent implements OnInit {
-  products: ProductModel[] = [];
+  products: Product[] = [];
   merchantId: string | undefined;
 
   constructor(
@@ -40,7 +40,7 @@ export class ManageProductComponent implements OnInit {
   loadProducts(merchantId: string): void {
     this.loading.show();
     this.productService.getProductsByMerchantId(merchantId).subscribe(
-      (products: ProductModel[]) => {
+      (products: Product[]) => {
         this.loading.hide();
         this.products = products;
       },
@@ -67,7 +67,7 @@ export class ManageProductComponent implements OnInit {
     this.router.navigate(['/ministry-dashboard/add-product']);
   }
 
-  editProduct(product: ProductModel): void {
+  editProduct(product: Product): void {
     this.router.navigate(['/ministry-dashboard/edit-product', product._id]);
   }
 

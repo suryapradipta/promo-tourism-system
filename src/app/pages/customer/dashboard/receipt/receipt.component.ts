@@ -1,8 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import {
-  OrderModel,
-  PaymentModel,
-  ProductModel,
+  Order,
+  Payment,
+  Product,
 } from '../../../../shared/models';
 import { ActivatedRoute, Router } from '@angular/router';
 import {
@@ -21,9 +21,9 @@ import { ReceiptService } from '../../../../shared/services/receipt/receipt.serv
 })
 export class ReceiptComponent implements OnInit {
   // Data models for product, payment, and order
-  product: ProductModel;
-  payment: PaymentModel;
-  order: OrderModel;
+  product: Product;
+  payment: Payment;
+  order: Order;
   orderDate: string;
 
   constructor(

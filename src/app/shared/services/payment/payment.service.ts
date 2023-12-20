@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { PaymentModel } from '../../models';
+import { Payment } from '../../models';
 import {HttpClient} from "@angular/common/http";
 import {Observable} from "rxjs";
 
@@ -11,11 +11,11 @@ export class PaymentService {
 
   constructor(private http: HttpClient) {}
 
-  savePayment(payment: PaymentModel): Observable<PaymentModel> {
-    return this.http.post<PaymentModel>(`${this.apiUrl}/save-payment`, payment);
+  savePayment(payment: Payment): Observable<Payment> {
+    return this.http.post<Payment>(`${this.apiUrl}/save-payment`, payment);
   }
 
-  getPaymentByPaypalId(paypalId: string): Observable<PaymentModel> {
-    return this.http.get<PaymentModel>(`${this.apiUrl}/get-by-paypal-id/${paypalId}`);
+  getPaymentByPaypalId(paypalId: string): Observable<Payment> {
+    return this.http.get<Payment>(`${this.apiUrl}/get-by-paypal-id/${paypalId}`);
   }
 }

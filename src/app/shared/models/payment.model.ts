@@ -1,4 +1,4 @@
-export interface PaymentModel {
+export interface Payment {
   _id: string;
   orderId: string;
   paypalId: string;

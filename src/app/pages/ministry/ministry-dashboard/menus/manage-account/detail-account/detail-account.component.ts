@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { MerchantModel } from '../../../../../../shared/models';
+import { Merchant } from '../../../../../../shared/models';
 import { ActivatedRoute, Router } from '@angular/router';
 import {
   AuthService,
@@ -14,7 +14,7 @@ import {
   styleUrls: ['./detail-account.component.css'],
 })
 export class DetailAccountComponent implements OnInit {
-  merchant: MerchantModel | null = null;
+  merchant: Merchant | null = null;
 
   constructor(
     private route: ActivatedRoute,
@@ -31,7 +31,7 @@ export class DetailAccountComponent implements OnInit {
     if (merchantId) {
       this.loading.show();
       this.merchantService.getMerchantById(merchantId).subscribe(
-        (merchant: MerchantModel) => {
+        (merchant: Merchant) => {
           this.loading.hide();
           this.merchant = merchant;
         },
@@ -43,7 +43,7 @@ export class DetailAccountComponent implements OnInit {
     }
   }
 
-  approveMerchant(merchant: MerchantModel): void {
+  approveMerchant(merchant: Merchant): void {
     this.loading.show();
     this.merchantService.approveMerchant(merchant._id).subscribe(
       () => {
@@ -80,7 +80,7 @@ export class DetailAccountComponent implements OnInit {
     return randomPassword;
   };
 
-  createMerchantAccount(merchant: MerchantModel): void {
+  createMerchantAccount(merchant: Merchant): void {
     const email = merchant.email;
     const defaultPassword = 'PRS*' + this.generateRandomPassword() + '@';
     console.log(defaultPassword);
@@ -154,7 +154,7 @@ export class DetailAccountComponent implements OnInit {
     );
   }
 
-  rejectMerchant(merchant: MerchantModel): void {
+  rejectMerchant(merchant: Merchant): void {
     this.loading.show();
     this.merchantService.rejectMerchant(merchant._id).subscribe(
       (response) => {

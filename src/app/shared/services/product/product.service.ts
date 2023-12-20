@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { ProductModel } from '../../models';
+import { Product } from '../../models';
 import { Observable } from 'rxjs';
 
 @Injectable({
@@ -11,7 +11,7 @@ export class ProductService {
 
   constructor(private http: HttpClient) {}
 
-  addProduct(product: ProductModel, imageFile: File): Observable<any> {
+  addProduct(product: Product, imageFile: File): Observable<any> {
     const formData = new FormData();
     formData.append('name', product.name);
     formData.append('description', product.description);
@@ -25,7 +25,7 @@ export class ProductService {
 
   editProduct(
     productId: string,
-    product: ProductModel,
+    product: Product,
     imageFile: File
   ): Observable<any> {
     const formData = new FormData();
@@ -45,18 +45,18 @@ export class ProductService {
     return this.http.delete<any>(`${this.apiUrl}/delete-product/${productId}`);
   }
 
-  getProductsByMerchantId(merchantId: string): Observable<ProductModel[]> {
-    return this.http.get<ProductModel[]>(
+  getProductsByMerchantId(merchantId: string): Observable<Product[]> {
+    return this.http.get<Product[]>(
       `${this.apiUrl}/by-merchant/${merchantId}`
     );
   }
 
-  getProductById(productId: string): Observable<ProductModel> {
-    return this.http.get<ProductModel>(`${this.apiUrl}/${productId}`);
+  getProductById(productId: string): Observable<Product> {
+    return this.http.get<Product>(`${this.apiUrl}/${productId}`);
   }
 
-  getAllProducts(): Observable<ProductModel[]> {
-    return this.http.get<ProductModel[]>(this.apiUrl);
+  getAllProducts(): Observable<Product[]> {
+    return this.http.get<Product[]>(this.apiUrl);
   }
 
   getAverageRating(productId: string): Observable<any> {

@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { AuthModel } from '../../models';
+import { Auth } from '../../models';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 
@@ -12,7 +12,7 @@ export class AuthService {
   constructor(private http: HttpClient) {}
 
   createUser(email: string, password: string, role: string): Observable<any> {
-    const authData: AuthModel = {
+    const authData: Auth = {
       _id: null,
       email: email,
       password: password,
@@ -42,7 +42,7 @@ export class AuthService {
     return this.http.get(`${this.apiUrl}/current-user`);
   }
 
-  getCurrentUserJson(): AuthModel | null {
+  getCurrentUserJson(): Auth | null {
     const user = localStorage.getItem('currentUser');
     return user ? JSON.parse(user) : null;
   }

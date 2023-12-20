@@ -1,13 +1,13 @@
-import { ReviewModel } from './review.model';
+import { Review } from './review.model';
 
-export interface ProductModel {
+export interface Product {
   _id: string;
   name: string;
   description: string;
   price: number;
   image: string;
   category: 'Diving' | 'Cruise' | 'Honeymoon' | 'Homestay' | 'Shopping';
-  reviews: ReviewModel[];
+  reviews: Review[];
   merchantId: string;
   averageRating?: number;
   createdAt?: string;

@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { ProductModel } from '../../../../../../shared/models';
+import { Product } from '../../../../../../shared/models';
 import { ActivatedRoute, Router } from '@angular/router';
 import {
   AuthService,
@@ -16,7 +16,7 @@ import { NgForm } from '@angular/forms';
   styleUrls: ['./add-edit-product.component.css'],
 })
 export class AddEditProductComponent implements OnInit {
-  product: ProductModel = {
+  product: Product = {
     category: undefined,
     description: '',
     _id: '',

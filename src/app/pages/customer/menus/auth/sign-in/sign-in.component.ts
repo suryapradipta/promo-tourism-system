@@ -7,7 +7,7 @@ import {
   LoadingService,
   NotificationService,
 } from '../../../../../shared/services';
-import { AuthModel } from '../../../../../shared/models';
+import { Auth } from '../../../../../shared/models';
 
 @Component({
   selector: 'app-sign-in',
@@ -91,7 +91,7 @@ export class SignInComponent implements OnInit {
     );
   }
 
-  private handleLoginSuccess(currentUser: AuthModel): void {
+  private handleLoginSuccess(currentUser: Auth): void {
     this.loading.show();
     this.authService.isFirstLogin(currentUser.email).subscribe(
       (isFirstLogin: boolean) => {

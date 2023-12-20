@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { OrderModel } from '../../models';
+import { Order } from '../../models';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 
@@ -11,8 +11,8 @@ export class ReviewService {
 
   constructor(private http: HttpClient) {}
 
-  getUnreviewedOrders(customerId: string): Observable<OrderModel[]> {
-    return this.http.get<OrderModel[]>(
+  getUnreviewedOrders(customerId: string): Observable<Order[]> {
+    return this.http.get<Order[]>(
       `${this.apiUrl}/unreviewed-orders/${customerId}`
     );
   }

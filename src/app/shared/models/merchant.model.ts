@@ -1,4 +1,4 @@
-export interface MerchantModel {
+export interface Merchant {
   _id: string;
   name: string;
   contact_number: number;

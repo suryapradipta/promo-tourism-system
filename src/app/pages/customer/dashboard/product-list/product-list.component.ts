@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { ProductModel } from '../../../../shared/models';
+import { Product } from '../../../../shared/models';
 import {
   AuthService,
   LoadingService,
@@ -15,7 +15,7 @@ import Swal from 'sweetalert2';
   styleUrls: ['./product-list.component.css'],
 })
 export class ProductListComponent implements OnInit {
-  products: ProductModel[] = [];
+  products: Product[] = [];
 
   constructor(
     private router: Router,
@@ -28,7 +28,7 @@ export class ProductListComponent implements OnInit {
   ngOnInit(): void {
     this.loading.show();
     this.productService.getAllProducts().subscribe(
-      (products: ProductModel[]) => {
+      (products: Product[]) => {
         this.products = products;
         this.fetchAverageRatings(products);
       },
@@ -48,7 +48,7 @@ export class ProductListComponent implements OnInit {
     );
   }
 
-  viewProductDetails(product: ProductModel): void {
+  viewProductDetails(product: Product): void {
     if (this.authService.isAuthenticated()) {
       this.router.navigate(['/product', product._id]);
       window.scrollTo({ top: 0 });
@@ -65,7 +65,7 @@ export class ProductListComponent implements OnInit {
     }
   }
 
-  private fetchAverageRatings(products: ProductModel[]): void {
+  private fetchAverageRatings(products: Product[]): void {
     for (const product of products) {
       this.productService.getAverageRating(product._id).subscribe(
         (response) => {

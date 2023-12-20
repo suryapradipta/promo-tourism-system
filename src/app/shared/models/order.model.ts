@@ -1,8 +1,8 @@
-import { ProductModel } from './product.model';
+import { Product } from './product.model';
 
-export interface OrderModel {
+export interface Order {
   _id: string;
-  product: ProductModel;
+  product: Product;
   orderNumber: string;
   quantity: number;
   totalAmount: number;

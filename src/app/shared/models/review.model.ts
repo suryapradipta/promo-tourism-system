@@ -1,11 +1,11 @@
-import {AuthModel} from "./auth.model";
+import {Auth} from "./auth.model";
 
-export interface ReviewModel {
+export interface Review {
   _id: string;
   orderId: string;
   rating: number;
   comment: string;
-  userId: AuthModel;
+  userId: Auth;
   createdAt?: string;
   updatedAt?: string;
 }

@@ -1,5 +1,5 @@
 import {Injectable} from '@angular/core';
-import {OrderModel} from '../../models';
+import {Order} from '../../models';
 import {HttpClient} from "@angular/common/http";
 import {Observable} from "rxjs";
 
@@ -12,11 +12,11 @@ export class OrderService {
 
   constructor(private http: HttpClient) {}
 
-  createOrder(order: OrderModel): Observable<any> {
+  createOrder(order: Order): Observable<any> {
     return this.http.post(`${this.apiUrl}/create`, order);
   }
 
-  getOrderById(orderId: string): Observable<OrderModel> {
-    return this.http.get<OrderModel>(`${this.apiUrl}/by-id/${orderId}`);
+  getOrderById(orderId: string): Observable<Order> {
+    return this.http.get<Order>(`${this.apiUrl}/by-id/${orderId}`);
   }
 }

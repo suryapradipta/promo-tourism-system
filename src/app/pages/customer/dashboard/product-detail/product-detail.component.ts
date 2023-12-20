@@ -1,9 +1,9 @@
 import { Component } from '@angular/core';
 import {
-  OrderModel,
-  PaymentModel,
-  ProductModel,
-  ReviewModel,
+  Order,
+  Payment,
+  Product,
+  Review,
 } from '../../../../shared/models';
 import { ActivatedRoute, Router } from '@angular/router';
 import {
@@ -23,11 +23,11 @@ import { IPayPalConfig } from 'ngx-paypal';
   styleUrls: ['./product-detail.component.css'],
 })
 export class ProductDetailComponent {
-  product: ProductModel | undefined;
+  product: Product | undefined;
   productForm: FormGroup;
   orderResponse: any;
   averageRating: number;
-  reviews: ReviewModel[];
+  reviews: Review[];
 
   // PayPal's configuration for payment processing
   public payPalConfig?: IPayPalConfig;
@@ -68,7 +68,7 @@ export class ProductDetailComponent {
     if (productId) {
       this.loading.show();
       this.productService.getProductById(productId).subscribe(
-        (product: ProductModel): void => {
+        (product: Product): void => {
           this.product = product;
 
           this.productService.getAverageRating(this.product._id).subscribe(
@@ -146,7 +146,7 @@ export class ProductDetailComponent {
   async onBooking(): Promise<void> {
     try {
       if (this.productForm.valid) {
-        const order: OrderModel = {
+        const order: Order = {
           orderNumber: null,
           _id: null,
           product: this.product,
@@ -226,7 +226,7 @@ export class ProductDetailComponent {
               },
             } = data.purchase_units[0].shipping;
 
-            const payment: PaymentModel = {
+            const payment: Payment = {
               _id: null,
               orderId: orderID,
               paypalId: paymentID,
@@ -245,7 +245,7 @@ export class ProductDetailComponent {
             this.alert.showSuccessMessage(this.orderResponse.message);
 
             this.paymentService.savePayment(payment).subscribe(
-              (savedPayment: PaymentModel) => {
+              (savedPayment: Payment) => {
                 this.loading.hide();
                 console.log('Payment saved:', savedPayment);
               },

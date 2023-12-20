@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { MerchantModel } from '../../../../../shared/models';
+import { Merchant } from '../../../../../shared/models';
 import { Router } from '@angular/router';
 import {
   LoadingService,
@@ -12,7 +12,7 @@ import {
   styleUrls: ['./manage-account.component.css'],
 })
 export class ManageAccountComponent implements OnInit {
-  pendingApplications: MerchantModel[] = [];
+  pendingApplications: Merchant[] = [];
 
   constructor(
     private merchantService: MerchantService,
@@ -23,7 +23,7 @@ export class ManageAccountComponent implements OnInit {
   ngOnInit(): void {
     this.loading.show();
     this.merchantService.getPendingApplications().subscribe(
-      (merchants: MerchantModel[]) => {
+      (merchants: Merchant[]) => {
         this.loading.hide();
         this.pendingApplications = merchants;
       },
@@ -34,7 +34,7 @@ export class ManageAccountComponent implements OnInit {
     );
   }
 
-  previewMerchant(merchant: MerchantModel): void {
+  previewMerchant(merchant: Merchant): void {
     this.router.navigate(['/ministry-dashboard/merchant', merchant._id]);
   }
 }

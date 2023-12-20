@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { AuthModel, OrderModel } from '../../../../shared/models';
+import { Auth, Order } from '../../../../shared/models';
 import {
   AuthService,
   LoadingService,
@@ -14,7 +14,7 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
   styleUrls: ['./review-product.component.css'],
 })
 export class ReviewProductComponent implements OnInit {
-  unreviewedOrders: OrderModel[] = [];
+  unreviewedOrders: Order[] = [];
   showReviewForm = false;
   reviewForm: FormGroup;
   selectedOrderId: string;
@@ -37,12 +37,12 @@ export class ReviewProductComponent implements OnInit {
   }
 
   private loadUnreviewedOrders(): void {
-    const user: AuthModel = this.authService.getCurrentUserJson();
+    const user: Auth = this.authService.getCurrentUserJson();
 
     if (user) {
       this.loading.show();
       this.reviewService.getUnreviewedOrders(user._id).subscribe(
-        (response: OrderModel[]) => {
+        (response: Order[]) => {
           this.loading.hide();
           this.unreviewedOrders = response;
         },
