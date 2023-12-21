@@ -329,7 +329,6 @@ router.put('/reject/:id', authMiddleware, async (req, res) => {
  * @throws {Object} - Returns a 400 status with an error message for missing or invalid input.
  * @throws {Object} - Returns a 500 status with an error message for internal server errors.
  */
-
 router.post('/send-email', authMiddleware, async (req, res) => {
   const { to, subject, html } = req.body;
 
@@ -353,24 +352,6 @@ router.post('/send-email', authMiddleware, async (req, res) => {
       res.status(200).json({ message: 'Email Sent' });
     }
   });
-});
-
-/**
- * Retrieves a list of all merchants.
- *
- * @route {GET} /
- *
- * @returns {Object} - JSON response containing a list of all merchants.
- * @throws {Object} - Returns a 500 status with an error message for internal server errors.
- */
-router.get('/', authMiddleware, async (req, res) => {
-  try {
-    const merchants = await Merchant.find();
-    res.json(merchants);
-  } catch (error) {
-    console.error('Error fetching merchant:', error);
-    res.status(500).json({ message: 'Internal Server Error' });
-  }
 });
 
 /**
