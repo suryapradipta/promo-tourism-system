@@ -1,11 +1,7 @@
 /**
- *
- * This component represents the header of the application, including navigation links,
- * user authentication status, and logout functionality. It utilizes the AuthService
- * for managing user authentication and the Router for navigation. Additionally, it
- * uses the SweetAlert2 library for a user-friendly logout confirmation dialog.
- *
- * @author I Nyoman Surya Pradipta (E1900344)
+ * This component represents the header section of the application, including navigation links,
+ * user authentication status, and logout functionality. It interacts with AuthService for
+ * authentication-related tasks and utilizes the Router for navigation.
  */
 import { Component } from '@angular/core';
 import { AuthService } from '../../../../shared/services';
@@ -18,37 +14,36 @@ import Swal from 'sweetalert2';
   styleUrls: ['./header.component.css'],
 })
 export class HeaderComponent {
-  // Array of page links in the header
   pages = [
     { name: 'Products', href: '/product-list#products' },
-    { name: 'Company', href: '#' },
-    { name: 'Services', href: '#' },
+    { name: 'Company', href: '/' },
+    { name: 'Services', href: '/' },
   ];
 
   /**
    * Constructor function for HeaderComponent.
    *
    * @constructor
-   * @param {AuthService} authService - Service for managing user authentication.
-   * @param {Router} router - Angular Router service for navigation.
+   * @param {AuthService} authService - The service responsible for user authentication.
+   * @param {Router} router - The Angular router for navigation.
    */
   constructor(private authService: AuthService, private router: Router) {}
 
   /**
-   * Check if a user is logged in as a customer.
+   * Check if a user is authenticated and has the role of 'customer'.
    *
-   * @returns {boolean} - True if the user is logged in as a customer, false otherwise.
+   * @returns {boolean} - True if the user is authenticated and has the role of 'customer', false otherwise.
    */
-  isLogged(): boolean {
-    const user = this.authService.getCurrentUser();
+  isAuthenticated(): boolean {
+    const user = this.authService.getCurrentUserJson();
     return user && user.role === 'customer';
   }
 
   /**
-   * Log out the current user, displaying a confirmation dialog.
-   * If the user confirms, log out and navigate to the home page.
+   * Handle the logout process. Display a confirmation dialog using SweetAlert2,
+   * and log the user out if confirmed. Navigate to the home page after successful logout.
    */
-  logout(): void {
+  onLogout(): void {
     Swal.fire({
       title: 'Are you sure you want to log out?',
       icon: 'warning',
@@ -59,14 +54,14 @@ export class HeaderComponent {
     }).then((result) => {
       if (result.isConfirmed) {
         Swal.fire('Log out!', 'You have been logged out.', 'success');
-        this.authService.logout();
+        this.authService.logOut();
         this.router.navigate(['/']);
       }
     });
   }
 
   /**
-   * Scroll to a specific section on the page.
+   * Scroll to a specific section of the page with smooth behavior.
    *
    * @param {string} sectionId - The HTML element ID of the target section.
    */

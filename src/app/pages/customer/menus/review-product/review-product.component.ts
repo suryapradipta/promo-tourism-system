@@ -1,16 +1,13 @@
 /**
- * This component handles the review functionality for products. It retrieves a list of
- * unreviewed orders for the currently logged-in customer, allowing them to submit reviews
- * for products they have purchased. The component utilizes the ReviewService, AuthService,
- * ProductListService, FormBuilder, and NotificationService for managing reviews, user authentication,
- * product data, form creation, and notifications respectively.
+ * This component manages the review process for products. It displays a list of unreviewed
+ * orders for the currently authenticated user and provides a form to submit reviews.
  */
-import { Component } from '@angular/core';
-import { OrderModel } from '../../../../shared/models';
+import { Component, OnInit } from '@angular/core';
+import { Auth, Order } from '../../../../shared/models';
 import {
   AuthService,
+  LoadingService,
   NotificationService,
-  ProductListService,
   ReviewService,
 } from '../../../../shared/services';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
@@ -20,59 +17,89 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
   templateUrl: './review-product.component.html',
   styleUrls: ['./review-product.component.css'],
 })
-export class ReviewProductComponent {
-  unreviewedOrders: OrderModel[] = [];
+export class ReviewProductComponent implements OnInit {
+  unreviewedOrders: Order[] = [];
   showReviewForm = false;
   reviewForm: FormGroup;
-  selectedOrderID: string;
+  selectedOrderId: string;
 
   /**
    * @constructor
+   * @param {FormBuilder} formBuilder - Angular service for building reactive forms.
+   * @param {NotificationService} alert - Service for displaying notifications.
    * @param {ReviewService} reviewService - Service for managing product reviews.
-   * @param {AuthService} authService - Service for user authentication.
-   * @param {ProductListService} productService - Service for managing product data.
-   * @param {FormBuilder} formBuilder - FormBuilder for creating and handling form controls.
-   * @param {NotificationService} notificationService - Service for displaying notifications.
+   * @param {AuthService} authService - Service for managing user authentication.
+   * @param {LoadingService} loading - Service for displaying loading indicators.
    */
   constructor(
+    private formBuilder: FormBuilder,
+    private alert: NotificationService,
     private reviewService: ReviewService,
     private authService: AuthService,
-    private productService: ProductListService,
-    private formBuilder: FormBuilder,
-    private notificationService: NotificationService
+    private loading: LoadingService
   ) {}
 
   /**
-   * Initialize component properties and load unreviewed orders on component initialization.
+   * Loads unreviewed orders and initializes the review form.
    */
-  ngOnInit() {
+  ngOnInit(): void {
     this.loadUnreviewedOrders();
     this.initReviewForm();
   }
 
   /**
-   * Getter function to access form controls in a convenient way.
+   * Getter for accessing form controls in the template.
    */
   get formControl() {
     return this.reviewForm.controls;
   }
 
   /**
-   * Load unreviewed orders for the currently logged-in customer.
+   * Private method to load unreviewed orders for the current user.
    */
-  private loadUnreviewedOrders() {
-    const loggedInCustomer = this.authService.getCurrentUser();
-    if (loggedInCustomer) {
-      this.unreviewedOrders = this.reviewService.getUnreviewedOrders(
-        loggedInCustomer.id
+  private loadUnreviewedOrders(): void {
+    const user: Auth = this.authService.getCurrentUserJson();
+
+    if (user) {
+      this.loading.show();
+      this.reviewService.getUnreviewedOrders(user._id).subscribe(
+        (response: Order[]) => {
+          this.loading.hide();
+          this.unreviewedOrders = response;
+        },
+        (error) => {
+          this.loading.hide();
+          console.error('Error retrieving unreviewed orders:', error);
+          if (error.status === 404) {
+            this.alert.showErrorMessage('No unreviewed orders found.');
+          } else {
+            const errorMessage =
+              error.error?.message || 'Failed to retrieve unreviewed orders.';
+            this.alert.showErrorMessage(errorMessage);
+          }
+        }
       );
     }
   }
 
   /**
-   * Initialize the review form with form controls for rating and comments.
+   * Format the order date for display in the template.
+   *
+   * @param {string} date - Order date string.
+   * @returns {string} - Formatted date string.
    */
-  private initReviewForm() {
+  formatOrderDate(date: string): string {
+    return new Date(date).toLocaleDateString('en-US', {
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric',
+    });
+  }
+
+  /**
+   * Private method to initialize the review form with validators.
+   */
+  private initReviewForm(): void {
     this.reviewForm = this.formBuilder.group({
       rating: [
         null,
@@ -83,36 +110,60 @@ export class ReviewProductComponent {
   }
 
   /**
-   * Open the review form for the selected order.
+   * Open the review form for a selected order.
    *
-   * @param {string} orderID - ID of the selected order.
+   * @param {string} orderId - ID of the selected order for review.
    */
-  openReviewForm(orderID: string) {
+  openReviewForm(orderId: string): void {
     this.showReviewForm = true;
-    this.selectedOrderID = orderID;
+    this.selectedOrderId = orderId;
   }
 
   /**
-   * Submit a product review if the form is valid.
-   *
-   * @param {string} productID - ID of the product being reviewed.
+   * Close the review form.
    */
-  submitReview(productID: string) {
+  closeReviewForm(): void {
+    this.showReviewForm = false;
+    this.selectedOrderId = null;
+  }
+
+  /**
+   * Submit the review form. If the form is valid, send the review to the server.
+   */
+  submitReview(): void {
     if (this.reviewForm.valid) {
-      const orderID = this.selectedOrderID;
+      const orderId: string = this.selectedOrderId;
+      const userId = this.authService.getCurrentUserJson()._id;
 
       const rating = this.reviewForm.value.rating;
       const comment = this.reviewForm.value.comment;
 
-      const review = this.reviewService.addReview(orderID, +rating, comment);
-      this.productService.addReviewToProduct(productID, review);
-      console.log('Review submitted:', review);
+      this.loading.show();
+      this.reviewService
+        .submitReview(orderId, +rating, comment, userId)
+        .subscribe(
+          (response) => {
+            this.loading.hide();
+            this.reviewForm.reset();
+            this.showReviewForm = false;
+            this.loadUnreviewedOrders();
+            this.alert.showSuccessMessage(response.message);
+          },
+          (error) => {
+            this.loading.hide();
+            console.error('Error submitting review:', error);
 
-      this.reviewForm.reset();
-      this.showReviewForm = false;
-      this.notificationService.showSuccessMessage('Review successful!');
-
-      this.loadUnreviewedOrders();
+            if (error.status === 400) {
+              this.alert.showErrorMessage('All fields are required');
+            } else if (error.status === 404) {
+              this.alert.showErrorMessage('Order or product not found');
+            } else {
+              const errorMessage =
+                error.error?.message || 'Failed to submit review';
+              this.alert.showErrorMessage(errorMessage);
+            }
+          }
+        );
     }
   }
 }

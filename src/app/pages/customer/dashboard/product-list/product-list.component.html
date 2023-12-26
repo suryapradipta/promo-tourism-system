@@ -18,7 +18,9 @@
           <!-- Product Image -->
           <div class="relative h-72 w-full overflow-hidden rounded-lg">
             <img
-              src="{{ product.image }}"
+              src="http://localhost:3000/api/files/server/src/uploads/{{
+                product.image
+              }}"
               alt="{{ product.name }}"
               class="h-full w-full object-cover object-center"
             />
@@ -44,8 +46,8 @@
                     xmlns="http://www.w3.org/2000/svg"
                     viewBox="0 0 20 20"
                     fill="currentColor"
-                    [class.text-yellow-300]="getAverageRating(product.id) >= _"
-                    [class.text-gray-200]="getAverageRating(product.id) < _"
+                    [class.text-yellow-300]="product.averageRating >= _"
+                    [class.text-gray-200]="product.averageRating < _"
                     aria-hidden="true"
                   >
                     <path

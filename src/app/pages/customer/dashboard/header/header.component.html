@@ -52,19 +52,19 @@
           <!-- User Authentication Section -->
           <div class="ml-auto flex items-center">
             <div
-              class="hidden lg:flex lg:flex-1 lg:items-center lg:justify-end lg:space-x-6"
+              class="lg:flex lg:flex-1 lg:items-center lg:justify-end lg:space-x-6"
             >
               <!-- Display Sign In link if user is not logged in -->
-              <div *ngIf="!isLogged()">
+              <div *ngIf="!isAuthenticated()">
                 <a
                   routerLink="/sign-in"
-                  class="text-sm font-medium text-gray-700 hover:text-gray-800"
+                  class="hidden lg:block text-sm font-medium text-gray-700 hover:text-gray-800"
                   >Sign in</a
                 >
               </div>
 
               <!-- Display User Profile and Logout options if user is logged in -->
-              <div *ngIf="isLogged()">
+              <div *ngIf="isAuthenticated()">
                 <div class="relative ml-3" x-data="{ open: false }">
                   <div>
                     <!-- User Profile Button -->
@@ -126,7 +126,7 @@
 
                     <!-- Logout Button -->
                     <button
-                      (click)="logout()"
+                      (click)="onLogout()"
                       class="block px-4 py-2 text-sm text-gray-700"
                       id="user-menu-item-2"
                       role="menuitem"
@@ -139,10 +139,11 @@
               </div>
 
               <span class="h-6 w-px bg-gray-200" aria-hidden="true"></span>
+
               <!-- Register Merchant Link -->
               <a
                 routerLink="/register-merchant"
-                class="text-sm font-medium text-gray-700 hover:text-gray-800"
+                class="hidden lg:block text-sm font-medium text-gray-700 hover:text-gray-800"
               >
                 Register Merchant
               </a>

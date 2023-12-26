@@ -1,11 +1,16 @@
 /**
- * This component displays a list of products and handles navigation to individual
- * product details. It checks the authentication status using the AuthService and
- * prompts the user to log in if necessary.
+ * This component displays a list of products and handles user interactions,
+ * such as viewing product details. It utilizes various services for product retrieval,
+ * authentication checks, and displaying notifications.
  */
 import { Component, OnInit } from '@angular/core';
-import { ProductModel } from '../../../../shared/models';
-import { AuthService, ProductListService } from '../../../../shared/services';
+import { Product } from '../../../../shared/models';
+import {
+  AuthService,
+  LoadingService,
+  NotificationService,
+  ProductService,
+} from '../../../../shared/services';
 import { Router } from '@angular/router';
 import Swal from 'sweetalert2';
 
@@ -15,41 +20,59 @@ import Swal from 'sweetalert2';
   styleUrls: ['./product-list.component.css'],
 })
 export class ProductListComponent implements OnInit {
-  products: ProductModel[] = [];
+  products: Product[] = [];
 
   /**
    * @constructor
-   * @param {ProductListService} productListService - The service responsible for managing product data.
-   * @param {Router} router - The Angular router service for navigation.
-   * @param {AuthService} authService - The service responsible for user authentication.
+   * @param {Router} router - Angular router service for navigation.
+   * @param {AuthService} authService - Authentication service for checking user authentication status.
+   * @param {ProductService} productService - Service for retrieving product-related data.
+   * @param {NotificationService} alert - Service for displaying notifications.
+   * @param {LoadingService} loading - Service for managing loading indicators.
    */
   constructor(
-    private productListService: ProductListService,
     private router: Router,
-    private authService: AuthService
+    private authService: AuthService,
+    private productService: ProductService,
+    private alert: NotificationService,
+    private loading: LoadingService
   ) {}
 
   /**
-   * Initializes the product data from the ProductListService.
+   * Fetches the list of products and their average ratings.
    */
   ngOnInit(): void {
-    this.products = this.productListService.getProductsData();
+    this.loading.show();
+    this.productService.getAllProducts().subscribe(
+      (products: Product[]) => {
+        this.products = products;
+        this.fetchAverageRatings(products);
+      },
+      (error) => {
+        this.loading.hide();
+        console.error('Error fetching products:', error);
+
+        if (error.status === 404) {
+          this.alert.showErrorMessage('No products found');
+        } else {
+          this.alert.showErrorMessage(
+            error.error?.message ||
+              'Failed to fetch products. Please try again later.'
+          );
+        }
+      }
+    );
   }
 
   /**
-   * Navigate to the details page of the selected product.
-   * If the user is authenticated, navigate to the product details page and scroll to the top.
-   * If not authenticated, prompt the user to log in before navigating.
+   * Navigate to the details page of a selected product.
+   * If the user is not authenticated, prompt them to log in.
    *
-   * @param {ProductModel} product - The selected product for which details are to be viewed.
+   * @param {Product} product - The selected product.
    */
-  viewProductDetails(product: ProductModel) {
-    if (this.authService.isLoggedIn()) {
-      this.router.navigate(['/product', product.id]);
-
-      /* [[PROBLEM]] after navigate the scroll position stick on previous page
-       [[BUG]] navigate() persists the scroll position of the previous page
-      solution: https://github.com/reach/router/issues/166*/
+  viewProductDetails(product: Product): void {
+    if (this.authService.isAuthenticated()) {
+      this.router.navigate(['/product', product._id]);
       window.scrollTo({ top: 0 });
     } else {
       Swal.fire({
@@ -65,12 +88,24 @@ export class ProductListComponent implements OnInit {
   }
 
   /**
-   * Get the average rating for a given product.
+   * Fetch the average ratings for each product in the list.
    *
-   * @param {string} productId - The ID of the product for which the average rating is calculated.
-   * @returns {number} - The average rating of the product.
+   * @param {Product[]} products - The list of products.
    */
-  getAverageRating(productId: string): number {
-    return this.productListService.getAverageRating(productId);
+  private fetchAverageRatings(products: Product[]): void {
+    for (const product of products) {
+      this.productService.getAverageRating(product._id).subscribe(
+        (response) => {
+          this.loading.hide();
+          product.averageRating = response.averageRating;
+        },
+        (error) => {
+          this.loading.hide();
+          console.error('Error while fetching average rating:', error);
+        }
+      );
+    }
+
+    this.products = products;
   }
 }

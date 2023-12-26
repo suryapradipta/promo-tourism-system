@@ -1,28 +1,31 @@
 /**
- * Defines the structure of a product, including its attributes such as id, name, description,
- * price, image, category, reviews, and merchantId. The category is constrained to a specific set
- * of values representing different types of products. The reviews property is an array of
- * ReviewModel objects associated with the product.
+ * Defines the structure of the product model, representing an item available for purchase or review.
  *
- * @interface ProductModel
- * @property {string} id - Unique identifier for the product.
+ * @interface Product
+ * @property {string} _id - Unique identifier for the product.
  * @property {string} name - Name of the product.
  * @property {string} description - Description of the product.
  * @property {number} price - Price of the product.
- * @property {string} image - URL or path to the product image.
- * @property {"diving" | "cruise" | "honeymoon" | "homestay" | "shopping"} category - Category of the product.
- * @property {ReviewModel[]} reviews - Array of ReviewModel objects associated with the product.
+ * @property {string} image - URL or path to the product's image.
+ * @property {'Diving' | 'Cruise' | 'Honeymoon' | 'Homestay' | 'Shopping'} category - Category of the product.
+ * @property {Review[]} reviews - Array of reviews associated with the product.
  * @property {string} merchantId - Unique identifier of the merchant associated with the product.
+ * @property {number | undefined} averageRating - Average rating of the product based on reviews (optional).
+ * @property {string | undefined} createdAt - Timestamp indicating when the product was created (optional).
+ * @property {string | undefined} updatedAt - Timestamp indicating when the product was last updated (optional).
  */
-import {ReviewModel} from "./review.model";
+import { Review } from './review.model';
 
-export interface ProductModel {
-  id: string;
+export interface Product {
+  _id: string;
   name: string;
   description: string;
   price: number;
   image: string;
-  category: "diving" | "cruise" | "honeymoon" | "homestay" | "shopping";
-  reviews: ReviewModel[];
+  category: 'Diving' | 'Cruise' | 'Honeymoon' | 'Homestay' | 'Shopping';
+  reviews: Review[];
   merchantId: string;
+  averageRating?: number;
+  createdAt?: string;
+  updatedAt?: string;
 }

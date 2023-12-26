@@ -11,7 +11,7 @@
           <div>
             <div>
               <h3 class="text-lg font-medium leading-6 text-gray-900">
-                {{ product.id ? "Edit" : "Add" }} Product
+                {{ product._id ? 'Edit' : 'Add' }} Product
               </h3>
               <p class="mt-1 text-sm text-gray-500">
                 Ensure that the information is accurate and up-to-date before
@@ -166,8 +166,8 @@
                   <div class="space-y-1 text-center">
                     <!-- Image preview -->
                     <img
-                      *ngIf="product.image"
-                      [src]="product.image"
+                      *ngIf="previewImage"
+                      [src]="previewImage"
                       class="mx-auto max-w-[200px]"
                       alt="Preview"
                     />
@@ -189,7 +189,7 @@
                       </label>
                       <p class="pl-1">or drag and drop</p>
                     </div>
-                    <p class="text-xs text-gray-500">PNG, JPG up to 5MB</p>
+                    <p class="text-xs text-gray-500">PNG, JPG up to 2MB</p>
                   </div>
                 </div>
               </div>

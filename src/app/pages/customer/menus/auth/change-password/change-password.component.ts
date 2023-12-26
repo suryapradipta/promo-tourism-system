@@ -1,11 +1,13 @@
 /**
- * This component handles the functionality for changing the user's password.
- * It includes a form to input the current password, new password, and confirm password,
- * and performs validation and password change based on user input.
+ * This component handles the change password functionality, allowing users to update their passwords.
+ * It utilizes the AuthService for user authentication and password management,
+ * FormBuilder for form creation, NotificationService for displaying alerts,
+ * and LoadingService for displaying loading indicators during asynchronous operations.
  */
 import { Component, OnInit } from '@angular/core';
 import {
   AuthService,
+  LoadingService,
   NotificationService,
 } from '../../../../../shared/services';
 import { Router } from '@angular/router';
@@ -21,23 +23,23 @@ export class ChangePasswordComponent implements OnInit {
   passwordMismatch: boolean = false;
 
   /**
-   * Constructor function for ChangePasswordComponent.
-   *
    * @constructor
-   * @param {AuthService} authService - The service managing user authentication.
-   * @param {Router} router - Angular router service for navigation.
-   * @param {FormBuilder} fb - Angular form builder for form creation.
-   * @param {NotificationService} alert - Service for displaying notifications.
+   * @param {AuthService} authService - The service for user authentication and password management.
+   * @param {Router} router - The Angular router for navigating between views.
+   * @param {FormBuilder} fb - The FormBuilder for creating and managing forms.
+   * @param {NotificationService} alert - The service for displaying alerts.
+   * @param {LoadingService} loading - The service for displaying loading indicators.
    */
   constructor(
     private authService: AuthService,
     private router: Router,
     private fb: FormBuilder,
-    private alert: NotificationService
+    private alert: NotificationService,
+    private loading: LoadingService
   ) {}
 
   /**
-   * Initializes the form with validation rules for input fields.
+   * Initializes the change password form with validators.
    */
   ngOnInit(): void {
     this.changePasswordForm = this.fb.group({
@@ -48,25 +50,26 @@ export class ChangePasswordComponent implements OnInit {
   }
 
   /**
-   * Getter function to easily access form controls in the template.
+   * Get method to access form controls.
    */
-  get f() {
+  get formControl() {
     return this.changePasswordForm.controls;
   }
 
   /**
-   * Validates the form, checks for password mismatch, and updates the user's password
-   * if the current password is correct.
+   * Handles the form submission to change the user's password.
+   * Validates form inputs, checks for password match, and communicates with the AuthService
+   * to verify the current password and update the password if conditions are met.
    */
   onSubmit(): void {
     if (this.changePasswordForm.invalid) {
       return;
     }
 
-    const userEmail = this.authService.getCurrentUser().email;
-    const currentPassword = this.f.currentPassword.value;
-    const newPassword = this.f.newPassword.value;
-    const confirmPassword = this.f.confirmPassword.value;
+    const userEmail = this.authService.getCurrentUserJson().email;
+    const currentPassword = this.formControl.currentPassword.value;
+    const newPassword = this.formControl.newPassword.value;
+    const confirmPassword = this.formControl.confirmPassword.value;
 
     if (newPassword !== confirmPassword) {
       this.passwordMismatch = true;
@@ -74,18 +77,38 @@ export class ChangePasswordComponent implements OnInit {
         'New password and confirm password must match.'
       );
     } else {
-      if (this.authService.checkPassword(userEmail, currentPassword)) {
-        this.authService.updatePassword(userEmail, newPassword);
-        this.passwordMismatch = false;
-        this.changePasswordForm.reset();
-        this.router
-          .navigate(['/ministry-dashboard'])
-          .then((r) =>
-            this.alert.showSuccessMessage('Password successfully changed!')
-          );
-      } else {
-        this.alert.showErrorMessage('Incorrect current password.');
-      }
+      this.loading.show();
+      this.authService.checkPassword(userEmail, currentPassword).subscribe(
+        (isValid: boolean) => {
+          if (isValid) {
+            this.authService.updatePassword(userEmail, newPassword).subscribe(
+              (response) => {
+                this.loading.hide();
+                this.passwordMismatch = false;
+                this.changePasswordForm.reset();
+                this.router
+                  .navigate(['/ministry-dashboard/home'])
+                  .then(() => this.alert.showSuccessMessage(response.message));
+              },
+              (error) => {
+                this.loading.hide();
+                console.error('Error updating password:', error);
+                this.alert.showErrorMessage(
+                  error.error?.message || 'An unexpected error occurred'
+                );
+              }
+            );
+          } else {
+            this.loading.hide();
+            this.alert.showErrorMessage('Incorrect current password.');
+          }
+        },
+        (error) => {
+          this.loading.hide();
+          console.error(error);
+          this.alert.showErrorMessage('Error checking current password.');
+        }
+      );
     }
   }
 }

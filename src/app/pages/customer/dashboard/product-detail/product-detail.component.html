@@ -5,13 +5,16 @@
 >
   <!-- Product -->
   <div
+    *ngIf="product"
     class="lg:grid lg:grid-cols-7 lg:grid-rows-1 lg:gap-x-8 lg:gap-y-10 xl:gap-x-16"
   >
     <!-- Product image -->
     <div class="lg:col-span-4 lg:row-end-1">
       <div class="aspect-w-4 aspect-h-3 overflow-hidden rounded-lg bg-gray-100">
         <img
-          src="{{ product.image }}"
+          src="http://localhost:3000/api/files/server/src/uploads/{{
+            product.image
+          }}"
           alt="{{ product.name }}"
           class="object-cover object-center"
         />
@@ -30,7 +33,7 @@
         <h2 class="sr-only">Reviews</h2>
         <div class="flex items-center">
           <p class="text-sm text-gray-700">
-            {{ averageRating.toFixed(1) }}
+            {{ averageRating?.toFixed(1) }}
             <span class="sr-only"> out of 5 stars</span>
           </p>
 
@@ -241,7 +244,84 @@
     <div
       class="mx-auto mt-16 w-full max-w-2xl lg:col-span-4 lg:mt-0 lg:max-w-none"
     >
-      <app-reviews />
+      <section aria-labelledby="reviews-heading" class="mt-8 sm:mt-6">
+        <h2 id="reviews-heading" class="text-lg font-medium text-gray-900">
+          Recent reviews
+        </h2>
+
+        <div
+          *ngIf="reviews && reviews?.length > 0"
+          class="mt-6 space-y-10 divide-y divide-gray-200 border-t border-gray-200 pb-10"
+        >
+          <div
+            *ngFor="let review of reviews"
+            class="pt-10 lg:grid lg:grid-cols-12 lg:gap-x-8"
+          >
+            <div
+              class="lg:col-span-8 lg:col-start-5 xl:col-span-9 xl:col-start-4 xl:grid xl:grid-cols-3 xl:items-start xl:gap-x-8"
+            >
+              <div class="flex items-center xl:col-span-1">
+                <div class="flex items-center">
+                  <ng-container *ngFor="let _ of [1, 2, 3, 4, 5]">
+                    <svg
+                      class="h-5 w-5 flex-shrink-0"
+                      xmlns="http://www.w3.org/2000/svg"
+                      viewBox="0 0 20 20"
+                      fill="currentColor"
+                      [class.text-yellow-300]="review.rating >= _"
+                      [class.text-gray-200]="review.rating < _"
+                      aria-hidden="true"
+                    >
+                      <path
+                        fill-rule="evenodd"
+                        d="M10.868 2.884c-.321-.772-1.415-.772-1.736 0l-1.83 4.401-4.753.381c-.833.067-1.171 1.107-.536 1.651l3.62 3.102-1.106 4.637c-.194.813.691 1.456 1.405 1.02L10 15.591l4.069 2.485c.713.436 1.598-.207 1.404-1.02l-1.106-4.637 3.62-3.102c.635-.544.297-1.584-.536-1.65l-4.752-.382-1.831-4.401z"
+                        clip-rule="evenodd"
+                      />
+                    </svg>
+                  </ng-container>
+                </div>
+              </div>
+
+              <div class="mt-4 lg:mt-6 xl:col-span-2 xl:mt-0">
+                <div class="mt-3 space-y-6 text-sm text-gray-500">
+                  <p>
+                    {{ review.comment }}
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            <div
+              class="mt-6 flex items-center text-sm lg:col-span-4 lg:col-start-1 lg:row-start-1 lg:mt-0 lg:flex-col lg:items-start xl:col-span-3"
+            >
+              <p class="font-medium text-gray-900">{{ review.userId.email }}</p>
+              <time
+                class="ml-4 border-l border-gray-200 pl-4 text-gray-500 lg:ml-0 lg:mt-2 lg:border-0 lg:pl-0"
+                >{{ formatOrderDate(review.createdAt) }}</time
+              >
+            </div>
+          </div>
+        </div>
+
+        <!-- Empty State Message -->
+        <div
+          *ngIf="reviews?.length === 0"
+          class="pt-5 mx-auto max-w-2xl space-y-8 sm:px-4 lg:max-w-4xl lg:px-0"
+        >
+          <div
+            class="rounded-lg border-2 border-dashed border-gray-200 flex items-center justify-center text-center"
+          >
+            <div class="text-center">
+              <h3 class="mt-2 text-lg font-medium text-gray-500">
+                No review orders
+              </h3>
+              <p class="my-2 text-sm text-gray-500">
+                There are currently no reviews.
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
     </div>
   </div>
 </main>

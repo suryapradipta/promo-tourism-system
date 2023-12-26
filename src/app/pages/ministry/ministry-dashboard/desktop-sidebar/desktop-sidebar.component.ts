@@ -1,6 +1,6 @@
 /**
- * This component represents the sidebar in the desktop view and provides functionality
- * for setting the active link, checking user roles, and handling logout with a confirmation dialog.
+ * This component represents the desktop sidebar of the application,
+ * providing navigation links and user-related functionalities.
  */
 import { Component } from '@angular/core';
 import { AuthService } from '../../../../shared/services';
@@ -13,52 +13,49 @@ import Swal from 'sweetalert2';
   styleUrls: ['./desktop-sidebar.component.css'],
 })
 export class DesktopSidebarComponent {
-  // Variable to store the active link in the sidebar
   activeLink: string = 'dashboard';
 
   /**
-   * Set the active link in the sidebar.
+   * Set the active navigation link.
    *
    * @param {string} link - The link to set as active.
    */
-  setActiveLink(link: string) {
+  setActiveLink(link: string): void {
     this.activeLink = link;
   }
 
   /**
-   * Constructor function for DesktopSidebarComponent.
-   *
    * @constructor
-   * @param {AuthService} authService - The service responsible for user authentication.
-   * @param {Router} router - The Angular router service for navigation.
+   * @param {AuthService} authService - Service for managing user authentication.
+   * @param {Router} router - Angular router service for navigation.
    */
   constructor(private authService: AuthService, private router: Router) {}
 
   /**
-   * Check if the current user has the 'ministry' role.
+   * Check if the current user has the role of 'ministry'.
    *
-   * @returns {boolean} - True if the user has the 'ministry' role, false otherwise.
+   * @returns {boolean} - True if the user is a ministry, false otherwise.
    */
   isMinistry(): boolean {
-    const user = this.authService.getCurrentUser();
+    const user = this.authService.getCurrentUserJson();
     return user && user.role === 'ministry';
   }
 
   /**
-   * Check if the current user has the 'merchant' role.
+   * Check if the current user has the role of 'merchant'.
    *
-   * @returns {boolean} - True if the user has the 'merchant' role, false otherwise.
+   * @returns {boolean} - True if the user is a merchant, false otherwise.
    */
   isMerchant(): boolean {
-    const user = this.authService.getCurrentUser();
+    const user = this.authService.getCurrentUserJson();
     return user && user.role === 'merchant';
   }
 
   /**
-   * Log out the current user with a confirmation dialog.
-   * If the user confirms, display a success message and navigate to the home page.
+   * Perform the logout operation.
+   * Display a confirmation dialog before logging out.
    */
-  logout() {
+  logout(): void {
     Swal.fire({
       title: 'Are you sure you want to log out?',
       icon: 'warning',
@@ -69,7 +66,7 @@ export class DesktopSidebarComponent {
     }).then((result) => {
       if (result.isConfirmed) {
         Swal.fire('Log out!', 'You have been logged out.', 'success');
-        this.authService.logout();
+        this.authService.logOut();
         this.router.navigate(['/']);
       }
     });

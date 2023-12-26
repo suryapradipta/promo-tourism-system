@@ -1,29 +1,32 @@
 /**
- * Represents the structure of an order, including essential information
- * such as order ID, associated product details, order number, quantity,
- * total amount, customer email, customer phone number, customer ID, and merchant ID.
+ * Defines the structure of the order model representing a customer's purchase.
  *
- * @interface OrderModel
- * @property {string} orderID - Unique identifier for the order.
- * @property {ProductModel} product - Product details associated with the order.
+ * @interface Order
+ * @property {string} _id - Unique identifier for the order.
+ * @property {Product} product - Product associated with the order.
  * @property {string} orderNumber - Unique order number.
  * @property {number} quantity - Quantity of the product in the order.
  * @property {number} totalAmount - Total amount for the order.
- * @property {string} email - Email address of the customer placing the order.
- * @property {number} phoneNumber - Phone number of the customer placing the order.
- * @property {string} customerID - Unique identifier for the customer placing the order.
- * @property {string} merchantID - Unique identifier for the merchant fulfilling the order.
+ * @property {string} email - Customer's email address.
+ * @property {number} phoneNumber - Customer's phone number.
+ * @property {string} customerId - Unique identifier for the customer.
+ * @property {string} merchantId - Unique identifier for the merchant associated with the order.
+ * @property {string | undefined} createdAt - Timestamp indicating when the order was created (optional).
+ * @property {string | undefined} updatedAt - Timestamp indicating when the order was last updated (optional).
  */
-import { ProductModel } from './product.model';
 
-export interface OrderModel {
-  orderID: string;
-  product: ProductModel;
+import { Product } from './product.model';
+
+export interface Order {
+  _id: string;
+  product: Product;
   orderNumber: string;
   quantity: number;
   totalAmount: number;
   email: string;
   phoneNumber: number;
-  customerID: string;
-  merchantID: string;
+  customerId: string;
+  merchantId: string;
+  createdAt?: string;
+  updatedAt?: string;
 }

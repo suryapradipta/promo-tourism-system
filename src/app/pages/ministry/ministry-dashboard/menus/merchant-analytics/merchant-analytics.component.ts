@@ -1,12 +1,21 @@
 /**
- * This component handles the display of analytics for a merchant, including charts
- * for product sales and purchasing power. It uses the AnalyticsService to retrieve
- * analytics data and the Chart.js library for rendering charts.
+ * This component is responsible for displaying analytics data for a merchant, including
+ * charts for product sales and customer purchasing power. It interacts with the AnalyticsService,
+ * AuthService, MerchantService, CreateChartService, NotificationService, and LoadingService
+ * to fetch and display the necessary data.
  */
 import { Component, OnInit } from '@angular/core';
-import { AnalyticsService, AuthService } from '../../../../../shared/services';
+import {
+  AnalyticsService,
+  AuthService,
+  CreateChartService,
+  LoadingService,
+  MerchantService,
+  NotificationService,
+} from '../../../../../shared/services';
 import { Chart, registerables } from 'chart.js';
-import { PurchasingPowerModel } from '../../../../../shared/models';
+import { CustomerPurchasingPower } from '../../../../../shared/models';
+import { ChartConfiguration } from 'chart.js/auto';
 
 Chart.register(...registerables);
 
@@ -16,46 +25,100 @@ Chart.register(...registerables);
   styleUrls: ['./merchant-analytics.component.css'],
 })
 export class MerchantAnalyticsComponent implements OnInit {
-  merchantProductAnalytics: any;
-  merchantPurchasingPowerAnalytics: PurchasingPowerModel = {};
+  productAnalytics: any[];
+  customerPurchasingPower: CustomerPurchasingPower[];
   showProductSold = true;
   showPurchasingPower = false;
+  productSoldStats: any = {};
+  purchasingPowerStats: any = {};
 
   /**
    * @constructor
    * @param {AnalyticsService} analyticsService - Service for fetching analytics data.
-   * @param {AuthService} authService - Service for managing user authentication.
+   * @param {AuthService} authService - Service for user authentication.
+   * @param {MerchantService} merchantService - Service for merchant-related operations.
+   * @param {CreateChartService} createChartService - Service for creating charts.
+   * @param {NotificationService} alert - Service for displaying notifications.
+   * @param {LoadingService} loading - Service for managing loading indicators.
    */
   constructor(
     private analyticsService: AnalyticsService,
-    private authService: AuthService
+    private authService: AuthService,
+    private merchantService: MerchantService,
+    private createChartService: CreateChartService,
+    private alert: NotificationService,
+    private loading: LoadingService
   ) {}
 
   /**
-   * Fetches analytics data for the current merchant and calls the function to show
-   * the product sold chart.
+   * Fetches merchant ID, product analytics, and purchasing power analytics data
+   * from respective services and updates the charts accordingly.
+   *
+   * @returns {Promise<void>}
    */
-  ngOnInit(): void {
-    this.merchantProductAnalytics =
-      this.analyticsService.getMerchantProductAnalytics(
-        this.authService.getCurrentUser().id
+  async ngOnInit(): Promise<void> {
+    const email: string = this.authService.getCurrentUserJson().email;
+    const response = await this.merchantService
+      .getMerchantIdByEmail(email)
+      .toPromise();
+
+    this.loading.show();
+    this.analyticsService
+      .getProductAnalyticsAndStats(response.merchantId)
+      .subscribe(
+        (data) => {
+          this.loading.hide();
+
+          this.productAnalytics = data.productAnalytics;
+          this.productSoldStats = data.stats;
+          this.productSoldChart();
+        },
+        (error) => {
+          this.loading.hide();
+
+          console.error('Error while fetching product analytics:', error);
+
+          if (error.status === 404) {
+            this.alert.showErrorMessage('Merchant not found');
+          } else {
+            const errorMessage =
+              error.error?.message || 'Failed to fetch product analytics';
+            this.alert.showErrorMessage(errorMessage);
+          }
+        }
       );
-    this.merchantPurchasingPowerAnalytics =
-      this.analyticsService.getMerchantPurchasingPowerAnalytics(
-        this.authService.getCurrentUser().id
+
+    this.loading.show();
+    this.analyticsService
+      .getPurchasingPowerAnalyticsAndStats(response.merchantId)
+      .subscribe(
+        (data) => {
+          this.loading.hide();
+          this.customerPurchasingPower = data.customerPurchasingPower;
+          this.purchasingPowerStats = data.stats;
+          this.purchasingPowerChart();
+        },
+        (error) => {
+          this.loading.hide();
+
+          console.error(
+            'Error while fetching purchasing power analytics:',
+            error
+          );
+
+          if (error.status === 404) {
+            this.alert.showErrorMessage('Merchant not found');
+          } else {
+            const errorMessage =
+              error.error?.message || 'Failed to fetch analytics';
+            this.alert.showErrorMessage(errorMessage);
+          }
+        }
       );
   }
 
   /**
-   * Lifecycle hook called after the view has been initialized.
-   * Calls the function to show the product sold chart.
-   */
-  ngAfterViewInit(): void {
-    this.showProductSoldChart();
-  }
-
-  /**
-   * Switches to displaying the product sold chart.
+   * Display the product sold chart.
    */
   showProductSoldChart(): void {
     this.showProductSold = true;
@@ -64,7 +127,7 @@ export class MerchantAnalyticsComponent implements OnInit {
   }
 
   /**
-   * Switches to displaying the purchasing power chart.
+   * Display the purchasing power chart.
    */
   showPurchasingPowerChart(): void {
     this.showProductSold = false;
@@ -73,65 +136,58 @@ export class MerchantAnalyticsComponent implements OnInit {
   }
 
   /**
-   * Renders the product sold chart using Chart.js.
+   * Generate and display the product sold chart using Chart.js.
+   * Uses the CreateChartService to create the chart configuration.
    */
-  private productSoldChart() {
-    const labels = this.merchantProductAnalytics.map(
-      (item) => item.product.name
-    );
-    const data = this.merchantProductAnalytics.map((item) => item.totalSold);
+  private productSoldChart = (): void => {
+    const labels: any[] = this.productAnalytics.map((item) => item.name);
+    const data: number[] = this.productAnalytics.map((item) => item.totalSold);
 
-    const myChart = new Chart('productSoldChart', {
+    const chartConfig: ChartConfiguration = {
       type: 'bar',
-      data: {
-        labels,
-        datasets: [
-          {
-            label: 'Total Sold',
-            data,
-            backgroundColor: 'rgba(75, 192, 192, 0.2)',
-            borderColor: 'rgba(75, 192, 192, 1)',
-            borderWidth: 1,
-          },
-        ],
-      },
-      options: {
-        indexAxis: 'y',
-        scales: {
-          y: { beginAtZero: true },
-        },
-      },
-    });
-  }
+      data: this.createChartService.createChartData(labels, data, 'Total Sold'),
+      options: this.createChartService.createChartOptions(
+        'Products Sold Analytics',
+        'Number of Product Sold',
+        'Products Name',
+        'y'
+      ),
+    };
+    this.createChartService.createChart('productSoldChart', chartConfig);
+  };
 
   /**
-   * Renders the purchasing power chart using Chart.js.
+   * Generate and display the purchasing power chart using Chart.js.
+   * Uses the CreateChartService to create the chart configuration.
    */
-  private purchasingPowerChart() {
-    const labels = Object.keys(this.merchantPurchasingPowerAnalytics);
-    const data = Object.values(this.merchantPurchasingPowerAnalytics).map(
-      (customer) => [customer.totalSpent, customer.totalOrders]
+  private purchasingPowerChart = (): void => {
+    const labels: string[] = this.customerPurchasingPower.map(
+      (customer) => customer.email
     );
+    const totalSpent: number[] = Object.values(
+      this.customerPurchasingPower
+    ).map((customer: CustomerPurchasingPower) => customer.totalSpent);
+    const totalOrders: number[] = Object.values(
+      this.customerPurchasingPower
+    ).map((customer: CustomerPurchasingPower) => customer.totalOrders);
 
-    const myChart = new Chart('purchasingPowerChart', {
+    const chartConfig: ChartConfiguration = {
       type: 'bar',
-      data: {
+      data: this.createChartService.createMultiChartData(
         labels,
-        datasets: [
-          {
-            label: 'Total Spent, Total Orders',
-            data,
-            backgroundColor: 'rgba(75, 192, 192, 0.2)',
-            borderColor: 'rgba(75, 192, 192, 1)',
-            borderWidth: 1,
-          },
-        ],
-      },
-      options: {
-        scales: {
-          y: { beginAtZero: true },
-        },
-      },
-    });
-  }
+        'Total Spent',
+        totalSpent,
+        'Total Orders',
+        totalOrders,
+        'secondary'
+      ),
+      options: this.createChartService.createMultiChartOptions(
+        'Customers Email',
+        'Amount Spent ($)',
+        'Customer Purchasing Power Analytics',
+        'Number of Orders'
+      ),
+    };
+    this.createChartService.createChart('purchasingPowerChart', chartConfig);
+  };
 }

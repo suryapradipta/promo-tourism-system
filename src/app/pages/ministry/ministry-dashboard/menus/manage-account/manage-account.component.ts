@@ -1,12 +1,17 @@
 /**
- * This component is responsible for displaying and managing pending merchant account applications.
- * It retrieves pending applications from the ManageAccountService and provides a method
- * to preview individual merchant details, allowing navigation to the corresponding merchant dashboard.
+ * ManageAccountComponent
+ *
+ * This component is responsible for displaying and managing pending merchant applications
+ * for approval by the ministry. It retrieves pending applications from the MerchantService,
+ * displays them, and allows the ministry to preview individual merchant details.
  */
 import { Component, OnInit } from '@angular/core';
-import { MerchantModel } from '../../../../../shared/models';
+import { Merchant } from '../../../../../shared/models';
 import { Router } from '@angular/router';
-import { ManageAccountService } from '../../../../../shared/services';
+import {
+  LoadingService,
+  MerchantService,
+} from '../../../../../shared/services';
 
 @Component({
   selector: 'app-manage-account',
@@ -14,34 +19,43 @@ import { ManageAccountService } from '../../../../../shared/services';
   styleUrls: ['./manage-account.component.css'],
 })
 export class ManageAccountComponent implements OnInit {
-  pendingApplications: MerchantModel[] = [];
+  pendingApplications: Merchant[] = [];
 
   /**
-   * Constructor function for ManageAccountComponent.
-   *
    * @constructor
-   * @param {ManageAccountService} manageAccountService - Service for managing merchant accounts.
+   * @param {MerchantService} merchantService - Service for interacting with merchant-related data.
    * @param {Router} router - Angular router service for navigation.
+   * @param {LoadingService} loading - Service for managing loading indicators.
    */
   constructor(
-    private manageAccountService: ManageAccountService,
-    private router: Router
+    private merchantService: MerchantService,
+    private router: Router,
+    private loading: LoadingService
   ) {}
 
   /**
-   * Retrieves pending merchant applications from the service and logs them to the console.
+   * Retrieves and displays pending merchant applications from the MerchantService.
    */
   ngOnInit(): void {
-    this.pendingApplications =
-      this.manageAccountService.getPendingApplications();
+    this.loading.show();
+    this.merchantService.getPendingApplications().subscribe(
+      (merchants: Merchant[]) => {
+        this.loading.hide();
+        this.pendingApplications = merchants;
+      },
+      (error) => {
+        this.loading.hide();
+        console.error('Error fetching pending applications:', error);
+      }
+    );
   }
 
   /**
-   * Navigate to the merchant dashboard for a given merchant.
+   * Navigate to the detailed view of a specific merchant.
    *
-   * @param {MerchantModel} merchant - The merchant whose dashboard is to be previewed.
+   * @param {Merchant} merchant - The merchant whose details are to be previewed.
    */
-  previewMerchant(merchant: MerchantModel) {
-    this.router.navigate(['/ministry-dashboard/merchant', merchant.id]);
+  previewMerchant(merchant: Merchant): void {
+    this.router.navigate(['/ministry-dashboard/merchant', merchant._id]);
   }
 }

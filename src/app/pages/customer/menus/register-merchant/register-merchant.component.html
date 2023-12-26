@@ -22,7 +22,7 @@
           (submit)="onRegisterMerchant(merchantForm)"
           #merchantForm="ngForm"
         >
-          <!-- Form Fields for Company Name, Phone Number, Email, and Company Description -->
+          <!-- Form Fields for Company Name, Contact Number, Email, and Company Description -->
           <!-- Validation messages are displayed if there are errors -->
           <div class="overflow-hidden shadow sm:rounded-md">
             <div class="bg-white px-4 py-5 sm:p-6">
@@ -60,32 +60,32 @@
                   </div>
                 </div>
 
-                <!--Phone Number-->
+                <!--Contact Number-->
                 <div class="col-span-6 sm:col-span-3">
                   <label
-                    for="phone_number"
+                    for="contact_number"
                     class="block text-sm font-medium text-gray-700"
-                    >Phone Number</label
+                    >Contact Number</label
                   >
                   <div class="relative mt-1 rounded-md shadow-sm">
                     <input
                       class="block w-full rounded-md border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
-                      id="phone_number"
-                      name="phone_number"
+                      id="contact_number"
+                      name="contact_number"
                       type="number"
                       ngModel
                       required
-                      #phone_number="ngModel"
+                      #contact_number="ngModel"
                     />
                   </div>
                   <div
                     *ngIf="
-                      phone_number.invalid &&
-                      (phone_number.dirty || phone_number.touched)
+                      contact_number.invalid &&
+                      (contact_number.dirty || contact_number.touched)
                     "
                     class="mt-2 text-sm text-red-600"
                   >
-                    <div *ngIf="phone_number.errors?.['required']">
+                    <div *ngIf="contact_number.errors?.['required']">
                       Phone number is required.
                     </div>
                   </div>

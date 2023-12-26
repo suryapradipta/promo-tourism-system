@@ -1,67 +1,241 @@
 <div class="bg-white">
-  <div class="mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:px-8">
-    <!-- Dynamic Tab Selection -->
-    <div x-data="{ openTab: 1 }">
-      <!-- Responsive Tab Selector for Small Screens -->
-      <div class="sm:hidden">
-        <label for="tabs" class="sr-only">Select a tab</label>
-        <select
-          id="tabs"
-          name="tabs"
-          x-model="openTab"
-          class="block w-full rounded-md border-gray-300 py-2 pl-3 pr-10 text-base focus:border-indigo-500 focus:outline-none focus:ring-indigo-500 sm:text-sm"
-        >
-          <option value="1">Product Sold</option>
-          <option value="2">Purchasing Power</option>
-        </select>
-      </div>
-
-      <!-- Tab Navigation for Larger Screens -->
-      <div class="hidden sm:block">
-        <div class="border-b border-gray-200">
-          <nav class="-mb-px flex space-x-8" aria-label="Tabs">
-            <!-- Tab Button: Product Sold -->
-            <button
-              (click)="showProductSoldChart()"
-              x-bind:class="{ 'border-indigo-500 text-indigo-600': openTab === 1, 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300': openTab !== 1 }"
-              x-on:click.prevent="openTab = 1"
-              class="whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm"
+  <div class="flex flex-1 flex-col overflow-hidden">
+    <div class="flex flex-1 items-stretch overflow-hidden">
+      <main class="flex-1 overflow-y-auto">
+        <div class="mx-auto max-w-7xl py-12 px-4 sm:px-6 lg:px-8">
+          <div class="flex">
+            <h1 class="flex-1 text-xl font-semibold text-gray-900">
+              Analytic Reports
+            </h1>
+            <div
+              class="ml-6 flex items-center rounded-lg bg-gray-100 p-0.5 sm:hidden"
             >
-              Product Sold
-            </button>
+              <button
+                type="button"
+                class="rounded-md p-1.5 text-gray-400 hover:bg-white hover:shadow-sm focus:outline-none focus:ring-2 focus:ring-inset focus:ring-indigo-500"
+              >
+                <svg
+                  class="h-5 w-5"
+                  x-description="Heroicon name: mini/bars-4"
+                  xmlns="http://www.w3.org/2000/svg"
+                  viewBox="0 0 20 20"
+                  fill="currentColor"
+                  aria-hidden="true"
+                >
+                  <path
+                    fill-rule="evenodd"
+                    d="M2 3.75A.75.75 0 012.75 3h14.5a.75.75 0 010 1.5H2.75A.75.75 0 012 3.75zm0 4.167a.75.75 0 01.75-.75h14.5a.75.75 0 010 1.5H2.75a.75.75 0 01-.75-.75zm0 4.166a.75.75 0 01.75-.75h14.5a.75.75 0 010 1.5H2.75a.75.75 0 01-.75-.75zm0 4.167a.75.75 0 01.75-.75h14.5a.75.75 0 010 1.5H2.75a.75.75 0 01-.75-.75z"
+                    clip-rule="evenodd"
+                  ></path>
+                </svg>
+                <span class="sr-only">Use list view</span>
+              </button>
+              <button
+                type="button"
+                class="ml-0.5 rounded-md bg-white p-1.5 text-gray-400 shadow-sm focus:outline-none focus:ring-2 focus:ring-inset focus:ring-indigo-500"
+              >
+                <svg
+                  class="h-5 w-5"
+                  x-description="Heroicon name: mini/squares-2x2"
+                  xmlns="http://www.w3.org/2000/svg"
+                  viewBox="0 0 20 20"
+                  fill="currentColor"
+                  aria-hidden="true"
+                >
+                  <path
+                    fill-rule="evenodd"
+                    d="M4.25 2A2.25 2.25 0 002 4.25v2.5A2.25 2.25 0 004.25 9h2.5A2.25 2.25 0 009 6.75v-2.5A2.25 2.25 0 006.75 2h-2.5zm0 9A2.25 2.25 0 002 13.25v2.5A2.25 2.25 0 004.25 18h2.5A2.25 2.25 0 009 15.75v-2.5A2.25 2.25 0 006.75 11h-2.5zm9-9A2.25 2.25 0 0011 4.25v2.5A2.25 2.25 0 0013.25 9h2.5A2.25 2.25 0 0018 6.75v-2.5A2.25 2.25 0 0015.75 2h-2.5zm0 9A2.25 2.25 0 0011 13.25v2.5A2.25 2.25 0 0013.25 18h2.5A2.25 2.25 0 0018 15.75v-2.5A2.25 2.25 0 0015.75 11h-2.5z"
+                    clip-rule="evenodd"
+                  ></path>
+                </svg>
+                <span class="sr-only">Use grid view</span>
+              </button>
+            </div>
+          </div>
 
-            <!-- Tab Button: Purchasing Power -->
-            <button
-              (click)="showPurchasingPowerChart()"
-              x-bind:class="{ 'border-indigo-500 text-indigo-600': openTab === 2, 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300': openTab !== 2 }"
-              x-on:click.prevent="openTab = 2"
-              class="whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm"
-            >
-              Purchasing Power
-            </button>
-          </nav>
+          <!-- Dynamic Tab Selection -->
+          <div x-data="{ openTab: 1 }" class="mt-3 sm:mt-2">
+            <!-- Tab Navigation for Larger Screens -->
+            <div class="sm:block">
+              <div class="flex items-center border-b border-gray-200">
+                <nav
+                  class="-mb-px flex flex-1 space-x-6 xl:space-x-8"
+                  aria-label="Tabs"
+                >
+                  <!-- Tab Button: Product Sold -->
+                  <button
+                    (click)="showProductSoldChart()"
+                    x-bind:class="{ 'border-indigo-500 text-indigo-600': openTab === 1, 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300': openTab !== 1 }"
+                    x-on:click.prevent="openTab = 1"
+                    class="whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm"
+                  >
+                    Product Sold
+                  </button>
+                  <!-- Tab Button: Purchasing Power -->
+                  <button
+                    (click)="showPurchasingPowerChart()"
+                    x-bind:class="{ 'border-indigo-500 text-indigo-600': openTab === 2, 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300': openTab !== 2 }"
+                    x-on:click.prevent="openTab = 2"
+                    class="whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm"
+                  >
+                    Purchasing Power
+                  </button>
+                </nav>
+                <div
+                  class="ml-6 hidden items-center rounded-lg bg-gray-100 p-0.5 sm:flex"
+                >
+                  <button
+                    type="button"
+                    class="rounded-md p-1.5 text-gray-400 hover:bg-white hover:shadow-sm focus:outline-none focus:ring-2 focus:ring-inset focus:ring-indigo-500"
+                  >
+                    <svg
+                      class="h-5 w-5"
+                      x-description="Heroicon name: mini/bars-4"
+                      xmlns="http://www.w3.org/2000/svg"
+                      viewBox="0 0 20 20"
+                      fill="currentColor"
+                      aria-hidden="true"
+                    >
+                      <path
+                        fill-rule="evenodd"
+                        d="M2 3.75A.75.75 0 012.75 3h14.5a.75.75 0 010 1.5H2.75A.75.75 0 012 3.75zm0 4.167a.75.75 0 01.75-.75h14.5a.75.75 0 010 1.5H2.75a.75.75 0 01-.75-.75zm0 4.166a.75.75 0 01.75-.75h14.5a.75.75 0 010 1.5H2.75a.75.75 0 01-.75-.75zm0 4.167a.75.75 0 01.75-.75h14.5a.75.75 0 010 1.5H2.75a.75.75 0 01-.75-.75z"
+                        clip-rule="evenodd"
+                      ></path>
+                    </svg>
+                    <span class="sr-only">Use list view</span>
+                  </button>
+                  <button
+                    type="button"
+                    class="ml-0.5 rounded-md bg-white p-1.5 text-gray-400 shadow-sm focus:outline-none focus:ring-2 focus:ring-inset focus:ring-indigo-500"
+                  >
+                    <svg
+                      class="h-5 w-5"
+                      x-description="Heroicon name: mini/squares-2x2"
+                      xmlns="http://www.w3.org/2000/svg"
+                      viewBox="0 0 20 20"
+                      fill="currentColor"
+                      aria-hidden="true"
+                    >
+                      <path
+                        fill-rule="evenodd"
+                        d="M4.25 2A2.25 2.25 0 002 4.25v2.5A2.25 2.25 0 004.25 9h2.5A2.25 2.25 0 009 6.75v-2.5A2.25 2.25 0 006.75 2h-2.5zm0 9A2.25 2.25 0 002 13.25v2.5A2.25 2.25 0 004.25 18h2.5A2.25 2.25 0 009 15.75v-2.5A2.25 2.25 0 006.75 11h-2.5zm9-9A2.25 2.25 0 0011 4.25v2.5A2.25 2.25 0 0013.25 9h2.5A2.25 2.25 0 0018 6.75v-2.5A2.25 2.25 0 0015.75 2h-2.5zm0 9A2.25 2.25 0 0011 13.25v2.5A2.25 2.25 0 0013.25 18h2.5A2.25 2.25 0 0018 15.75v-2.5A2.25 2.25 0 0015.75 11h-2.5z"
+                        clip-rule="evenodd"
+                      ></path>
+                    </svg>
+                    <span class="sr-only">Use grid view</span>
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <section class="mt-8 pb-16" aria-labelledby="gallery-heading">
+            <!-- Display Area for Product Sold Chart -->
+            <div *ngIf="showProductSold">
+              <canvas
+                id="productSoldChart"
+                class="border border-indigo-600 rounded-lg"
+              ></canvas>
+            </div>
+
+            <!-- Display Area for Purchasing Power Chart -->
+            <div *ngIf="showPurchasingPower">
+              <canvas
+                id="purchasingPowerChart"
+                class="border border-indigo-600 rounded-lg"
+              ></canvas>
+            </div>
+          </section>
         </div>
-      </div>
-    </div>
+      </main>
 
-    <!-- Display Area for Product Sold Chart -->
-    <div *ngIf="showProductSold">
-      <canvas id="productSoldChart"></canvas>
-    </div>
-
-    <!-- Display Area for Purchasing Power Chart -->
-    <div *ngIf="showPurchasingPower">
-      <canvas id="purchasingPowerChart"></canvas>
+      <!-- Details sidebar -->
+      <aside
+        class="hidden w-96 overflow-y-auto border-l border-gray-200 bg-white p-8 lg:block"
+      >
+        <div
+          *ngIf="productSoldStats && showProductSold"
+          class="space-y-6 pb-16"
+        >
+          <div
+            class="overflow-hidden rounded-lg bg-white px-4 py-5 shadow sm:p-6"
+          >
+            <dt class="truncate text-sm font-medium text-gray-500">
+              Total Products
+            </dt>
+            <dd
+              class="mt-1 text-3xl font-semibold tracking-tight text-indigo-600"
+            >
+              {{ productSoldStats.totalProducts }}
+            </dd>
+          </div>
+          <div
+            class="overflow-hidden rounded-lg bg-white px-4 py-5 shadow sm:p-6"
+          >
+            <dt class="truncate text-sm font-medium text-gray-500">
+              Total Sold Products
+            </dt>
+            <dd
+              class="mt-1 text-3xl font-semibold tracking-tight text-indigo-600"
+            >
+              {{ productSoldStats.totalSoldProducts }}
+            </dd>
+          </div>
+          <div
+            class="overflow-hidden rounded-lg bg-white px-4 py-5 shadow sm:p-6"
+          >
+            <dt class="truncate text-sm font-medium text-gray-500">
+              Avg. Sold Products
+            </dt>
+            <dd
+              class="mt-1 text-3xl font-semibold tracking-tight text-indigo-600"
+            >
+              {{ productSoldStats.averageSoldProducts }}
+            </dd>
+          </div>
+        </div>
+        <div
+          *ngIf="purchasingPowerStats && showPurchasingPower"
+          class="space-y-6 pb-16"
+        >
+          <div
+            class="overflow-hidden rounded-lg bg-white px-4 py-5 shadow sm:p-6"
+          >
+            <dt class="truncate text-sm font-medium text-gray-500">
+              Total Customers
+            </dt>
+            <dd
+              class="mt-1 text-3xl font-semibold tracking-tight text-indigo-600"
+            >
+              {{ purchasingPowerStats.totalCustomers }}
+            </dd>
+          </div>
+          <div
+            class="overflow-hidden rounded-lg bg-white px-4 py-5 shadow sm:p-6"
+          >
+            <dt class="truncate text-sm font-medium text-gray-500">
+              Total Spent
+            </dt>
+            <dd
+              class="mt-1 text-3xl font-semibold tracking-tight text-indigo-600"
+            >
+              ${{ purchasingPowerStats.totalSpent }}
+            </dd>
+          </div>
+          <div
+            class="overflow-hidden rounded-lg bg-white px-4 py-5 shadow sm:p-6"
+          >
+            <dt class="truncate text-sm font-medium text-gray-500">
+              Avg. Spending Per Customer
+            </dt>
+            <dd
+              class="mt-1 text-3xl font-semibold tracking-tight text-indigo-600"
+            >
+              ${{ purchasingPowerStats.averageSpendingPerCustomer }}
+            </dd>
+          </div>
+        </div>
+      </aside>
     </div>
   </div>
 </div>
-
-<!--
-<h3>Product Analytics</h3>
-&lt;!&ndash; Display product analytics data for the current merchant here &ndash;&gt;
-<pre>{{ merchantProductAnalytics | json }}</pre>
-
-<h3>Purchasing Power Analytics</h3>
-&lt;!&ndash; Display purchasing power analytics data for the current merchant here &ndash;&gt;
-<pre>{{ merchantPurchasingPowerAnalytics | json }}</pre>
--->

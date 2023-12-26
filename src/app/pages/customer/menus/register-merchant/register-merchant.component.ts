@@ -1,110 +1,117 @@
 /**
- * This component handles the registration of merchant profiles, including form validation,
- * registration process, and file uploads. It interacts with the RegisterMerchantsService
- * for merchant-related functionality and the NotificationService to display messages.
- *
- * @author I Nyoman Surya Pradipta (E1900344)
+ * This Angular component handles the registration of merchants, including form submission,
+ * error handling, and file uploads. It utilizes the MerchantService for communication
+ * with the backend, LoadingService for managing loading indicators, and NotificationService
+ * for displaying alert messages.
  */
-
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 import { NgForm } from '@angular/forms';
 import {
+  LoadingService,
+  MerchantService,
   NotificationService,
-  RegisterMerchantsService,
 } from '../../../../shared/services';
-import { MerchantModel } from '../../../../shared/models';
 
 @Component({
   selector: 'app-register-merchant',
   templateUrl: './register-merchant.component.html',
   styleUrls: ['./register-merchant.component.css'],
 })
-export class RegisterMerchantComponent implements OnInit {
-  // Flag to indicate if the form has been submitted
+export class RegisterMerchantComponent {
   public submitted = false;
-  merchants: MerchantModel[] = [];
+  private merchantId: string;
+  files: any;
 
   /**
-   * Constructor function for RegisterMerchantComponent.
-   *
    * @constructor
-   * @param {RegisterMerchantsService} merchantService - Service for managing merchant profiles.
-   * @param {NotificationService} notificationService - Service for displaying notifications.
+   * @param {MerchantService} merchantService - Service for interacting with merchant-related functionality.
+   * @param {NotificationService} alert - Service for displaying notification messages.
+   * @param {LoadingService} loading - Service for managing loading indicators.
    */
   constructor(
-    private merchantService: RegisterMerchantsService,
-    private notificationService: NotificationService
+    private merchantService: MerchantService,
+    private alert: NotificationService,
+    private loading: LoadingService
   ) {}
 
   /**
-   * Retrieves existing merchant data when the component is created.
-   */
-  ngOnInit(): void {
-    this.merchants = this.merchantService.getMerchantsData();
-  }
-
-  /**
-   * Handles the registration of a new merchant profile.
-   * Validates the form, registers the merchant, and displays appropriate messages.
+   * Handles the submission of the merchant registration form.
+   * If the form is valid, it calls the MerchantService to register the merchant.
+   * Displays success or error messages accordingly.
    *
-   * @param {NgForm} form - The form containing merchant registration data.
+   * @param {NgForm} form - The NgForm instance representing the registration form.
    */
-  onRegisterMerchant(form: NgForm) {
+  onRegisterMerchant(form: NgForm): void {
     if (form.invalid) {
       return;
     }
 
-    const isMerchantRegistered = this.merchantService.registerProfileMerchant(
-      form.value.name,
-      form.value.phone_number,
-      form.value.email,
-      form.value.company_description
-    );
-
-    if (isMerchantRegistered) {
-      this.submitted = true;
-      this.notificationService.showSuccessMessage('Register successful!');
-    } else {
-      this.notificationService.showEmailInUseMessage();
-      return;
-    }
+    this.loading.show();
+    this.merchantService
+      .registerMerchant(
+        form.value.name,
+        form.value.contact_number,
+        form.value.email,
+        form.value.company_description
+      )
+      .subscribe(
+        (response) => {
+          this.loading.hide();
+          this.submitted = true;
+          this.alert.showSuccessMessage(response.message);
+          this.merchantId = response.id;
+        },
+        (error) => {
+          this.loading.hide();
+          console.error('Error registering merchant:', error);
+          if (error.status === 500 || error.status === 409) {
+            this.alert.showEmailInUseMessage();
+          } else {
+            this.alert.showErrorMessage(
+              error.error?.message || 'Registration failed. Please try again.'
+            );
+          }
+        }
+      );
   }
 
-  // Variables for handling file uploads
-  files: any;
-  fileNames = [];
-
   /**
-   * Handles the event when files are selected for upload.
-   * Retrieves file information and stores file names.
+   * Handles the selection of files for upload.
    *
-   * @param {any} event - The event containing information about the selected files.
+   * @param {any} event - The file selection event.
    */
-  onGetFile(event: any) {
+  onGetFile(event: any): void {
     this.files = event.target.files;
-
-    for (let i = 0; i < event.target.files.length; i++) {
-      this.fileNames.push(event.target.files[i].name);
-    }
   }
 
   /**
-   * Handles the upload of files along with additional file descriptions.
-   * Validates the form, uploads the files, and displays a success message.
+   * Handles the submission of the file upload form.
+   * If the form is valid, it calls the MerchantService to upload documents.
+   * Displays success or error messages accordingly.
    *
-   * @param {NgForm} form - The form containing file upload data.
+   * @param {NgForm} form - The NgForm instance representing the file upload form.
    */
-  onUploadFile(form: NgForm) {
+  onUploadFile(form: NgForm): void {
     if (form.invalid) {
       return;
     }
 
-    this.merchantService.addDocumentsAndDescription(
-      this.fileNames,
-      form.value.file_description
-    );
-    this.fileNames = [];
-
-    this.notificationService.showApplicationSuccessMessage();
+    this.loading.show();
+    this.merchantService
+      .uploadDocuments(this.merchantId, this.files, form.value.file_description)
+      .subscribe(
+        (response) => {
+          this.loading.hide();
+          this.submitted = true;
+          this.alert.showSuccessMessage(response.message);
+        },
+        (error) => {
+          this.loading.hide();
+          console.error('Error uploading documents:', error);
+          this.alert.showErrorMessage(
+            error.error?.message || 'Error uploading documents.'
+          );
+        }
+      );
   }
 }

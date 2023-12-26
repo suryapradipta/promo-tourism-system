@@ -1,7 +1,8 @@
 /**
- * This component handles the user registration functionality, providing a form
- * for users to sign up. It includes email and password validation, and upon successful
- * registration, navigates the user to the sign-in page.
+ * This component is responsible for handling user registration. It utilizes Angular Reactive Forms
+ * to create a form for user input, including custom password validation. Upon successful registration,
+ * the user is redirected to the sign-in page. Error messages are displayed for various registration
+ * failure scenarios, such as invalid credentials or an email address already in use.
  */
 import { Component, OnInit } from '@angular/core';
 import {
@@ -13,10 +14,10 @@ import {
 } from '@angular/forms';
 import { Router } from '@angular/router';
 import {
+  AuthService,
+  LoadingService,
   NotificationService,
-  SignUpService,
 } from '../../../../../shared/services';
-import { AuthModel } from '../../../../../shared/models';
 
 @Component({
   selector: 'app-sign-up',
@@ -27,40 +28,33 @@ export class SignUpComponent implements OnInit {
   registerForm: FormGroup;
   submitted = false;
 
-  users: AuthModel[] = [];
-
   /**
-   * Constructor function for SignUpComponent.
-   *
    * @constructor
-   * @param {FormBuilder} formBuilder - Angular service to create form groups and controls.
-   * @param {Router} router - Angular service for navigation.
-   * @param {SignUpService} userService - Service for user registration.
-   * @param {NotificationService} alert - Service for displaying notifications.
+   * @param {FormBuilder} formBuilder - Angular service for building and managing forms.
+   * @param {Router} router - Angular service for navigating between views.
+   * @param {NotificationService} alert - Service for displaying user notifications.
+   * @param {AuthService} authService - Service for user authentication operations.
+   * @param {LoadingService} loading - Service for displaying loading indicators during operations.
    */
   constructor(
     private formBuilder: FormBuilder,
     private router: Router,
-    private userService: SignUpService,
-    private alert: NotificationService
+    private alert: NotificationService,
+    private authService: AuthService,
+    private loading: LoadingService
   ) {}
 
   /**
-   * Initializes the user data, sets up form validation, and controls.
+   * Sets up the registration form with validators for email and password.
    */
   ngOnInit(): void {
-    this.users = this.userService.getUsersData();
-
-    // Custom password validator function
     function passwordValidator(): ValidatorFn {
       return (control: AbstractControl): { [key: string]: boolean } | null => {
         const password = control.value;
-
         const hasUppercase = /[A-Z]/.test(password);
         const hasLowercase = /[a-z]/.test(password);
         const hasNumber = /[0-9]/.test(password);
         const hasSpecialChar = /[!@#$%^&*]/.test(password);
-
         const isValid =
           hasUppercase && hasLowercase && hasNumber && hasSpecialChar;
 
@@ -78,31 +72,49 @@ export class SignUpComponent implements OnInit {
   }
 
   /**
-   * Getter function to access form controls easily.
+   * Getter method to access form controls in the template.
    */
   get formControl() {
     return this.registerForm.controls;
   }
 
   /**
-   * Validates the form, registers the user, and navigates to the sign-in page upon success.
+   * Handles the user registration process.
+   * If the registration form is valid, the user is created using the AuthService,
+   * and appropriate actions are taken based on the response or error received.
+   * Displays relevant error messages for different failure scenarios.
    */
   onRegister(): void {
     this.submitted = true;
     if (this.registerForm.valid) {
-      const isUserRegistered = this.userService.register(
-        this.registerForm.value.email,
-        this.registerForm.value.password,
-        'customer'
-      );
+      this.loading.show();
+      this.authService
+        .createUser(
+          this.registerForm.value.email,
+          this.registerForm.value.password,
+          'customer'
+        )
+        .subscribe(
+          (response) => {
+            this.loading.hide();
+            this.router
+              .navigate(['/sign-in'])
+              .then(() => this.alert.showSuccessMessage(response.message));
+          },
+          (error) => {
+            this.loading.hide();
 
-      if (isUserRegistered) {
-        this.router.navigate(['/sign-in']);
-
-        this.alert.showSuccessMessage('Register successful!');
-      } else {
-        this.alert.showEmailInUseMessage();
-      }
+            if (error.status === 400 || error.status === 422) {
+              this.alert.showErrorMessage(error.error.message);
+            } else if (error.status === 409) {
+              this.alert.showEmailInUseMessage();
+            } else {
+              this.alert.showErrorMessage(
+                'User account creation failed. Please try again later.'
+              );
+            }
+          }
+        );
     } else {
       this.alert.showErrorMessage(
         'Register failed. Please check your credentials.'

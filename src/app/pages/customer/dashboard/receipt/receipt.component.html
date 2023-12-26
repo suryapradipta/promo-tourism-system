@@ -1,5 +1,8 @@
 <div class="bg-white" id="receipt_container">
-  <div class="mx-auto max-w-7xl py-16 px-4 sm:px-6 lg:px-8 lg:pb-24">
+  <div
+    *ngIf="order && payment && product"
+    class="mx-auto max-w-7xl py-16 px-4 sm:px-6 lg:px-8 lg:pb-24"
+  >
     <!-- Receipt Header -->
     <div
       class="rounded-lg bg-gray-50 py-6 px-4 sm:flex sm:items-center sm:justify-between sm:space-x-6 sm:px-6 lg:space-x-8"
@@ -46,8 +49,10 @@
                   class="aspect-w-1 aspect-h-1 w-full flex-shrink-0 overflow-hidden rounded-lg sm:aspect-none sm:h-40 sm:w-40"
                 >
                   <img
-                    src="{{ product.image }}"
-                    alt="Arm modeling wristwatch with black leather band, white watch face, thin watch hands, and fine time markings."
+                    src="http://localhost:3000/api/files/server/src/uploads/{{
+                      product.image
+                    }}"
+                    alt="{{ product.name }}"
                     class="h-full w-full object-cover object-center sm:h-full sm:w-full"
                   />
                 </div>
@@ -126,11 +131,11 @@
                 <div>
                   <dt class="font-medium text-gray-900">Billing address</dt>
                   <dd class="mt-3 text-gray-500">
-                    <span class="block">{{ shippingName }}</span>
-                    <span class="block">{{ addressLine }}</span>
+                    <span class="block">{{ payment.shippingName }}</span>
+                    <span class="block">{{ payment.addressLine }}</span>
                     <span class="block"
-                      >{{ admin_area_2 }}, {{ admin_area_1 }}
-                      {{ postal_code }}</span
+                      >{{ payment.admin_area_2 }}, {{ payment.admin_area_1 }}
+                      {{ payment.postal_code }}</span
                     >
                   </dd>
                 </div>
@@ -192,22 +197,19 @@
                 <div class="flex items-center justify-between pb-4">
                   <dt class="text-gray-600">Subtotal</dt>
                   <dd class="font-medium text-gray-900">
-                    ${{ order.quantity * product.price }}
+                    ${{ payment.subTotal }}
                   </dd>
                 </div>
                 <div class="flex items-center justify-between py-4">
                   <dt class="text-gray-600">Tax</dt>
                   <dd class="font-medium text-gray-900">
-                    ${{ (0.1 * (order.quantity * product.price)).toFixed(1) }}
+                    ${{ payment.taxTotal }}
                   </dd>
                 </div>
                 <div class="flex items-center justify-between pt-4">
                   <dt class="font-medium text-gray-900">Order total</dt>
                   <dd class="font-medium text-indigo-600">
-                    ${{
-                      order.quantity * product.price +
-                        0.1 * (order.quantity * product.price)
-                    }}
+                    ${{ payment.amount }}
                   </dd>
                 </div>
               </dl>

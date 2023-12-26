@@ -1,12 +1,16 @@
 /**
- * This component is responsible for displaying analytics data for merchants,
- * including charts for product sales and purchasing power. It interacts with
- * the AnalyticsService to retrieve and update analytics data.
+ * This component manages the display of analytics for ministry users,
+ * including charts for product sold and customer purchasing power.
  */
 import { Component, OnInit } from '@angular/core';
-import { AnalyticsService } from '../../../../../shared/services';
-import { Chart } from 'chart.js';
+import {
+  AnalyticsService,
+  CreateChartService,
+  LoadingService,
+  NotificationService,
+} from '../../../../../shared/services';
 import { ChartConfiguration } from 'chart.js/auto';
+import { CustomerPurchasingPower } from '../../../../../shared/models';
 
 @Component({
   selector: 'app-ministry-analytics',
@@ -14,313 +18,307 @@ import { ChartConfiguration } from 'chart.js/auto';
   styleUrls: ['./ministry-analytics.component.css'],
 })
 export class MinistryAnalyticsComponent implements OnInit {
-  allMerchantAnalytics: any;
+  allAnalytics: any;
   selectedMerchantId: string | null = null;
-
-  // Flags to control the visibility of different charts
-  allMerchantProductSold = true;
-  allMerchantPurchasingPower = false;
-  selectedProductSold = true;
-  selectedPurchasingPower = false;
-
-  // Chart instances for Product Sold and Purchasing Power
-  productSoldChart: Chart;
-  purchasingPowerChart: Chart;
+  allMerchantStats: any = {};
+  productSoldStats: any = {};
+  purchasingPowerStats: any = {};
+  isAllProductSold: boolean = true;
+  isAllPurchasingPower: boolean = false;
+  isSelectedProductSold: boolean = true;
+  isSelectedPurchasingPower: boolean = false;
 
   /**
    * @constructor
-   * @param {AnalyticsService} analyticsService - Service for retrieving analytics data.
+   * @param {AnalyticsService} analyticsService - Service for fetching analytics data.
+   * @param {CreateChartService} createChartService - Service for creating charts.
+   * @param {NotificationService} alert - Service for displaying notifications.
+   * @param {LoadingService} loading - Service for managing loading indicators.
    */
-  constructor(private analyticsService: AnalyticsService) {}
+  constructor(
+    private analyticsService: AnalyticsService,
+    private createChartService: CreateChartService,
+    private alert: NotificationService,
+    private loading: LoadingService
+  ) {}
 
   /**
-   * Initialization method called after construction.
-   * Retrieves all merchant analytics data and displays the Product Sold chart.
+   * Fetches initial analytics data on component initialization.
    */
   ngOnInit(): void {
-    this.allMerchantAnalytics = this.analyticsService.getAllMerchantAnalytics();
-    this.showProductSoldChart();
+    this.loading.show();
+
+    this.analyticsService.getAllMerchantAnalyticsAndStats().subscribe(
+      (data) => {
+        this.loading.hide();
+
+        this.allAnalytics = data.allAnalytics;
+        this.allMerchantStats = data.stats;
+        this.showProductSoldChart();
+      },
+      (error) => {
+        this.loading.hide();
+
+        console.error('Error fetching analytics:', error);
+
+        if (error.status === 500) {
+          this.alert.showErrorMessage('Internal Server Error');
+        } else {
+          const errorMessage =
+            error.error?.message || 'Failed to fetch analytics';
+          this.alert.showErrorMessage(errorMessage);
+        }
+      }
+    );
   }
 
   /**
-   * Display the Product Sold chart and update chart visibility flags.
+   * Show the chart displaying the total products sold by all merchants.
    */
   showProductSoldChart(): void {
-    this.allMerchantProductSold = true;
-    this.allMerchantPurchasingPower = false;
+    this.isAllProductSold = true;
+    this.isAllPurchasingPower = false;
     this.selectedMerchantId = null;
-    setTimeout(() => this.AllProductSoldChart(), 0);
+    setTimeout(() => this.productSoldAnalytics(), 0);
   }
 
   /**
-   * Display the Purchasing Power chart and update chart visibility flags.
+   * Show the chart displaying the total customer purchasing power by all merchants.
    */
   showPurchasingPowerChart(): void {
-    this.allMerchantProductSold = false;
-    this.allMerchantPurchasingPower = true;
+    this.isAllProductSold = false;
+    this.isAllPurchasingPower = true;
     this.selectedMerchantId = null;
-    setTimeout(() => this.AllPurchasingPowerChart(), 0);
+    setTimeout(() => this.purchasingPowerAnalytics(), 0);
   }
 
   /**
-   * Display the chart for selected product sales and update chart visibility flags.
+   * Show the chart displaying the products sold by the currently selected merchant.
    */
   showSelectedProductSold(): void {
-    this.selectedProductSold = true;
-    this.selectedPurchasingPower = false;
-    this.allMerchantProductSold = false;
-    this.allMerchantPurchasingPower = false;
+    this.isSelectedProductSold = true;
+    this.isSelectedPurchasingPower = false;
+    this.isAllProductSold = false;
+    this.isAllPurchasingPower = false;
     setTimeout(() => this.selectedProductSoldChart(), 0);
   }
 
   /**
-   * Display the chart for selected purchasing power and update chart visibility flags.
+   * Show the chart displaying the customer purchasing power by the currently selected merchant.
    */
   showSelectedPurchasingPower(): void {
-    this.selectedProductSold = false;
-    this.selectedPurchasingPower = true;
-    this.allMerchantProductSold = false;
-    this.allMerchantPurchasingPower = false;
+    this.isSelectedProductSold = false;
+    this.isSelectedPurchasingPower = true;
+    this.isAllProductSold = false;
+    this.isAllPurchasingPower = false;
     setTimeout(() => this.selectedPurchasingPowerChart(), 0);
   }
 
   /**
-   * Handle the selection of a merchant.
-   * Update the selected merchant, refresh analytics data, and show appropriate charts.
-   *
-   * @param {string} merchantId - ID of the selected merchant.
+   * Handle the selection of a specific merchant.
+   * @param {string} merchantId - The ID of the selected merchant.
    */
-  onSelectMerchant(merchantId: string) {
+  onSelectMerchant(merchantId: string): void {
     this.selectedMerchantId = merchantId;
     this.refreshAnalytics();
-    this.allMerchantProductSold = false;
-    this.allMerchantPurchasingPower = false;
+    this.isAllProductSold = false;
+    this.isAllPurchasingPower = false;
     if (this.selectedMerchantId === '') {
       this.showProductSoldChart();
     }
   }
 
   /**
-   * Refresh analytics data for the selected merchant.
-   * Update the specific merchant analytics in the allMerchantAnalytics array.
+   * Refresh analytics data based on the selected merchant.
    */
-  refreshAnalytics() {
+  refreshAnalytics(): void {
     if (this.selectedMerchantId) {
-      const selectedMerchantAnalytics =
-        this.analyticsService.getMerchantProductAnalytics(
-          this.selectedMerchantId
-        );
-
-      const selectedMerchantPurchasingPowerAnalytics =
-        this.analyticsService.getMerchantPurchasingPowerAnalytics(
-          this.selectedMerchantId
-        );
-
-      const index = this.allMerchantAnalytics.findIndex(
-        (item) => item.merchant.id === this.selectedMerchantId
+      const index = this.allAnalytics.findIndex(
+        (item) => item.merchant._id === this.selectedMerchantId
       );
 
       if (index !== -1) {
-        this.allMerchantAnalytics[index].productAnalytics =
-          selectedMerchantAnalytics;
+        this.loading.show();
 
-        this.allMerchantAnalytics[index].purchasingPowerAnalytics =
-          selectedMerchantPurchasingPowerAnalytics;
+        this.analyticsService
+          .getProductAnalyticsAndStats(this.selectedMerchantId)
+          .subscribe((data) => {
+            this.loading.hide();
+
+            this.allAnalytics[index].productAnalytics = data.productAnalytics;
+            this.productSoldStats = data.stats;
+
+            setTimeout(() => this.selectedProductSoldChart(), 0);
+          });
+
+        this.loading.show();
+
+        this.analyticsService
+          .getPurchasingPowerAnalyticsAndStats(this.selectedMerchantId)
+          .subscribe(
+            (data) => {
+              this.loading.hide();
+
+              this.allAnalytics[index].purchasingPowerAnalytics =
+                data.customerPurchasingPower;
+              this.purchasingPowerStats = data.stats;
+
+              setTimeout(() => this.selectedPurchasingPowerChart(), 0);
+            },
+            (error) => {
+              this.loading.hide();
+
+              console.error(
+                'Error fetching purchasing power analytics:',
+                error
+              );
+            }
+          );
       }
-      setTimeout(() => this.selectedProductSoldChart(), 0);
-      setTimeout(() => this.selectedPurchasingPowerChart(), 0);
+    } else {
+      this.loading.show();
+
+      this.analyticsService.getAllMerchantAnalyticsAndStats().subscribe(
+        (data) => {
+          this.loading.hide();
+
+          this.allAnalytics = data.allAnalytics;
+          this.allMerchantStats = data.stats;
+          this.showProductSoldChart();
+        },
+        (error) => {
+          this.loading.hide();
+
+          console.error('Error fetching analytics:', error);
+
+          if (error.status === 500) {
+            this.alert.showErrorMessage('Internal Server Error');
+          } else {
+            const errorMessage =
+              error.error?.message || 'Failed to fetch analytics';
+            this.alert.showErrorMessage(errorMessage);
+          }
+        }
+      );
     }
   }
 
   /**
-   * Display the chart for selected product sales.
-   * Uses Chart.js to create a bar chart based on the analytics data.
+   * Create and display the chart for products sold by the currently selected merchant.
    */
-  private selectedProductSoldChart() {
-    const canvas = <HTMLCanvasElement>(
-      document.getElementById('selectedProductSoldChart')
-    );
-    const context = canvas.getContext('2d');
-
-    if (this.productSoldChart) {
-      this.productSoldChart.destroy();
-    }
-
-    const productAnalytics = this.allMerchantAnalytics.find(
-      (item) => item.merchant.id === this.selectedMerchantId
+  private selectedProductSoldChart(): void {
+    const productAnalytics = this.allAnalytics.find(
+      (item) => item.merchant._id === this.selectedMerchantId
     ).productAnalytics;
-    const labels = productAnalytics.map((item) => item.product.name);
+    const labels = productAnalytics.map((item) => item.name);
     const data = productAnalytics.map((item) => item.totalSold);
 
     const chartConfig: ChartConfiguration = {
       type: 'bar',
-      data: {
-        labels,
-        datasets: [
-          {
-            label: 'Total Sold',
-            data,
-            backgroundColor: 'rgba(75, 192, 192, 0.2)',
-            borderColor: 'rgba(75, 192, 192, 1)',
-            borderWidth: 1,
-          },
-        ],
-      },
-      options: {
-        indexAxis: 'y',
-        scales: {
-          y: {
-            beginAtZero: true,
-          },
-        },
-      },
+      data: this.createChartService.createChartData(labels, data, 'Total Sold'),
+      options: this.createChartService.createChartOptions(
+        'Products Sold Analytics',
+        'Number of Product Sold',
+        'Products Name',
+        'y'
+      ),
     };
-    this.productSoldChart = new Chart(context, chartConfig);
+
+    this.createChartService.createChart(
+      'selectedProductSoldChart',
+      chartConfig
+    );
   }
 
   /**
-   * Display the chart for selected purchasing power.
-   * Uses Chart.js to create a bar chart based on the purchasing power analytics data.
+   * Create and display the chart for customer purchasing power by the currently selected merchant.
    */
-  private selectedPurchasingPowerChart() {
-    const canvas = <HTMLCanvasElement>(
-      document.getElementById('selectedPurchasingPowerChart')
-    );
-    const context = canvas?.getContext('2d');
-
-    if (this.purchasingPowerChart) {
-      this.purchasingPowerChart.destroy();
-    }
-
-    const productAnalytics = this.allMerchantAnalytics.find(
-      (item) => item.merchant.id === this.selectedMerchantId
+  private selectedPurchasingPowerChart(): void {
+    const productAnalytics: CustomerPurchasingPower[] = this.allAnalytics.find(
+      (item) => item.merchant._id === this.selectedMerchantId
     ).purchasingPowerAnalytics;
 
-    const labels = Object.keys(productAnalytics);
-    const data = Object.values(productAnalytics).map(
-      (customer: any) => customer.totalSpent
+    const labels: string[] = productAnalytics.map((customer) => customer.email);
+    const totalSpent: number[] = Object.values(productAnalytics).map(
+      (customer: CustomerPurchasingPower) => customer.totalSpent
+    );
+    const totalOrders: number[] = Object.values(productAnalytics).map(
+      (customer: CustomerPurchasingPower) => customer.totalOrders
     );
 
     const chartConfig: ChartConfiguration = {
       type: 'bar',
-      data: {
+      data: this.createChartService.createMultiChartData(
         labels,
-        datasets: [
-          {
-            label: 'Total Spent',
-            data,
-            backgroundColor: 'rgba(75, 192, 192, 0.2)',
-            borderColor: 'rgba(75, 192, 192, 1)',
-            borderWidth: 1,
-          },
-        ],
-      },
-      options: {
-        indexAxis: 'y',
-        scales: { y: { beginAtZero: true } },
-      },
+        'Total Spent',
+        totalSpent,
+        'Total Orders',
+        totalOrders,
+        'secondary'
+      ),
+
+      options: this.createChartService.createMultiChartOptions(
+        'Customers Email',
+        'Amount Spent ($)',
+        'Customer Purchasing Power Analytics',
+        'Number of Orders'
+      ),
     };
-    this.purchasingPowerChart = new Chart(context, chartConfig);
+    this.createChartService.createChart(
+      'selectedPurchasingPowerChart',
+      chartConfig
+    );
   }
 
   /**
-   * Display the chart for total product sales across all merchants.
-   * Uses Chart.js to create a bar chart based on the aggregated analytics data.
+   * Create and display the chart for customer purchasing power by all merchants.
    */
-  private AllProductSoldChart() {
-    const canvas = <HTMLCanvasElement>(
-      document.getElementById('allProductSoldChart')
+  private purchasingPowerAnalytics(): void {
+    const labels = this.allAnalytics.map((item) => item.merchant.name);
+    const totalSpent = this.allAnalytics.map(
+      (item) => item.purchasingPowerAnalytics.totalSpent
     );
-    const context = canvas.getContext('2d');
+    const totalOrders = this.allAnalytics.map(
+      (item) => item.purchasingPowerAnalytics.totalOrders
+    );
 
-    if (this.productSoldChart) {
-      this.productSoldChart.destroy();
-    }
-    const labels = this.allMerchantAnalytics.map((item) => item.merchant.name);
-    const data = this.allMerchantAnalytics.map((item) =>
-      item.productAnalytics.reduce((sum, product) => sum + product.totalSold, 0)
-    );
     const chartConfig: ChartConfiguration = {
       type: 'bar',
-      data: {
+      data: this.createChartService.createMultiChartData(
         labels,
-        datasets: [
-          {
-            label: 'Total Sold',
-            data,
-            backgroundColor: 'rgba(75, 192, 192, 0.2)',
-            borderColor: 'rgba(75, 192, 192, 1)',
-            borderWidth: 1,
-          },
-        ],
-      },
-      options: {
-        responsive: true,
-        scales: {
-          x: {
-            beginAtZero: true,
-          },
-          y: {
-            beginAtZero: true,
-          },
-        },
-      },
+        'Total Spent',
+        totalSpent,
+        'Total Orders',
+        totalOrders,
+        'secondary'
+      ),
+      options: this.createChartService.createMultiChartOptions(
+        'Products Name',
+        'Amount Spent ($)',
+        'Customer Purchasing Power Analytics',
+        'Number of Orders'
+      ),
     };
-    this.productSoldChart = new Chart(context, chartConfig);
+    this.createChartService.createChart('allPurchasingPowerChart', chartConfig);
   }
 
   /**
-   * Display the chart for total purchasing power across all merchants.
-   * Uses Chart.js to create a bar chart based on the aggregated purchasing power analytics data.
+   * Create and display the chart for products sold by all merchants.
    */
-  private AllPurchasingPowerChart() {
-    const canvas = <HTMLCanvasElement>(
-      document.getElementById('allPurchasingPowerChart')
+  private productSoldAnalytics(): void {
+    const labels = this.allAnalytics.map((item) => item.merchant.name);
+    const data = this.allAnalytics.map(
+      (item) => item.productAnalytics.totalSold
     );
-    const context = canvas.getContext('2d');
-
-    if (this.purchasingPowerChart) {
-      this.purchasingPowerChart.destroy();
-    }
-
-    const labels = this.allMerchantAnalytics.map((item) => item.merchant.name);
-    const purchasingPower = this.allMerchantAnalytics.map(
-      (item) => item.purchasingPowerAnalytics
-    );
-
-    const data = [];
-
-    // Iterate through each merchant's analytics
-    purchasingPower.forEach((merchantAnalytics) => {
-      // Iterate through each customer's analytics for the current merchant
-      Object.keys(merchantAnalytics).forEach((customerEmail) => {
-        const totalSpent = merchantAnalytics[customerEmail].totalSpent;
-        data.push(totalSpent);
-      });
-    });
-
     const chartConfig: ChartConfiguration = {
       type: 'bar',
-      data: {
-        labels,
-        datasets: [
-          {
-            label: 'Total Spent, Total Orders',
-            data,
-            backgroundColor: 'rgba(75, 192, 192, 0.2)',
-            borderColor: 'rgba(75, 192, 192, 1)',
-            borderWidth: 1,
-          },
-        ],
-      },
-      options: {
-        scales: {
-          y: {
-            beginAtZero: true,
-          },
-        },
-      },
+      data: this.createChartService.createChartData(labels, data, 'Total Sold'),
+      options: this.createChartService.createChartOptions(
+        'Products Sold Analytics',
+        'Merchants Name',
+        'Number of Product Sold'
+      ),
     };
-    this.purchasingPowerChart = new Chart(context, chartConfig);
+    this.createChartService.createChart('allProductSoldChart', chartConfig);
   }
 }
