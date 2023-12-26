@@ -1,5 +1,54 @@
 # PromoTourismSystem
 
+
+### Prerequisites
+- Node.js
+- Angular CLI
+
+## Server Installation
+
+Navigate to the server directory and install the server dependencies.
+
+```bash
+$ cd server
+$ npm install
+```
+
+## Client Installation
+
+Navigate to the Angular client directory and install the client dependencies.
+
+```bash
+$ cd promo-tourism-system
+$ npm install
+```
+
+## Usage
+#### Run Server (with nodemon)
+To run the server using nodemon and the Angular client, use the following commands:
+```bash
+$ cd promo-tourism-system
+$ npm run dev
+```
+
+#### Run Client
+Run `ng serve` for a dev server. Navigate to `http://localhost:4200/`. The application will automatically reload if you change any of the source files.
+
+## Default Account
+
+These default account for testing purposes.
+#### Ministry role
+- Default Username: ministry@gmail.com 
+- Default Password: ministry
+
+#### Merchant role
+- Default Username: merchant@gmail.com
+- Default Password: merchant
+
+#### Customer role
+- Default Username: suryapradipta@gmail.com
+- Default Password: customer
+
 This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 16.2.5.
 
 ## Development server
