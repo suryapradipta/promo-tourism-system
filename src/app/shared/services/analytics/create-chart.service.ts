@@ -162,7 +162,7 @@ export class CreateChartService {
           beginAtZero: true,
           position: 'right',
           ticks: {
-            stepSize: 1,
+            stepSize: 2,
           },
         },
       },
@@ -233,7 +233,7 @@ export class CreateChartService {
             },
           },
           ticks: {
-            stepSize: 1,
+            stepSize: 2,
           },
         },
         y: {
@@ -246,7 +246,7 @@ export class CreateChartService {
             },
           },
           ticks: {
-            stepSize: 1,
+            stepSize: 2,
           },
         },
       },
