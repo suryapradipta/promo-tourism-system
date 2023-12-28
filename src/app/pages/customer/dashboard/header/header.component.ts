@@ -21,8 +21,6 @@ export class HeaderComponent {
   ];
 
   /**
-   * Constructor function for HeaderComponent.
-   *
    * @constructor
    * @param {AuthService} authService - The service responsible for user authentication.
    * @param {Router} router - The Angular router for navigation.

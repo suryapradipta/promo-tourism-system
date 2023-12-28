@@ -312,7 +312,7 @@ router.put('/reject/:id', authMiddleware, async (req, res) => {
 
     return res
       .status(200)
-      .json({ message: 'Merchant rejected successfully', merchant });
+      .json({ message: 'Merchant account rejected successfully', merchant });
   } catch (error) {
     console.error('Error rejecting merchant:', error);
     res.status(500).json({ message: 'Internal server error' });
@@ -349,7 +349,9 @@ router.post('/send-email', authMiddleware, async (req, res) => {
       res.status(500).send('Internal Server Error');
     } else {
       console.log('Email sent: ' + info.response);
-      res.status(200).json({ message: 'Email Sent' });
+      res
+        .status(200)
+        .json({ message: 'Merchant account created successfully' });
     }
   });
 });

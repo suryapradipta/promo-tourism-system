@@ -172,14 +172,15 @@ export class DetailAccountComponent implements OnInit {
     `;
 
     this.merchantService.sendEmail(to, subject, html).subscribe(
-      () => {
+      (response) => {
         this.loading.hide();
 
         this.router
           .navigate(['/ministry-dashboard/manage-account'])
           .then(() =>
-            this.alert.showSuccessMessage(
-              'Merchant account created successfully!'
+            this.alert.showSuccessMessageWithText(
+              'Account created!',
+              response.message
             )
           );
       },
@@ -206,7 +207,12 @@ export class DetailAccountComponent implements OnInit {
 
         this.router
           .navigate(['/ministry-dashboard/manage-account'])
-          .then(() => this.alert.showSuccessMessage(response.message));
+          .then(() =>
+            this.alert.showSuccessMessageWithText(
+              'Account rejected!',
+              response.message
+            )
+          );
       },
       (error) => {
         this.loading.hide();

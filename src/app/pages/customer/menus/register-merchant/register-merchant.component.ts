@@ -103,7 +103,10 @@ export class RegisterMerchantComponent {
         (response) => {
           this.loading.hide();
           this.submitted = true;
-          this.alert.showSuccessMessage(response.message);
+          this.alert.showSuccessMessageWithText(
+            'Register successful!',
+            'The form has been successfully submitted. Please wait for approval from the officer.'
+          );
         },
         (error) => {
           this.loading.hide();

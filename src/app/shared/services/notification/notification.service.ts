@@ -62,4 +62,18 @@ export class NotificationService {
       text: 'The email address you provided is already registered in our system. Please use a different email address.',
     });
   };
+
+  /**
+   * Displays a success message with text description.
+   *
+   * @param {string} title - The title of the success message.
+   * @param {string} text - The text content of the success message.
+   */
+  showSuccessMessageWithText = (title: string, text: string): void => {
+    Swal.fire({
+      icon: 'success',
+      title: title,
+      text: text,
+    });
+  };
 }
