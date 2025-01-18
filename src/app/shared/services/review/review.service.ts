@@ -3,15 +3,16 @@
  * for a customer and submit reviews for orders.
  */
 import { Injectable } from '@angular/core';
-import { Order } from '../../models';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
+import { environment } from '../../../../environments/environment';
+import { Order } from '../../models';
 
 @Injectable({
   providedIn: 'root',
 })
 export class ReviewService {
-  private apiUrl = 'http://localhost:3000/api/reviews';
+  private apiUrl = `${environment.apiUrl}/reviews`;
 
   /**
    * @constructor
@@ -47,6 +48,6 @@ export class ReviewService {
     userId: string
   ): Observable<any> {
     const reviewData = { orderId, rating, comment, userId };
-    return this.http.post(`${this.apiUrl}//submit-review`, reviewData);
+    return this.http.post(`${this.apiUrl}/submit-review`, reviewData);
   }
 }

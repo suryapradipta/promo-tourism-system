@@ -3,15 +3,16 @@
  * such as creating a new order and retrieving order details by ID.
  */
 import { Injectable } from '@angular/core';
-import { Order } from '../../models';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
+import { environment } from '../../../../environments/environment';
+import { Order } from '../../models';
 
 @Injectable({
   providedIn: 'root',
 })
 export class OrderService {
-  private apiUrl = 'http://localhost:3000/api/orders';
+  private apiUrl = `${environment.apiUrl}/orders`;
 
   /**
    * @constructor

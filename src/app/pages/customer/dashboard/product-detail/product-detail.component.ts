@@ -4,6 +4,7 @@
  * payment processing.
  */
 import { Component, OnInit } from '@angular/core';
+import { environment } from '../../../../../environments/environment';
 import { Order, Payment, Product, Review } from '../../../../shared/models';
 import { ActivatedRoute, Router } from '@angular/router';
 import {
@@ -16,6 +17,7 @@ import {
 } from '../../../../shared/services';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { IPayPalConfig } from 'ngx-paypal';
+import { FileUrlService } from '../../../../shared/services/file/file-url.service';
 
 @Component({
   selector: 'app-product-detail',
@@ -43,6 +45,7 @@ export class ProductDetailComponent implements OnInit {
    * @param {AuthService} authService - Service for user authentication.
    * @param {ProductService} productService - Service for managing product-related operations.
    * @param {LoadingService} loading - Service for managing loading indicators.
+   * @param {FileUrlService} fileUrlService - Service for generating file URLs.
    */
   constructor(
     private route: ActivatedRoute,
@@ -53,7 +56,8 @@ export class ProductDetailComponent implements OnInit {
     private paymentService: PaymentService,
     private authService: AuthService,
     private productService: ProductService,
-    private loading: LoadingService
+    private loading: LoadingService,
+    private fileUrlService: FileUrlService
   ) {}
 
   /**
@@ -233,7 +237,7 @@ export class ProductDetailComponent implements OnInit {
         'AXbp6-Ojon_2I2t6ACCq9gipRPGN9LjAOtYgZjDewvuI97s0DmoWTXLFrHgyzDXK-owvAgm4ptEBLIEQ',
       createOrderOnServer: (data) => {
         return fetch(
-          'http://localhost:3000/api/payments/create-paypal-transaction',
+          `${environment.apiUrl}/payments/create-paypal-transaction`,
           {
             method: 'POST',
             headers: {
@@ -363,5 +367,9 @@ export class ProductDetailComponent implements OnInit {
         console.log('onClick', data, actions);
       },
     };
+  }
+
+  getFileUrl(filename: string): string {
+    return this.fileUrlService.getFileUrl(filename);
   }
 }

@@ -3,15 +3,16 @@
  * functionality to save payment information and retrieve payments by PayPal ID.
  */
 import { Injectable } from '@angular/core';
-import { Payment } from '../../models';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
+import { environment } from '../../../../environments/environment';
+import { Payment } from '../../models';
 
 @Injectable({
   providedIn: 'root',
 })
 export class PaymentService {
-  private apiUrl = 'http://localhost:3000/api/payments';
+  private apiUrl = `${environment.apiUrl}/payments`;
 
   /**
    * @constructor

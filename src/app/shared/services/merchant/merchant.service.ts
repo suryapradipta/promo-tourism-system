@@ -5,13 +5,14 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
+import { environment } from '../../../../environments/environment';
 import { Merchant } from '../../models';
 
 @Injectable({
   providedIn: 'root',
 })
 export class MerchantService {
-  private apiUrl = 'http://localhost:3000/api/merchants';
+  private apiUrl = `${environment.apiUrl}/merchants`;
 
   /**
    * @constructor

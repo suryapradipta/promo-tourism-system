@@ -3,6 +3,8 @@
  * and MerchantService to fetch and update product data, as well as manage image uploads and form submissions.
  */
 import { Component, OnInit } from '@angular/core';
+import { environment } from '../../../../../../../environments/environment';
+import { FileUrlService } from '../../../../../../shared/services/file/file-url.service';
 import { Product } from '../../../../../../shared/models';
 import { ActivatedRoute, Router } from '@angular/router';
 import {
@@ -42,6 +44,7 @@ export class AddEditProductComponent implements OnInit {
    * @param {ProductService} productService - Service for product-related functionality.
    * @param {MerchantService} merchantService - Service for merchant-related functionality.
    * @param {LoadingService} loading - Service to manage loading indicators during asynchronous operations.
+   * @param {FileUrlService} fileUrlService - Service to generate file URLs.
    */
   constructor(
     private route: ActivatedRoute,
@@ -50,7 +53,8 @@ export class AddEditProductComponent implements OnInit {
     private authService: AuthService,
     private productService: ProductService,
     private merchantService: MerchantService,
-    private loading: LoadingService
+    private loading: LoadingService,
+    private fileUrlService: FileUrlService
   ) {}
 
   /**
@@ -64,7 +68,9 @@ export class AddEditProductComponent implements OnInit {
         (product) => {
           this.loading.hide();
           this.product = product;
-          this.loadImagePreview();
+          if (this.product && this.product.image) {
+            this.previewImage = this.fileUrlService.getFileUrl(this.product.image);
+          }
         },
         (error) => {
           this.loading.hide();
@@ -111,7 +117,7 @@ export class AddEditProductComponent implements OnInit {
       };
       reader.readAsDataURL(file);
     } else if (this.product.image) {
-      this.previewImage = `http://localhost:3000/api/files/server/src/uploads/${this.product.image}`;
+      this.previewImage = this.fileUrlService.getFileUrl(this.product.image);
     }
   }
 

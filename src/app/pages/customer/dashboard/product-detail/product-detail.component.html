@@ -12,11 +12,9 @@
     <div class="lg:col-span-4 lg:row-end-1">
       <div class="aspect-w-4 aspect-h-3 overflow-hidden rounded-lg bg-gray-100">
         <img
-          src="http://localhost:3000/api/files/server/src/uploads/{{
-            product.image
-          }}"
-          alt="{{ product.name }}"
-          class="object-cover object-center"
+          class="w-full h-full rounded-lg"
+          [src]="getFileUrl(product.image)"
+          [alt]="product.name"
         />
       </div>
     </div>
