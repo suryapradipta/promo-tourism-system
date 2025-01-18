@@ -1,0 +1,33 @@
+{
+  "version": 2,
+  "builds": [
+    {
+      "src": "api/index.js",
+      "use": "@vercel/node"
+    },
+    {
+      "src": "package.json",
+      "use": "@vercel/static-build",
+      "config": {
+        "distDir": "dist/promo-tourism-system"
+      }
+    }
+  ],
+  "routes": [
+    {
+      "src": "/api/(.*)",
+      "dest": "/api/index.js"
+    },
+    {
+      "handle": "filesystem"
+    },
+    {
+      "src": "/assets/(.*)",
+      "dest": "/dist/promo-tourism-system/assets/$1"
+    },
+    {
+      "src": "/(.*)",
+      "dest": "/dist/promo-tourism-system/index.html"
+    }
+  ]
+}
