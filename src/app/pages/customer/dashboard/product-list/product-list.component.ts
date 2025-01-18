@@ -10,6 +10,7 @@ import {
   LoadingService,
   NotificationService,
   ProductService,
+  FileUrlService,
 } from '../../../../shared/services';
 import { Router } from '@angular/router';
 import Swal from 'sweetalert2';
@@ -29,13 +30,15 @@ export class ProductListComponent implements OnInit {
    * @param {ProductService} productService - Service for retrieving product-related data.
    * @param {NotificationService} alert - Service for displaying notifications.
    * @param {LoadingService} loading - Service for managing loading indicators.
+   * @param {FileUrlService} fileUrlService - Service for generating file URLs.
    */
   constructor(
     private router: Router,
     private authService: AuthService,
     private productService: ProductService,
     private alert: NotificationService,
-    private loading: LoadingService
+    private loading: LoadingService,
+    private fileUrlService: FileUrlService
   ) {}
 
   /**
@@ -107,5 +110,9 @@ export class ProductListComponent implements OnInit {
     }
 
     this.products = products;
+  }
+
+  getFileUrl(filename: string): string {
+    return this.fileUrlService.getFileUrl(filename);
   }
 }

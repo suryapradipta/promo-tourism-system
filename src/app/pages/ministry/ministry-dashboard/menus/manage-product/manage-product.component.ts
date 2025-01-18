@@ -7,6 +7,7 @@ import { Component, OnInit } from '@angular/core';
 import { Product } from '../../../../../shared/models';
 import {
   AuthService,
+  FileUrlService,
   LoadingService,
   MerchantService,
   NotificationService,
@@ -32,6 +33,7 @@ export class ManageProductComponent implements OnInit {
    * @param {MerchantService} merchantService - The service for merchant-related operations.
    * @param {NotificationService} alert - The service for displaying notifications to the user.
    * @param {LoadingService} loading - The service for managing loading indicators.
+   * @param {FileUrlService} fileUrlService - The service for managing file URLs.
    */
   constructor(
     private productService: ProductService,
@@ -39,7 +41,8 @@ export class ManageProductComponent implements OnInit {
     private authService: AuthService,
     private merchantService: MerchantService,
     private alert: NotificationService,
-    private loading: LoadingService
+    private loading: LoadingService,
+    private fileUrlService: FileUrlService
   ) {}
 
   /**
@@ -153,5 +156,9 @@ export class ManageProductComponent implements OnInit {
         );
       }
     });
+  }
+
+  getFileUrl(filename: string): string {
+    return this.fileUrlService.getFileUrl(filename);
   }
 }

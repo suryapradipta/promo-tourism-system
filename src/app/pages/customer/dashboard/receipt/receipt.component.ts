@@ -13,6 +13,7 @@ import {
   ProductService,
 } from '../../../../shared/services';
 import { ReceiptService } from '../../../../shared/services/receipt/receipt.service';
+import { FileUrlService } from '../../../../shared/services/file/file-url.service';
 
 @Component({
   selector: 'app-receipt',
@@ -35,6 +36,7 @@ export class ReceiptComponent implements OnInit {
    * @param {Router} router - The router for navigating between components.
    * @param {NotificationService} alert - The service for displaying notification messages.
    * @param {LoadingService} loading - The service for displaying loading indicators.
+   * @param {FileUrlService} fileUrlService - The service for generating file URLs.
    */
   constructor(
     private paymentService: PaymentService,
@@ -44,7 +46,8 @@ export class ReceiptComponent implements OnInit {
     private route: ActivatedRoute,
     private router: Router,
     private alert: NotificationService,
-    private loading: LoadingService
+    private loading: LoadingService,
+    private fileUrlService: FileUrlService
   ) {}
 
   /**
@@ -110,5 +113,9 @@ export class ReceiptComponent implements OnInit {
       .then(() =>
         this.alert.showSuccessMessage('Official Receipt Successfully Saved')
       );
+  }
+
+  getFileUrl(filename: string): string {
+    return this.fileUrlService.getFileUrl(filename);
   }
 }

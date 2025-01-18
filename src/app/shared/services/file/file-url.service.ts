@@ -6,6 +6,7 @@ import { environment } from '../../../../environments/environment';
 })
 export class FileUrlService {
   getFileUrl(filename: string): string {
+    if (!filename) return '';
     return `${environment.apiUrl}/files/server/src/uploads/${filename}`;
   }
 }

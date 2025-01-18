@@ -78,10 +78,8 @@
                       <div class="relative w-16 h-16 overflow-hidden">
                         <img
                           class="object-cover w-full h-full"
-                          src="http://localhost:3000/api/files/server/src/uploads/{{
-                            item.image
-                          }}"
-                          alt="{{ item.name }}"
+                          [src]="getFileUrl(item.image)"
+                          [alt]="item.name"
                         />
                       </div>
                     </td>
